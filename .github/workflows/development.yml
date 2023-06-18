@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: ['dev']
+  pull_request:
+    branches: ['dev']
+
+env:
+  DOCKER_IMAGE: ghcr.io/${{ github.actor }}/calendar
+  VERSION: ${{ github.sha }}
+  NAME: go_cicd
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v2
+      - name: Set up docker buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Cache docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ env.VERSION }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      - name: Login to ghcr
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          platforms: linux/amd64
+          push: true
+          tags: ${{ env.DOCKER_IMAGE }}:latest
+
+  deploy:
+    needs: build
+    name: Deploy
+    runs-on: [self-hosted, label-go]
+    steps:
+      - name: Login to ghcr
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+      - name: Docker run
+        run: |
+          docker stop calendar && docker rm calendar && docker rmi ${{ env.DOCKER_IMAGE }}:latest
+          docker run -itd -p 9595:9595 --network dev --name calendar --restart always ${{ env.DOCKER_IMAGE }}:latest
