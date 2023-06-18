@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+    @@map(name: "users")
+
+    id String @id @default(uuid()) @db.Uuid
+    appId String @unique
+    nickname String @unique
+    password String
+    phone String @unique
+    refreshToken String? @db.Text
+
+    createdAt  Int
+    updatedAt  Int?
+    deletedAt  Int?
+
+    calendars Calendar[]
+}
+
+model Calendar {
+    @@map(name: "calendar")
+
+    id String @id @default(uuid()) @db.Uuid
+    author Users @relation(fields: [authorId], references: [id])
+    authorId String @db.Uuid
+    date Int
+    todo String
+    done Boolean @default(true)
+    month Int
+    day Int
+
+    createdAt  Int
+    updatedAt  Int?
+    deletedAt  Int?
+}

@@ -1,0 +1,8 @@
+import { PickType } from '@nestjs/swagger';
+import { UsersDtoModel } from './users.dto.model';
+import { BaseOutputDto } from '../../_common/dtos/base.output.dto';
+import { Users } from '@prisma/client';
+
+export class UsersInquiryInputDto extends PickType(UsersDtoModel, ['id']) {}
+
+export class UsersInquiryOutputDto extends BaseOutputDto<Users> {}
