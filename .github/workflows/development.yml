@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: ['dev']
+    branches: ['master']
   pull_request:
-    branches: ['dev']
+    branches: ['master']
 
 env:
   DOCKER_IMAGE: ghcr.io/${{ github.actor }}/calendar
@@ -57,4 +57,4 @@ jobs:
       - name: Docker run
         run: |
           docker stop calendar && docker rm calendar && docker rmi ${{ env.DOCKER_IMAGE }}:latest
-          docker run -itd -p 9595:9595 --network dev --name calendar --restart always ${{ env.DOCKER_IMAGE }}:latest
+          docker run -itd -p 9595:9595 --network master --name calendar --restart always ${{ env.DOCKER_IMAGE }}:latest
