@@ -49,7 +49,7 @@ export class CalendarRepository implements CalendarInterface {
           return await this.prisma.calendar.update({
             where: { id: authorIdAndTodoFindByCalendar.id },
             data: {
-              updatedAt: DATE_TIME,
+              updatedDate: DATE_TIME,
             },
           });
         },
@@ -99,7 +99,7 @@ export class CalendarRepository implements CalendarInterface {
               authorId,
               month,
               day,
-              createdAt: DATE_TIME,
+              createdDate: DATE_TIME,
             },
           }),
       );
@@ -141,7 +141,7 @@ export class CalendarRepository implements CalendarInterface {
               todo: updateTodo,
               authorId: updateAuthorId,
               done,
-              updatedAt: DATE_TIME,
+              updatedDate: DATE_TIME,
             },
           });
         },

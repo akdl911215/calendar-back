@@ -1,10 +1,17 @@
-import { IsString, Matches } from 'class-validator';
+import { IsNumber, IsString, IsUUID, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UsersDtoModel {
+  @IsUUID()
   public id!: string;
+
+  @IsNumber()
   public createdAt!: number;
+
+  @IsNumber()
   public updatedAt!: number;
+
+  @IsNumber()
   public deletedAt?: number;
 
   @IsString()

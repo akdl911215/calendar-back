@@ -25,6 +25,7 @@ import {
 } from './dtos/users.update.dto';
 import { Users } from '@prisma/client';
 import { errorHandling } from '../_common/dtos/error.handling';
+import { DATE_TIME } from '../_common/dtos/get.date';
 
 @Injectable()
 @Dependencies([PrismaService])
@@ -32,7 +33,7 @@ export class UsersRepository implements UsersInterface {
   constructor(private readonly prisma: PrismaService) {}
 
   public async create(dto: UsersCreateInputDto): Promise<UsersCreateOutputDto> {
-    const { appId, phone, nickname } = dto;
+    const { appId, phone, nickname, password } = dto;
 
     const userFindByAppId: Users = await this.prisma.users.findUnique({
       where: { appId },
@@ -51,7 +52,16 @@ export class UsersRepository implements UsersInterface {
 
     try {
       const createUser: Users = await this.prisma.$transaction(
-        async () => await this.prisma.users.create({ data: dto }),
+        async () =>
+          await this.prisma.users.create({
+            data: {
+              appId,
+              nickname,
+              password,
+              phone,
+              createdDate: DATE_TIME,
+            },
+          }),
       );
 
       return { response: createUser };
@@ -69,9 +79,9 @@ export class UsersRepository implements UsersInterface {
     if (!userFindById) throw new NotFoundException();
 
     try {
-      const deletedAtUser: Users = await this.prisma.$transaction(
-        async () => await this.prisma.users.update({ where: { id }, data: {} }),
-      );
+      // const deletedAtUser: Users = await this.prisma.$transaction(
+      //   async () => await this.prisma.users.update({ where: { id }, data: {} }),
+      // );
     } catch (e: any) {
       errorHandling(e);
     }
