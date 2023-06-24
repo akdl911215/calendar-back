@@ -1,8 +1,19 @@
-import { IsBoolean, IsNumber, IsString, IsUUID } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CalendarDtoModel {
   @IsUUID()
+  @ApiProperty({
+    type: String,
+    default: '',
+    required: true,
+  })
   public id!: string;
 
   @IsNumber()
@@ -15,9 +26,16 @@ export class CalendarDtoModel {
   public deletedAt?: number;
 
   @IsUUID()
+  @IsNotEmpty()
+  @ApiProperty({
+    type: String,
+    default: '',
+    required: true,
+  })
   public authorId!: string;
 
   @IsNumber()
+  @IsNotEmpty()
   @ApiProperty({
     type: Number,
     default: 0,
@@ -26,6 +44,7 @@ export class CalendarDtoModel {
   public date!: number;
 
   @IsString()
+  @IsNotEmpty()
   @ApiProperty({
     type: String,
     default: '',
@@ -37,8 +56,12 @@ export class CalendarDtoModel {
   public done!: boolean;
 
   @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({ type: Number, required: true })
   public month!: number;
 
   @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({ type: Number, required: true })
   public day!: number;
 }

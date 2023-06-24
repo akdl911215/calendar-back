@@ -8,6 +8,7 @@ import {
   Query,
 } from '@nestjs/common';
 import {
+  ApiBody,
   ApiConsumes,
   ApiOperation,
   ApiResponse,
@@ -32,6 +33,16 @@ import {
   CalendarListInputDto,
   CalendarListOutputDto,
 } from './dtos/calendar.list.dto';
+import {
+  AUTHOR_ID_REQUIRED,
+  DATE_REQUIRED,
+  DAY_REQUIRED,
+  MONTH_REQUIRED,
+  TODO_REQUIRED,
+  TOKEN_NOT_EXIST,
+} from '../_common/http/errors/400';
+import { UNAUTHORIZED } from '../_common/http/errors/401';
+import { TWO_HUNDRED_OK } from '../_common/http/success/200';
 
 @ApiTags('calendar')
 @Controller('calendar')
@@ -45,9 +56,22 @@ export class CalendarController {
     description: '캘린더 등록 절차',
   })
   @ApiResponse({ status: 201, description: `${CREATE_SUCCESS}` })
+  @ApiResponse({
+    status: 400,
+    description: `${TOKEN_NOT_EXIST}, ${AUTHOR_ID_REQUIRED}, ${TODO_REQUIRED}, ${DATE_REQUIRED}, ${MONTH_REQUIRED}, ${DAY_REQUIRED}`,
+  })
+  @ApiResponse({ status: 401, description: `${UNAUTHORIZED}` })
   @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
+  @ApiBody({
+    type: CalendarRegisterInputDto,
+    description: '캘린더 등록 절차에 필요한 값',
+  })
   private async register(
-    @Body() dto: CalendarRegisterInputDto,
+    @Body()
+    dto: Pick<
+      CalendarRegisterInputDto,
+      'authorId' | 'date' | 'todo' | 'month' | 'day'
+    >,
   ): Promise<CalendarRegisterOutputDto> {
     return await this.service.register(dto);
   }
@@ -58,10 +82,19 @@ export class CalendarController {
     summary: 'CALENDAR DELETE API',
     description: '캘린다 삭제 절차',
   })
-  @ApiResponse({ status: 200, description: `` })
-  @ApiResponse({ status: 500, description: `` })
+  @ApiResponse({ status: 200, description: `${TWO_HUNDRED_OK}` })
+  @ApiResponse({
+    status: 400,
+    description: `${TOKEN_NOT_EXIST}, ${AUTHOR_ID_REQUIRED}, ${TODO_REQUIRED}`,
+  })
+  @ApiResponse({ status: 401, description: `${UNAUTHORIZED}` })
+  @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
+  @ApiBody({
+    type: CalendarDeleteInputDto,
+    description: '캘린더 삭제 절차에 필요한 값',
+  })
   private async delete(
-    @Body() dto: CalendarDeleteInputDto,
+    @Body() dto: Pick<CalendarDeleteInputDto, 'authorId' | 'todo'>,
   ): Promise<CalendarDeleteOutputDto> {
     return await this.service.delete(dto);
   }
@@ -72,8 +105,13 @@ export class CalendarController {
     summary: 'CALENDAR INQUIRY API',
     description: '캘린다 조회 절차',
   })
-  @ApiResponse({ status: 200, description: `` })
-  @ApiResponse({ status: 500, description: `` })
+  @ApiResponse({ status: 200, description: `${TWO_HUNDRED_OK}` })
+  @ApiResponse({
+    status: 400,
+    description: `${TOKEN_NOT_EXIST}, ${AUTHOR_ID_REQUIRED}, ${DATE_REQUIRED}`,
+  })
+  @ApiResponse({ status: 401, description: `${UNAUTHORIZED}` })
+  @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
   private async inquiry(
     @Query() dto: CalendarInquiryInputDto,
   ): Promise<CalendarInquiryOutputDto> {
@@ -86,8 +124,13 @@ export class CalendarController {
     summary: 'CALENDAR LIST INQUIRY API',
     description: '캘린다 리스트 조회 절차',
   })
-  @ApiResponse({ status: 200, description: `` })
-  @ApiResponse({ status: 500, description: `` })
+  @ApiResponse({ status: 200, description: `${TWO_HUNDRED_OK}` })
+  @ApiResponse({
+    status: 400,
+    description: `${TOKEN_NOT_EXIST}, ${AUTHOR_ID_REQUIRED}, ${MONTH_REQUIRED}`,
+  })
+  @ApiResponse({ status: 401, description: `${UNAUTHORIZED}` })
+  @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
   private async list(
     @Query() dto: CalendarListInputDto,
   ): Promise<CalendarListOutputDto> {
