@@ -8,3 +8,4 @@ export const NOTFOUND_PHONE = 'phone';
 export const NOTFOUND_PASSWORD = 'password';
 export const NOTFOUND_FILE = 'file';
 export const NOTFOUND_CALENDAR = 'calendar';
+export const NOTFOUND_USER = 'user';

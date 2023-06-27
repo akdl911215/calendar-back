@@ -7,6 +7,103 @@ export class UsersModel extends BaseCommonCoreDto {
   private phone!: string;
   private refreshToken?: string;
 
+  public setRefreshTokenReIssuance(param: {
+    id: string;
+    appId: string;
+    phone: string;
+  }): void {
+    super.setId(param.id);
+    this.appId = param.appId;
+    this.phone = param.phone;
+  }
+  public getRefreshTokenReIssuance(): {
+    id: string;
+    appId: string;
+    phone: string;
+  } {
+    return {
+      id: super.getId(),
+      appId: this.appId,
+      phone: this.phone,
+    };
+  }
+
+  public setProfile(param: { id: string }): void {
+    super.setId(param.id);
+  }
+  public getProfile(): { id: string } {
+    return {
+      id: super.getId(),
+    };
+  }
+
+  public setLogout(param: { id: string }): void {
+    super.setId(param.id);
+  }
+  public getLogout(): { id: string } {
+    return {
+      id: super.getId(),
+    };
+  }
+
+  public setLogin(param: { appId: string; password: string }): void {
+    this.appId = param.appId;
+    this.password = param.password;
+  }
+  public getLogin(): { appId: string; password: string } {
+    return {
+      appId: this.appId,
+      password: this.password,
+    };
+  }
+
+  public setUpdate(param: {
+    id: string;
+    appId: string;
+    nickname?: string;
+    password?: string;
+    phone?: string;
+  }): void {
+    super.setId(param.id);
+    this.appId = param.appId;
+    this.nickname = param.nickname;
+    this.password = param.password;
+    this.phone = param.phone;
+  }
+  public getUpdate(): {
+    id: string;
+    appId: string;
+    nickname?: string;
+    password?: string;
+    phone?: string;
+  } {
+    return {
+      id: super.getId(),
+      appId: this.appId,
+      nickname: this.nickname,
+      password: this.password,
+      phone: this.phone,
+    };
+  }
+
+  public setInquiry(param: { id: string }): void {
+    super.setId(param.id);
+  }
+  public getInquiry(): { id: string } {
+    return {
+      id: super.getId(),
+    };
+  }
+
+  public setDelete(param: { id: string }): void {
+    super.setId(param.id);
+  }
+  public getDelete(): { id: string } {
+    return {
+      id: super.getId(),
+    };
+  }
+
   public setCreate(param: {
     appId: string;
     phone: string;

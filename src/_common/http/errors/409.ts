@@ -4,3 +4,6 @@
 
 export const REFRESH_TOKEN_MODIFY_FAILED = 'refresh_token';
 export const UPDATE_FAILED = 'update_failed';
+export const ALREADY_NICKNAME = 'already_nickname';
+export const ALREADY_PHONE = 'already_phone';
+export const ALREADY_APP_ID = 'already_app_id';

@@ -1,9 +1,9 @@
-import { UsersDtoModel } from './users.dto.model';
+import { UsersBaseDto } from './users.base.dto';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { BaseOutputDto } from '../../_common/dtos/base.output.dto';
 
 export class UsersCompareCurrentPasswordAndPasswordInputDto extends PickType(
-  UsersDtoModel,
+  UsersBaseDto,
   ['id', 'password'],
 ) {
   @ApiProperty({ type: String, required: true, format: 'password' })

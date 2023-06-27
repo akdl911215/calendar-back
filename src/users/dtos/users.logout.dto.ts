@@ -1,10 +1,11 @@
 import { PickType } from '@nestjs/swagger';
 import { UsersBaseDto } from './users.base.dto';
 import { BaseOutputDto } from '../../_common/dtos/base.output.dto';
-import { Users } from '@prisma/client';
 
-export class UsersInquiryInputDto extends PickType(UsersBaseDto, [
+export class UsersLogoutInputDto extends PickType(UsersBaseDto, [
   'id',
 ] as const) {}
 
-export class UsersInquiryOutputDto extends BaseOutputDto<Users> {}
+export class UsersLogoutOutputDto extends BaseOutputDto<{
+  readonly logout: boolean;
+}> {}

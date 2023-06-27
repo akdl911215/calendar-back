@@ -241,9 +241,9 @@ describe('Calendar Register Process', () => {
         day: registerDto.day,
         month: registerDto.month,
         done: true,
-        createdAt: DATE_TIME,
-        updatedAt: null,
-        deletedAt: null,
+        createdDate: DATE_TIME,
+        updatedDate: null,
+        deletedDate: null,
       };
 
       jest.spyOn(prisma.calendar, 'create').mockResolvedValue(dto);

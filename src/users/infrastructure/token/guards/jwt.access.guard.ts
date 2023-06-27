@@ -16,7 +16,6 @@ export class AccessTokenGuard extends AuthGuard('JWT-ACCESS-TOKEN') {
       throw err || new UnauthorizedException();
     }
 
-    console.log('user : ', user);
     return user;
   }
 }

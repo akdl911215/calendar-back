@@ -1,4 +1,4 @@
-import { IsArray, IsNumber, IsOptional, IsUUID } from 'class-validator';
+import { IsArray, IsNumber, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class BaseOffsetPaginationInputDto {
@@ -29,25 +29,24 @@ export class BaseCursorPaginationInputDto {
   })
   public readonly take!: number;
 
-  @IsUUID()
+  @IsNumber()
   @IsOptional()
   @ApiProperty({
-    type: String,
+    type: Number,
     required: false,
-    default: '',
   })
-  public readonly id?: string;
+  public readonly lastId?: number;
 }
 
-export class BasePaginationOffsetOutputDto<T> {
+export class BaseOffsetPaginationOutputDto<T> {
   @IsNumber()
   public readonly currentPage!: number;
 
   @IsNumber()
-  public readonly resultLastPage!: number;
+  public readonly totalPages!: number;
 
   @IsNumber()
-  public readonly resultTotalPage!: number;
+  public readonly totalTake!: number;
 
   @IsArray()
   public readonly currentList!: T[];

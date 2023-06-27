@@ -6,26 +6,38 @@ import {
   UsersDeleteInputDto,
   UsersDeleteOutputDto,
 } from '../dtos/users.delete.dto';
-import {
-  UsersInquiryInputDto,
-  UsersInquiryOutputDto,
-} from '../dtos/users.inquiry.dto';
 import { UsersListInputDto, UsersListOutputDto } from '../dtos/users.list.dto';
 import {
   UsersUpdateInputDto,
   UsersUpdateOutputDto,
 } from '../dtos/users.update.dto';
+import {
+  UsersLoginInputDto,
+  UsersLoginOutputDto,
+} from '../dtos/users.login.dto';
+import {
+  UsersLogoutInputDto,
+  UsersLogoutOutputDto,
+} from '../dtos/users.logout.dto';
+import {
+  UsersProfileInputDto,
+  UsersProfileOutputDto,
+} from '../dtos/users.profile.dto';
 
 export interface UsersInterface {
   readonly create: (dto: UsersCreateInputDto) => Promise<UsersCreateOutputDto>;
 
   readonly delete: (dto: UsersDeleteInputDto) => Promise<UsersDeleteOutputDto>;
 
-  readonly inquiry: (
-    dto: UsersInquiryInputDto,
-  ) => Promise<UsersInquiryOutputDto>;
-
   readonly list: (dto: UsersListInputDto) => Promise<UsersListOutputDto>;
 
   readonly update: (dto: UsersUpdateInputDto) => Promise<UsersUpdateOutputDto>;
+
+  readonly login: (dto: UsersLoginInputDto) => Promise<UsersLoginOutputDto>;
+
+  readonly logout: (dto: UsersLogoutInputDto) => Promise<UsersLogoutOutputDto>;
+
+  readonly profile: (
+    dto: UsersProfileInputDto,
+  ) => Promise<UsersProfileOutputDto>;
 }

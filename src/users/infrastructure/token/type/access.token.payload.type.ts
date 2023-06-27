@@ -1,4 +1,4 @@
 export type AccessTokenPayloadType = {
   readonly id: string;
-  readonly accountId: string;
+  readonly appId: string;
 };
