@@ -14,8 +14,8 @@ export class UsersLoginOutputDto extends BaseOutputDto<{
   readonly password: string;
   readonly phone: string;
   readonly refreshToken: string | null;
-  readonly createdDate: number;
-  readonly updatedDate: number;
-  readonly deletedDate: number;
+  readonly createdAt: Date;
+  readonly updatedAt: Date | null;
+  readonly deletedAt: Date | null;
   readonly accessToken: string | null;
 }> {}

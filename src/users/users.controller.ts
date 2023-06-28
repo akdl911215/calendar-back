@@ -82,7 +82,6 @@ export class UsersController {
   private async create(
     @Body() dto: UsersCreateInputDto,
   ): Promise<UsersCreateOutputDto> {
-    console.log('dto : ', dto);
     return await this.service.create(dto);
   }
 

@@ -23,7 +23,7 @@ import {
 } from './dtos/users.update.dto';
 import { Users } from '@prisma/client';
 import { errorHandling } from '../_common/dtos/error.handling';
-import { DATE_TIME } from '../_common/dtos/get.date';
+import { DATE } from '../_common/dtos/get.date';
 import { NOTFOUND_USER } from '../_common/http/errors/404';
 import {
   getListOffsetPagination,
@@ -59,7 +59,12 @@ import { AccessTokenPayloadType } from './infrastructure/token/type/access.token
 import { RefreshTokenPayloadType } from './infrastructure/token/type/refresh.token.payload.type';
 
 @Injectable()
-@Dependencies([PrismaService])
+@Dependencies([
+  PrismaService,
+  HashEncodedService,
+  HashDecodedService,
+  TokenService,
+])
 export class UsersRepository
   implements UsersInterface, UsersRefreshTokenReIssuanceInterface
 {
@@ -103,7 +108,6 @@ export class UsersRepository
               nickname,
               password: hashPassword,
               phone,
-              createdDate: DATE_TIME,
             },
           }),
       );
@@ -130,7 +134,7 @@ export class UsersRepository
           await this.prisma.users.update({
             where: { id },
             data: {
-              deletedDate: DATE_TIME,
+              deletedAt: DATE,
             },
           }),
       );
@@ -154,7 +158,7 @@ export class UsersRepository
     const currentList: Users[] = await this.prisma.users.findMany({
       orderBy: [
         {
-          createdDate: 'desc',
+          createdAt: 'desc',
         },
       ],
       skip: pagination.skip,
@@ -218,19 +222,24 @@ export class UsersRepository
     const updatePassword: string =
       password === '' ? userFindByIdAndAppId.password : hashPassword;
 
-    return {
-      response: {
-        id,
-        appId,
-        nickname: updateNickname,
-        phone: updatePhone,
-        password: updatePassword,
-        refreshToken: userFindByIdAndAppId.refreshToken,
-        createdDate: userFindByIdAndAppId.createdDate,
-        deletedDate: userFindByIdAndAppId.deletedDate,
-        updatedDate: userFindByIdAndAppId.updatedDate,
-      },
-    };
+    try {
+      const updateUser: Users = await this.prisma.$transaction(
+        async () =>
+          await this.prisma.users.update({
+            where: { id },
+            data: {
+              nickname: updateNickname,
+              phone: updatePhone,
+              password: updatePassword,
+              updatedAt: DATE,
+            },
+          }),
+      );
+
+      return { response: updateUser };
+    } catch (e: any) {
+      errorHandling(e);
+    }
   }
 
   public async login(entity: UsersLoginInputDto): Promise<UsersLoginOutputDto> {

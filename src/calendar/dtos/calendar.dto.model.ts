@@ -1,5 +1,6 @@
 import {
   IsBoolean,
+  IsDate,
   IsNotEmpty,
   IsNumber,
   IsString,
@@ -16,14 +17,14 @@ export class CalendarDtoModel {
   })
   public id!: string;
 
-  @IsNumber()
-  public createdAt!: number;
+  @IsDate()
+  public createdAt!: Date;
 
-  @IsNumber()
-  public updatedAt!: number;
+  @IsDate()
+  public updatedAt!: Date;
 
-  @IsNumber()
-  public deletedAt?: number;
+  @IsDate()
+  public deletedAt?: Date;
 
   @IsUUID()
   @IsNotEmpty()

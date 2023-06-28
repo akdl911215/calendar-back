@@ -1,12 +1,6 @@
 import { BaseCommonCoreDto } from '../../_common/dtos/base.common.core.dto';
-import {
-  CalendarUpdateInputDto,
-  CalendarUpdateOutputDto,
-} from '../dtos/calendar.update.dto';
-import {
-  CalendarRegisterInputDto,
-  CalendarRegisterOutputDto,
-} from '../dtos/calendar.register.dto';
+import { CalendarUpdateInputDto } from '../dtos/calendar.update.dto';
+import { CalendarRegisterInputDto } from '../dtos/calendar.register.dto';
 import { CalendarListInputDto } from '../dtos/calendar.list.dto';
 import { CalendarInquiryInputDto } from '../dtos/calendar.inquiry.dto';
 import { CalendarDeleteInputDto } from '../dtos/calendar.delete.dto';
@@ -53,9 +47,9 @@ export class CalendarModel extends BaseCommonCoreDto {
     done: boolean;
     month: number;
     day: number;
-    createdAt: number;
-    updatedAt: number;
-    deletedAt: number;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt: Date;
   } {
     return {
       id: super.getId(),

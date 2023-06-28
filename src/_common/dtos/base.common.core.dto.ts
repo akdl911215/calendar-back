@@ -1,17 +1,17 @@
-import { IsNumber, IsUUID } from 'class-validator';
+import { IsDate, IsUUID } from 'class-validator';
 
 export abstract class BaseCommonCoreDto {
   @IsUUID()
   private id!: string;
 
-  @IsNumber()
-  private createdAt!: number;
+  @IsDate()
+  private createdAt!: Date;
 
-  @IsNumber()
-  private updatedAt!: number;
+  @IsDate()
+  private updatedAt!: Date;
 
-  @IsNumber()
-  private deletedAt?: number;
+  @IsDate()
+  private deletedAt?: Date;
 
   public setId(id: string): void {
     this.id = id;
@@ -20,24 +20,24 @@ export abstract class BaseCommonCoreDto {
     return this.id;
   }
 
-  public setCreatedAt(createdAt: number): void {
+  public setCreatedAt(createdAt: Date): void {
     this.createdAt = createdAt;
   }
-  public getCreatedAt(): number {
+  public getCreatedAt(): Date {
     return this.createdAt;
   }
 
-  public setUpdatedAt(updatedAt: number): void {
+  public setUpdatedAt(updatedAt: Date): void {
     this.updatedAt = updatedAt;
   }
-  public getUpdatedAt(): number {
+  public getUpdatedAt(): Date {
     return this.updatedAt;
   }
 
-  public setDeletedAt(deletedAt: number): void {
+  public setDeletedAt(deletedAt: Date): void {
     this.deletedAt = deletedAt;
   }
-  public getDeletedAt(): number {
+  public getDeletedAt(): Date {
     return this.deletedAt;
   }
 }

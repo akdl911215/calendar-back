@@ -24,7 +24,7 @@ import { Calendar } from '@prisma/client';
 import { NOTFOUND_CALENDAR } from '../_common/http/errors/404';
 import { errorHandling } from '../_common/dtos/error.handling';
 import { PrismaService } from '../_common/prisma/prisma.service';
-import { DATE_TIME } from '../_common/dtos/get.date';
+import { DATE } from '../_common/dtos/get.date';
 
 @Injectable()
 @Dependencies([PrismaService])
@@ -49,7 +49,7 @@ export class CalendarRepository implements CalendarInterface {
           return await this.prisma.calendar.update({
             where: { id: authorIdAndTodoFindByCalendar.id },
             data: {
-              updatedDate: DATE_TIME,
+              updatedAt: DATE,
             },
           });
         },
@@ -99,7 +99,6 @@ export class CalendarRepository implements CalendarInterface {
               authorId,
               month,
               day,
-              createdDate: DATE_TIME,
             },
           }),
       );
@@ -113,7 +112,7 @@ export class CalendarRepository implements CalendarInterface {
   public async update(
     dto: CalendarUpdateInputDto,
   ): Promise<CalendarUpdateOutputDto> {
-    const { id, month, day, todo, date, done, authorId, updatedAt } = dto;
+    const { id, month, day, todo, date, done, authorId } = dto;
 
     const idFindByCalendar: Calendar = await this.prisma.calendar.findFirst({
       where: { AND: [{ id }, { date }] },
@@ -141,7 +140,7 @@ export class CalendarRepository implements CalendarInterface {
               todo: updateTodo,
               authorId: updateAuthorId,
               done,
-              updatedDate: DATE_TIME,
+              updatedAt: DATE,
             },
           });
         },
