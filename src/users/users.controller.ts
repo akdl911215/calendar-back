@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Inject,
+  Param,
   Patch,
   Post,
   Query,
@@ -51,6 +52,8 @@ import {
   UsersLogoutOutputDto,
 } from './dtos/users.logout.dto';
 import { RefreshTokenGuard } from './infrastructure/token/guards/jwt.refresh.guard';
+import { UsersModule } from './users.module';
+import { UsersModel } from './entites/users.model';
 
 @Controller('users')
 export class UsersController {
@@ -100,7 +103,6 @@ export class UsersController {
   })
   @ApiResponse({ status: 400, description: `` })
   @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
-  @ApiBody({ type: UsersDeleteInputDto })
   private async delete(
     @User() user: Pick<UsersBaseDto, 'id'>,
   ): Promise<UsersDeleteOutputDto> {
@@ -109,6 +111,7 @@ export class UsersController {
   }
 
   @Get('/')
+  @ApiBearerAuth('access_token')
   @ApiConsumes('application/x-www-form-urlencoded')
   @ApiOperation({
     summary: 'USERS PROFILE INQUIRY API',
@@ -117,12 +120,11 @@ export class UsersController {
   @ApiResponse({ status: 200, description: `${TWO_HUNDRED_OK}` })
   @ApiResponse({ status: 400, description: `` })
   @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
-  @ApiBody({ type: UsersProfileInputDto })
   private async profile(
     @User() user: Pick<UsersBaseDto, 'id'>,
   ): Promise<UsersProfileOutputDto> {
-    const { id } = user;
-    return await this.service.profile({ id });
+    console.log('user : ', user);
+    return await this.service.profile({ id: user.id });
   }
 
   @UseGuards(AccessTokenGuard)
@@ -139,9 +141,16 @@ export class UsersController {
   @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
   @ApiBody({ type: UsersUpdateInputDto })
   private async update(
-    @Body() dto: UsersUpdateInputDto,
+    @Body()
+    dto: Pick<UsersUpdateInputDto, 'appId' | 'nickname' | 'password' | 'phone'>,
+    @User() user: UsersBaseDto,
   ): Promise<UsersUpdateOutputDto> {
-    return await this.service.update(dto);
+    console.log('dto : ', dto);
+    console.log('iuser : ', user);
+    return await this.service.update({
+      ...dto,
+      id: user.id,
+    });
   }
 
   @Post('/login')

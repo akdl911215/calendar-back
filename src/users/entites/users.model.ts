@@ -7,6 +7,13 @@ export class UsersModel extends BaseCommonCoreDto {
   private phone!: string;
   private refreshToken?: string;
 
+  public setUsersFindById(param: { id: string }): void {
+    super.setId(param.id);
+  }
+  public getUsersFindById(): { id: string } {
+    return { id: super.getId() };
+  }
+
   public setRefreshTokenReIssuance(param: {
     id: string;
     appId: string;

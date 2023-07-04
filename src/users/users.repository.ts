@@ -57,6 +57,11 @@ import {
 import { NO_MATCH_APP_ID, NO_MATCH_PASSWORD } from '../_common/http/errors/400';
 import { AccessTokenPayloadType } from './infrastructure/token/type/access.token.payload.type';
 import { RefreshTokenPayloadType } from './infrastructure/token/type/refresh.token.payload.type';
+import { UsersFindByInterface } from './interfaces/users.find.by.interface';
+import {
+  UsersFindByIdInputDto,
+  UsersFindByIdOutputDto,
+} from './dtos/users.find.by.id.dto';
 
 @Injectable()
 @Dependencies([
@@ -66,7 +71,10 @@ import { RefreshTokenPayloadType } from './infrastructure/token/type/refresh.tok
   TokenService,
 ])
 export class UsersRepository
-  implements UsersInterface, UsersRefreshTokenReIssuanceInterface
+  implements
+    UsersInterface,
+    UsersRefreshTokenReIssuanceInterface,
+    UsersFindByInterface
 {
   constructor(
     private readonly prisma: PrismaService,
@@ -126,7 +134,7 @@ export class UsersRepository
     const userFindById: Users = await this.prisma.users.findUnique({
       where: { id },
     });
-    if (!userFindById) throw new NotFoundException();
+    if (!userFindById) throw new NotFoundException(NOTFOUND_USER);
 
     try {
       const deletedAtUser: Users = await this.prisma.$transaction(
@@ -194,7 +202,7 @@ export class UsersRepository
 
       if (
         userFindByIdAndAppId.nickname !== nickname &&
-        userFindByNickname.nickname === nickname
+        userFindByNickname?.nickname === nickname
       ) {
         throw new ConflictException(ALREADY_NICKNAME);
       }
@@ -209,7 +217,7 @@ export class UsersRepository
 
       if (
         userFindByIdAndAppId.phone !== phone &&
-        userFindByPhone.phone === phone
+        userFindByPhone?.phone === phone
       ) {
         throw new ConflictException(ALREADY_PHONE);
       }
@@ -302,7 +310,7 @@ export class UsersRepository
     const userFindById: Users = await this.prisma.users.findUnique({
       where: { id },
     });
-    if (userFindById) throw new NotFoundException(NOTFOUND_USER);
+    if (!userFindById) throw new NotFoundException(NOTFOUND_USER);
 
     try {
       const logoutUsers: Users = await this.prisma.$transaction(
@@ -369,5 +377,18 @@ export class UsersRepository
     } catch (e: any) {
       errorHandling(e);
     }
+  }
+
+  public async usersFindById(
+    entity: UsersFindByIdInputDto,
+  ): Promise<UsersFindByIdOutputDto> {
+    const { id } = entity;
+
+    const userFindById: Users = await this.prisma.users.findUnique({
+      where: { id },
+    });
+    if (!userFindById) throw new NotFoundException(NOTFOUND_USER);
+
+    return { response: userFindById };
   }
 }

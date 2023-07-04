@@ -4,12 +4,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersRepository } from './users.repository';
 import { UsersCreateInputDto } from './dtos/users.create.dto';
 import { jestErrorHandling } from '../_common/dtos/jest.error.handling';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, ConflictException } from '@nestjs/common';
 import { HashEncodedService } from './infrastructure/bcrypt/hash.encoded.service';
 import { HashDecodedService } from './infrastructure/bcrypt/hash.decoded.service';
 import { TokenService } from './infrastructure/token/token.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { DATE } from '../_common/dtos/get.date';
 
 describe('Users Create Process', () => {
   let service: UsersService;
@@ -194,17 +195,73 @@ describe('Users Create Process', () => {
       } catch (e: any) {
         console.log(e);
 
-        // const { status, response } = jestErrorHandling(e);
-        // if (e instanceof BadRequestException) {
-        //   expect(status).toStrictEqual(400);
-        //
-        //   console.log(response);
-        //   expect(response).toStrictEqual({
-        //     statusCode: 400,
-        //     message: 'nickname_required',
-        //     error: 'Bad Request',
-        //   });
-        // }
+        const { status, response } = jestErrorHandling(e);
+        if (e instanceof ConflictException) {
+          expect(status).toStrictEqual(409);
+
+          console.log(response);
+          expect(response).toStrictEqual({
+            statusCode: 409,
+            message: 'already_app_id',
+            error: 'Conflict',
+          });
+        }
+      }
+    });
+
+    it('phone conflict, so it fails', async () => {
+      const dto: UsersCreateInputDto = {
+        appId: 'master2',
+        password: 'qwer!234',
+        phone: '01050939902',
+        nickname: 'masterNick',
+        confirmPassword: '',
+      };
+
+      try {
+        await service.create(dto);
+      } catch (e: any) {
+        console.log(e);
+
+        const { status, response } = jestErrorHandling(e);
+        if (e instanceof ConflictException) {
+          expect(status).toStrictEqual(409);
+
+          console.log(response);
+          expect(response).toStrictEqual({
+            statusCode: 409,
+            message: 'already_phone',
+            error: 'Conflict',
+          });
+        }
+      }
+    });
+
+    it('nickname conflict, so it fails', async () => {
+      const dto: UsersCreateInputDto = {
+        appId: 'master2',
+        password: 'qwer!234',
+        phone: '01050939901',
+        nickname: 'masterNick',
+        confirmPassword: '',
+      };
+
+      try {
+        await service.create(dto);
+      } catch (e: any) {
+        console.log(e);
+
+        const { status, response } = jestErrorHandling(e);
+        if (e instanceof ConflictException) {
+          expect(status).toStrictEqual(409);
+
+          console.log(response);
+          expect(response).toStrictEqual({
+            statusCode: 409,
+            message: 'already_nickname',
+            error: 'Conflict',
+          });
+        }
       }
     });
 
@@ -217,8 +274,28 @@ describe('Users Create Process', () => {
         confirmPassword: '',
       };
 
+      const createDto = {
+        id: '',
+        appId: dto.appId,
+        password: dto.password,
+        phone: dto.phone,
+        nickname: dto.nickname,
+        refreshToken: null,
+        createdAt: DATE,
+        updatedAt: DATE,
+        deletedAt: null,
+      };
+
+      jest.spyOn(prisma.users, 'findUnique').mockResolvedValue(null);
+      const createMock = jest
+        .spyOn(prisma.users, 'create')
+        .mockResolvedValue(createDto);
+
       const { response } = await service.create(dto);
       console.log(response);
+
+      expect(createMock).toHaveBeenCalledTimes(1);
+      expect(response).toStrictEqual(createDto);
     });
     //
   });

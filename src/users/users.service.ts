@@ -41,10 +41,16 @@ import {
   UsersRefreshTokenReIssuanceInputDto,
   UsersRefreshTokenReIssuanceOutputDto,
 } from './dtos/user.refresh.token.re.issuance.dto';
+import { UsersFindByInterface } from './interfaces/users.find.by.interface';
+import {
+  UsersFindByIdInputDto,
+  UsersFindByIdOutputDto,
+} from './dtos/users.find.by.id.dto';
 
 interface UsersMergeInterface
   extends UsersInterface,
-    UsersRefreshTokenReIssuanceInterface {}
+    UsersRefreshTokenReIssuanceInterface,
+    UsersFindByInterface {}
 
 @Injectable()
 export class UsersService implements UsersMergeInterface {
@@ -146,5 +152,17 @@ export class UsersService implements UsersMergeInterface {
     user.setRefreshTokenReIssuance(dto);
 
     return await this.repository.refresh(user.getRefreshTokenReIssuance());
+  }
+
+  public async usersFindById(
+    dto: UsersFindByIdInputDto,
+  ): Promise<UsersFindByIdOutputDto> {
+    const { id } = dto;
+    if (!id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
+
+    const user = new UsersModel();
+    user.setUsersFindById(dto);
+
+    return await this.repository.usersFindById(user.getUsersFindById());
   }
 }

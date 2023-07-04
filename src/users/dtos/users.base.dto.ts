@@ -3,6 +3,12 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class UsersBaseDto {
   @IsUUID()
+  @ApiProperty({
+    type: String,
+    default: '',
+    required: true,
+    description: 'UUID',
+  })
   public id!: string;
 
   @IsNumber()

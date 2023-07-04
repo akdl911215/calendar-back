@@ -5,7 +5,10 @@ import { ConfigService } from '@nestjs/config';
 import { Users } from '@prisma/client';
 import { UsersFindByInterface } from '../../../interfaces/users.find.by.interface';
 import { BaseOutputDto } from '../../../../_common/dtos/base.output.dto';
-import { StrategyPayloadIdInputDto } from '../../../dtos/strategy.payload.id.input.dto';
+import {
+  StrategyPayloadIdInputDto,
+  StrategyPayloadOutputDto,
+} from '../../../dtos/strategy.payload.id.input.dto';
 
 @Injectable()
 export class AccessTokenStrategy extends PassportStrategy(
@@ -26,7 +29,7 @@ export class AccessTokenStrategy extends PassportStrategy(
 
   async validate({
     id,
-  }: StrategyPayloadIdInputDto): Promise<BaseOutputDto<Users>> {
+  }: StrategyPayloadIdInputDto): Promise<StrategyPayloadOutputDto> {
     const user = await this.service.usersFindById({ id });
     return user;
   }

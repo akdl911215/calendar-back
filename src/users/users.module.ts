@@ -12,9 +12,7 @@ import { UsersCompareCurrentPasswordAndPasswordRepository } from './infrastructu
 
 @Module({
   imports: [TokenModule],
-  controllers: [
-    // UsersController
-  ],
+  controllers: [UsersController],
   providers: [
     // infrastructure
     PrismaService,
