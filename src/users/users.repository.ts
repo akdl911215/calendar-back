@@ -164,6 +164,7 @@ export class UsersRepository
     });
 
     const currentList: Users[] = await this.prisma.users.findMany({
+      where: { deletedAt: null },
       orderBy: [
         {
           createdAt: 'desc',

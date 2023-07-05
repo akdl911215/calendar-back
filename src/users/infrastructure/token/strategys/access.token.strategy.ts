@@ -2,9 +2,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Users } from '@prisma/client';
 import { UsersFindByInterface } from '../../../interfaces/users.find.by.interface';
-import { BaseOutputDto } from '../../../../_common/dtos/base.output.dto';
 import {
   StrategyPayloadIdInputDto,
   StrategyPayloadOutputDto,

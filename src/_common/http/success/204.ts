@@ -3,4 +3,4 @@
 // (리소스를 새로 생성한 경우 201 Created) 입니다
 
 export const TWO_HUNDRED_FOUR_DELETE_SUCCESS =
-  'TWO_HUNDRED_FOUR_DELETE_SUCCESS';
+  'two_hundred_four_delete_success';

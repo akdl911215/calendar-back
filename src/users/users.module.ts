@@ -21,6 +21,7 @@ import { UsersCompareCurrentPasswordAndPasswordRepository } from './infrastructu
 
     // service
     { provide: 'SERVICE', useClass: UsersService },
+    { provide: 'REFRESH_TOKEN_SERVICE', useClass: UsersService },
     { provide: 'HASH_ENCODED', useClass: HashEncodedService },
     { provide: 'HASH_DECODED', useClass: HashDecodedService },
 

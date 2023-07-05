@@ -8,17 +8,10 @@ export class UsersUpdateInputDto {
   public id!: string;
 
   @IsString()
-  @ApiProperty({
-    type: String,
-    default: '',
-    required: false,
-    description: '앱 아이디',
-  })
-  @IsOptional()
   @Matches(/^[A-za-z0-9ㄱ-ㅎㅏ-ㅣ가-힣]{2,12}$/, {
     message: 'ID은 2자리 이상 12자리 이하입니다.',
   })
-  public appId?: string;
+  public appId!: string;
 
   @IsString()
   @ApiProperty({
