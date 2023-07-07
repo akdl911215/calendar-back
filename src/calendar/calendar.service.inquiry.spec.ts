@@ -3,7 +3,7 @@ import { PrismaService } from '../_common/prisma/prisma.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CalendarRepository } from './calendar.repository';
 import { CalendarInquiryInputDto } from './dtos/calendar.inquiry.dto';
-import { DATE_TIME } from '../_common/dtos/get.date';
+import { DATE } from '../_common/dtos/get.date';
 import { Calendar } from '@prisma/client';
 import { BadRequestException } from '@nestjs/common';
 import { jestErrorHandling } from '../_common/dtos/jest.error.handling';
@@ -29,7 +29,8 @@ describe('Calendar Inquiry Process', () => {
     it('author-id empty, so it fails', async () => {
       const dto: CalendarInquiryInputDto = {
         authorId: '',
-        date: 0,
+        month: 0,
+        day: 0,
       };
 
       try {
@@ -55,7 +56,8 @@ describe('Calendar Inquiry Process', () => {
     it('date < 0, so it fails', async () => {
       const dto: CalendarInquiryInputDto = {
         authorId: '8654f7b1-d588-4c2b-87a3-124365f13cc1',
-        date: -1,
+        month: 0,
+        day: 0,
       };
 
       try {
@@ -81,19 +83,20 @@ describe('Calendar Inquiry Process', () => {
     it('calendar inquiry success', async () => {
       const inquiryDto: CalendarInquiryInputDto = {
         authorId: '8654f7b1-d588-4c2b-87a3-124365f13cc1',
-        date: 0,
+        month: 0,
+        day: 0,
       };
 
       const dto = {
         id: '8654f7b1-d588-4c2b-87a3-124365f13cc1',
         authorId: inquiryDto.authorId,
         todo: '',
-        date: inquiryDto.date,
+        date: '',
         day: 0,
         month: 0,
         done: true,
-        createdAt: DATE_TIME,
-        updatedAt: null,
+        createdAt: DATE,
+        updatedAt: DATE,
         deletedAt: null,
       };
 

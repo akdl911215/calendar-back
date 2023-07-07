@@ -64,10 +64,10 @@ export class CalendarRepository implements CalendarInterface {
   public async inquiry(
     dto: CalendarInquiryInputDto,
   ): Promise<CalendarInquiryOutputDto> {
-    const { authorId, date } = dto;
+    const { authorId, month, day } = dto;
     const authorIdAndDateFindByCalendar: Calendar[] =
       await this.prisma.calendar.findMany({
-        where: { AND: [{ authorId }, { date }] },
+        where: { AND: [{ authorId }, { month }, { day }] },
       });
 
     return { response: { inquiryList: authorIdAndDateFindByCalendar } };
@@ -78,7 +78,7 @@ export class CalendarRepository implements CalendarInterface {
 
     const authorIdAndMonthFindByCalendar: Calendar[] =
       await this.prisma.calendar.findMany({
-        where: { AND: [{ authorId }, { month }] },
+        where: { AND: [{ authorId }, { month: Number(month) }] },
       });
 
     return { response: { monthList: authorIdAndMonthFindByCalendar } };
@@ -87,7 +87,7 @@ export class CalendarRepository implements CalendarInterface {
   public async register(
     dto: CalendarRegisterInputDto,
   ): Promise<CalendarRegisterOutputDto> {
-    const { todo, date, authorId, month, day } = dto;
+    const { todo, authorId, month, day } = dto;
 
     try {
       const registerCalendar: Calendar = await this.prisma.$transaction(
@@ -95,10 +95,10 @@ export class CalendarRepository implements CalendarInterface {
           await this.prisma.calendar.create({
             data: {
               todo,
-              date,
+              date: String(DATE),
               authorId,
-              month,
-              day,
+              month: Number(month),
+              day: Number(day),
             },
           }),
       );
@@ -112,22 +112,16 @@ export class CalendarRepository implements CalendarInterface {
   public async update(
     dto: CalendarUpdateInputDto,
   ): Promise<CalendarUpdateOutputDto> {
-    const { id, month, day, todo, date, done, authorId } = dto;
+    const { id, month, day, todo, done, authorId } = dto;
 
     const idFindByCalendar: Calendar = await this.prisma.calendar.findFirst({
-      where: { AND: [{ id }, { date }] },
+      where: {
+        AND: [{ id }, { month: Number(month) }, { day: Number(day) }],
+      },
     });
     if (!idFindByCalendar) throw new NotFoundException(NOTFOUND_CALENDAR);
 
-    const updateMonth: number =
-      month < 1 || month > 12 ? idFindByCalendar.month : month;
-
-    const updateDay: number = day < 1 || day > 31 ? idFindByCalendar.day : day;
-
     const updateTodo: string = todo === '' ? idFindByCalendar.todo : todo;
-
-    const updateAuthorId: string =
-      authorId === '' ? idFindByCalendar.authorId : authorId;
 
     try {
       const updateCalendar: Calendar = await this.prisma.$transaction(
@@ -135,10 +129,10 @@ export class CalendarRepository implements CalendarInterface {
           return await this.prisma.calendar.update({
             where: { id },
             data: {
-              month: updateMonth,
-              day: updateDay,
+              month: Number(month),
+              day: Number(day),
               todo: updateTodo,
-              authorId: updateAuthorId,
+              authorId,
               done,
               updatedAt: DATE,
             },

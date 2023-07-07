@@ -12,13 +12,13 @@ export class UsersBaseDto {
   public id!: string;
 
   @IsNumber()
-  public createdDate!: number;
+  public createdAt!: number;
 
   @IsNumber()
-  public updatedDate!: number;
+  public updatedAt!: number;
 
   @IsNumber()
-  public deletedDate?: number;
+  public deletedAt?: number;
 
   @IsString()
   @ApiProperty({

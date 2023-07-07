@@ -2,7 +2,7 @@ import { CalendarService } from './calendar.service';
 import { PrismaService } from '../_common/prisma/prisma.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CalendarRegisterInputDto } from './dtos/calendar.register.dto';
-import { DATE_TIME } from '../_common/dtos/get.date';
+import { DATE } from '../_common/dtos/get.date';
 import { CalendarRepository } from './calendar.repository';
 import { jestErrorHandling } from '../_common/dtos/jest.error.handling';
 import { BadRequestException } from '@nestjs/common';
@@ -32,7 +32,6 @@ describe('Calendar Register Process', () => {
       const dto: CalendarRegisterInputDto = {
         authorId: '',
         todo: '',
-        date: 0,
         month: 0,
         day: 0,
       };
@@ -60,7 +59,6 @@ describe('Calendar Register Process', () => {
       const dto: CalendarRegisterInputDto = {
         authorId: '8654f7b1-d588-4c2b-87a3-124365f13cc1',
         todo: '',
-        date: 0,
         month: 0,
         day: 0,
       };
@@ -88,7 +86,6 @@ describe('Calendar Register Process', () => {
       const dto: CalendarRegisterInputDto = {
         authorId: '8654f7b1-d588-4c2b-87a3-124365f13cc1',
         todo: 'todo-test',
-        date: -1,
         month: 0,
         day: 0,
       };
@@ -116,7 +113,6 @@ describe('Calendar Register Process', () => {
       const dto: CalendarRegisterInputDto = {
         authorId: '8654f7b1-d588-4c2b-87a3-124365f13cc1',
         todo: 'todo-test',
-        date: 0,
         month: 0,
         day: 0,
       };
@@ -144,7 +140,6 @@ describe('Calendar Register Process', () => {
       const dto: CalendarRegisterInputDto = {
         authorId: '8654f7b1-d588-4c2b-87a3-124365f13cc1',
         todo: 'todo-test',
-        date: 0,
         month: 0,
         day: 0,
       };
@@ -172,7 +167,6 @@ describe('Calendar Register Process', () => {
       const dto: CalendarRegisterInputDto = {
         authorId: '8654f7b1-d588-4c2b-87a3-124365f13cc1',
         todo: 'todo-test',
-        date: 0,
         month: 1,
         day: 0,
       };
@@ -200,7 +194,6 @@ describe('Calendar Register Process', () => {
       const dto: CalendarRegisterInputDto = {
         authorId: '8654f7b1-d588-4c2b-87a3-124365f13cc1',
         todo: 'todo-test',
-        date: 0,
         month: 1,
         day: 32,
       };
@@ -229,7 +222,6 @@ describe('Calendar Register Process', () => {
         authorId: '8654f7b1-d588-4c2b-87a3-124365f13cc1',
         todo: 'todo',
         day: 31,
-        date: 12345,
         month: 5,
       };
 
@@ -237,13 +229,13 @@ describe('Calendar Register Process', () => {
         id: '8654f7b1-d588-4c2b-87a3-124365f13cc1',
         authorId: registerDto.authorId,
         todo: registerDto.todo,
-        date: registerDto.date,
+        date: '',
         day: registerDto.day,
         month: registerDto.month,
         done: true,
-        createdDate: DATE_TIME,
-        updatedDate: null,
-        deletedDate: null,
+        createdAt: DATE,
+        updatedAt: DATE,
+        deletedAt: null,
       };
 
       jest.spyOn(prisma.calendar, 'create').mockResolvedValue(dto);

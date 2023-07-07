@@ -1,12 +1,11 @@
 import { PickType } from '@nestjs/swagger';
-import { CalendarDtoModel } from './calendar.dto.model';
+import { CalendarBaseDto } from './calendar.base.dto';
 import { BaseOutputDto } from '../../_common/dtos/base.output.dto';
 import { Calendar } from '@prisma/client';
 
-export class CalendarRegisterInputDto extends PickType(CalendarDtoModel, [
+export class CalendarRegisterInputDto extends PickType(CalendarBaseDto, [
   'todo',
   'authorId',
-  'date',
   'month',
   'day',
 ] as const) {}

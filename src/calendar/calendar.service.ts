@@ -52,7 +52,8 @@ export class CalendarService implements CalendarInterface {
     dto: CalendarInquiryInputDto,
   ): Promise<CalendarInquiryOutputDto> {
     if (!dto?.authorId) throw new BadRequestException(AUTHOR_ID_REQUIRED);
-    if (dto?.date < 0) throw new BadRequestException(DATE_REQUIRED);
+    if (dto?.month < 0) throw new BadRequestException(DATE_REQUIRED);
+    if (dto?.day < 0) throw new BadRequestException(DAY_REQUIRED);
 
     const calendar = new CalendarModel();
     calendar.setInquiry(dto);
@@ -75,7 +76,6 @@ export class CalendarService implements CalendarInterface {
   ): Promise<CalendarRegisterOutputDto> {
     if (!dto?.authorId) throw new BadRequestException(AUTHOR_ID_REQUIRED);
     if (!dto?.todo) throw new BadRequestException(TODO_REQUIRED);
-    if (dto?.date < 0) throw new BadRequestException(DATE_REQUIRED);
     if (dto?.month < 1 || dto?.month > 12)
       throw new BadRequestException(MONTH_REQUIRED);
     if (dto?.day < 1 || dto?.day > 31)
@@ -91,7 +91,7 @@ export class CalendarService implements CalendarInterface {
     dto: CalendarUpdateInputDto,
   ): Promise<CalendarUpdateOutputDto> {
     if (!dto?.id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
-    if (dto?.date < 0) throw new BadRequestException(DATE_REQUIRED);
+    if (!dto?.authorId) throw new BadRequestException(AUTHOR_ID_REQUIRED);
     if (dto?.month < 1 || dto?.month > 12)
       throw new BadRequestException(MONTH_REQUIRED);
     if (dto?.day < 1 || dto?.day > 31)

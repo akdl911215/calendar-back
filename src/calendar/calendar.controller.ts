@@ -6,8 +6,10 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiConsumes,
   ApiOperation,
@@ -40,12 +42,23 @@ import {
   MONTH_REQUIRED,
   TODO_REQUIRED,
   TOKEN_NOT_EXIST,
+  UNIQUE_ID_REQUIRED,
 } from '../_common/http/errors/400';
 import { UNAUTHORIZED } from '../_common/http/errors/401';
 import { TWO_HUNDRED_OK } from '../_common/http/success/200';
+import {
+  CalendarUpdateInputDto,
+  CalendarUpdateOutputDto,
+} from './dtos/calendar.update.dto';
+import { User } from '../users/infrastructure/decorator/user.decorator';
+import { UsersBaseDto } from '../users/dtos/users.base.dto';
+import { AccessTokenGuard } from '../users/infrastructure/token/guards/jwt.access.guard';
+import { NOTFOUND_CALENDAR } from '../_common/http/errors/404';
 
 @ApiTags('calendar')
 @Controller('calendar')
+@UseGuards(AccessTokenGuard)
+@ApiBearerAuth('access_token')
 export class CalendarController {
   constructor(@Inject('SERVICE') private readonly service: CalendarInterface) {}
 
@@ -68,12 +81,14 @@ export class CalendarController {
   })
   private async register(
     @Body()
-    dto: Pick<
-      CalendarRegisterInputDto,
-      'authorId' | 'date' | 'todo' | 'month' | 'day'
-    >,
+    dto: Pick<CalendarRegisterInputDto, 'todo' | 'month' | 'day'>,
+    @User() user: Pick<UsersBaseDto, 'id'>,
   ): Promise<CalendarRegisterOutputDto> {
-    return await this.service.register(dto);
+    const { id } = user;
+    return await this.service.register({
+      ...dto,
+      authorId: id,
+    });
   }
 
   @Patch('/delete')
@@ -97,6 +112,34 @@ export class CalendarController {
     @Body() dto: Pick<CalendarDeleteInputDto, 'authorId' | 'todo'>,
   ): Promise<CalendarDeleteOutputDto> {
     return await this.service.delete(dto);
+  }
+
+  @Patch('/update')
+  @ApiConsumes('application/x-www-form-urlencoded')
+  @ApiOperation({
+    summary: 'CALENDAR UPDATE API',
+    description: '캘린더 업데이트 절차',
+  })
+  @ApiResponse({ status: 200, description: `${TWO_HUNDRED_OK}` })
+  @ApiResponse({
+    status: 400,
+    description: `${TOKEN_NOT_EXIST}, ${UNIQUE_ID_REQUIRED}, ${AUTHOR_ID_REQUIRED}, ${MONTH_REQUIRED}, ${DAY_REQUIRED}`,
+  })
+  @ApiResponse({ status: 401, description: `${UNAUTHORIZED}` })
+  @ApiResponse({ status: 404, description: `${NOTFOUND_CALENDAR}` })
+  @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
+  @ApiBody({
+    type: CalendarUpdateInputDto,
+    description: '캘린더 업데이트 절차에 필요한 값',
+  })
+  private async update(
+    @Body()
+    dto: Pick<CalendarUpdateInputDto, 'todo' | 'done' | 'id' | 'month' | 'day'>,
+    @User() user: Pick<UsersBaseDto, 'id'>,
+  ): Promise<CalendarUpdateOutputDto> {
+    const { id } = user;
+
+    return await this.service.update({ ...dto, authorId: id });
   }
 
   @Get('/')
@@ -132,8 +175,13 @@ export class CalendarController {
   @ApiResponse({ status: 401, description: `${UNAUTHORIZED}` })
   @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
   private async list(
-    @Query() dto: CalendarListInputDto,
+    @Query() dto: Pick<CalendarListInputDto, 'month'>,
+    @User() user: Pick<UsersBaseDto, 'id'>,
   ): Promise<CalendarListOutputDto> {
-    return await this.service.list(dto);
+    const { id } = user;
+    return await this.service.list({
+      ...dto,
+      authorId: id,
+    });
   }
 }

@@ -7,84 +7,58 @@ import { CalendarDeleteInputDto } from '../dtos/calendar.delete.dto';
 
 export class CalendarModel extends BaseCommonCoreDto {
   private authorId!: string;
-  private date!: number;
+  private date!: string;
   private todo!: string;
   private done!: boolean;
   private month!: number;
   private day!: number;
 
   public setUpdate(param: CalendarUpdateInputDto): void {
-    const {
-      id,
-      authorId,
-      date,
-      todo,
-      done,
-      month,
-      day,
-      createdAt,
-      updatedAt,
-      deletedAt,
-    } = param;
+    const { id, authorId, todo, done, month, day } = param;
 
     this.setId(id);
     this.authorId = authorId;
-    this.date = date;
     this.todo = todo;
     this.done = done;
     this.month = month;
     this.day = day;
-    super.setCreatedAt(createdAt);
-    super.setUpdatedAt(updatedAt);
-    super.setDeletedAt(deletedAt);
   }
 
   public getUpdate(): {
     id: string;
     authorId: string;
-    date: number;
     todo: string;
     done: boolean;
     month: number;
     day: number;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date;
   } {
     return {
       id: super.getId(),
       authorId: this.authorId,
-      date: this.date,
       todo: this.todo,
       done: this.done,
       month: this.month,
       day: this.day,
-      createdAt: super.getCreatedAt(),
-      updatedAt: super.getUpdatedAt(),
-      deletedAt: super.getDeletedAt(),
     };
   }
 
   public setRegister(param: CalendarRegisterInputDto): void {
-    const { authorId, todo, month, day, date } = param;
+    const { authorId, todo, month, day } = param;
 
     this.authorId = authorId;
     this.todo = todo;
     this.month = month;
     this.day = day;
-    this.date = date;
   }
   public getRegister(): {
     authorId: string;
     todo: string;
-    date: number;
     month: number;
     day: number;
   } {
     return {
       authorId: this.authorId,
       todo: this.todo,
-      date: this.date,
       month: this.month,
       day: this.day,
     };
@@ -104,15 +78,17 @@ export class CalendarModel extends BaseCommonCoreDto {
   }
 
   public setInquiry(param: CalendarInquiryInputDto): void {
-    const { authorId, date } = param;
+    const { authorId, month, day } = param;
 
     this.authorId = authorId;
-    this.date = date;
+    this.month = month;
+    this.day = day;
   }
-  public getInquiry(): { authorId: string; date: number } {
+  public getInquiry(): { authorId: string; month: number; day: number } {
     return {
       authorId: this.authorId,
-      date: this.date,
+      month: this.month,
+      day: this.day,
     };
   }
 
