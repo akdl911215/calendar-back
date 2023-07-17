@@ -84,6 +84,7 @@ export class UsersController {
     description: `${TAKE_REQUIRED}, ${PAGE_REQUIRED}`,
   })
   @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
+  @UseInterceptors(PasswordCheckingInterceptor)
   private async list(
     @Query() dto: UsersListInputDto,
   ): Promise<UsersListOutputDto> {

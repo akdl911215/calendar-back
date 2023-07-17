@@ -163,7 +163,7 @@ export class UsersRepository
       totalTake,
     });
 
-    const currentList: Users[] = await this.prisma.users.findMany({
+    const list: Users[] = await this.prisma.users.findMany({
       where: { deletedAt: null },
       orderBy: [
         {
@@ -172,6 +172,16 @@ export class UsersRepository
       ],
       skip: pagination.skip,
       take: pagination.take,
+    });
+
+    const currentList = list.map((el) => {
+      return {
+        id: el.id,
+        appId: el.appId,
+        nickname: el.nickname,
+        phone: el.phone,
+        createdAt: el.createdAt,
+      };
     });
 
     return {
