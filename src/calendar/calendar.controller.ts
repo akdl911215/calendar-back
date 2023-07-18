@@ -20,11 +20,13 @@ import {
 import { CalendarInterface } from './interfaces/calendar.interface';
 import {
   CalendarRegisterInputDto,
+  CalendarRegisterBodyInputDto,
   CalendarRegisterOutputDto,
 } from './dtos/calendar.register.dto';
 import { CREATE_SUCCESS } from '../_common/http/success/201';
 import { INTERNAL_SERVER_ERROR } from '../_common/http/errors/500';
 import {
+  CalendarDeleteBodyInputDto,
   CalendarDeleteInputDto,
   CalendarDeleteOutputDto,
 } from './dtos/calendar.delete.dto';
@@ -33,6 +35,7 @@ import {
   CalendarInquiryOutputDto,
 } from './dtos/calendar.inquiry.dto';
 import {
+  CalendarListBodyInputDto,
   CalendarListInputDto,
   CalendarListOutputDto,
 } from './dtos/calendar.list.dto';
@@ -48,6 +51,7 @@ import {
 import { UNAUTHORIZED } from '../_common/http/errors/401';
 import { TWO_HUNDRED_OK } from '../_common/http/success/200';
 import {
+  CalendarUpdateBodyInputDto,
   CalendarUpdateInputDto,
   CalendarUpdateOutputDto,
 } from './dtos/calendar.update.dto';
@@ -56,6 +60,7 @@ import { UsersBaseDto } from '../users/dtos/users.base.dto';
 import { AccessTokenGuard } from '../users/infrastructure/token/guards/jwt.access.guard';
 import { NOTFOUND_CALENDAR } from '../_common/http/errors/404';
 import { DATE_DAY, DATE_MONTH, DATE_YEAR } from '../_common/dtos/get.date';
+import { CalendarBaseDto } from './dtos/calendar.base.dto';
 
 @ApiTags('calendar')
 @Controller('calendar')
@@ -83,10 +88,11 @@ export class CalendarController {
   })
   private async register(
     @Body()
-    dto: Pick<CalendarRegisterInputDto, 'todo' | 'month' | 'day'>,
+    dto: CalendarRegisterBodyInputDto,
     @User() user: Pick<UsersBaseDto, 'id'>,
   ): Promise<CalendarRegisterOutputDto> {
     const { id } = user;
+
     return await this.service.register({
       ...dto,
       authorId: id,
@@ -111,9 +117,15 @@ export class CalendarController {
     description: '캘린더 삭제 절차에 필요한 값',
   })
   private async delete(
-    @Body() dto: Pick<CalendarDeleteInputDto, 'authorId' | 'todo'>,
+    @Body() dto: CalendarDeleteBodyInputDto,
+    @User() user: Pick<UsersBaseDto, 'id'>,
   ): Promise<CalendarDeleteOutputDto> {
-    return await this.service.delete(dto);
+    const { id } = user;
+
+    return await this.service.delete({
+      ...dto,
+      authorId: id,
+    });
   }
 
   @Patch('/update')
@@ -136,7 +148,7 @@ export class CalendarController {
   })
   private async update(
     @Body()
-    dto: Pick<CalendarUpdateInputDto, 'todo' | 'done' | 'id' | 'month' | 'day'>,
+    dto: CalendarUpdateBodyInputDto,
     @User() user: Pick<UsersBaseDto, 'id'>,
   ): Promise<CalendarUpdateOutputDto> {
     const { id } = user;
@@ -182,7 +194,7 @@ export class CalendarController {
   @ApiResponse({ status: 401, description: `${UNAUTHORIZED}` })
   @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
   private async list(
-    @Query() dto: Pick<CalendarListInputDto, 'month'>,
+    @Query() dto: CalendarListBodyInputDto,
     @User() user: Pick<UsersBaseDto, 'id'>,
   ): Promise<CalendarListOutputDto> {
     const { id } = user;

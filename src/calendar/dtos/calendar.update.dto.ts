@@ -33,4 +33,9 @@ class calendarUpdateInputDtoModel extends PickType(CalendarBaseDto, [
 
 export class CalendarUpdateInputDto extends calendarUpdateInputDtoModel {}
 
+export class CalendarUpdateBodyInputDto extends PickType(
+  CalendarUpdateInputDto,
+  ['todo', 'done', 'id', 'month', 'day'] as const,
+) {}
+
 export class CalendarUpdateOutputDto extends BaseOutputDto<Calendar> {}

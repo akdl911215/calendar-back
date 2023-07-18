@@ -8,6 +8,10 @@ export class CalendarListInputDto extends PickType(CalendarBaseDto, [
   'authorId',
 ] as const) {}
 
+export class CalendarListBodyInputDto extends PickType(CalendarListInputDto, [
+  'month',
+] as const) {}
+
 export class CalendarListOutputDto extends BaseOutputDto<{
   readonly monthList: Calendar[];
 }> {}

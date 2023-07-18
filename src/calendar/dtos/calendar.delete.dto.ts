@@ -7,6 +7,11 @@ export class CalendarDeleteInputDto extends PickType(CalendarBaseDto, [
   'authorId',
 ] as const) {}
 
+export class CalendarDeleteBodyInputDto extends PickType(
+  CalendarDeleteInputDto,
+  ['todo'] as const,
+) {}
+
 export class CalendarDeleteOutputDto extends BaseOutputDto<{
   readonly calendarErase: boolean;
 }> {}

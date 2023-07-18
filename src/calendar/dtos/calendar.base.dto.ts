@@ -7,6 +7,7 @@ import {
   IsUUID,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export class CalendarBaseDto {
   @IsUUID()
@@ -59,6 +60,7 @@ export class CalendarBaseDto {
   })
   public done!: boolean;
 
+  @Type(() => Number)
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty({
@@ -69,6 +71,7 @@ export class CalendarBaseDto {
   })
   public month!: number;
 
+  @Type(() => Number)
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty({
