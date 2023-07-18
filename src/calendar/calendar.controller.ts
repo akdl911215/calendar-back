@@ -13,6 +13,7 @@ import {
   ApiBody,
   ApiConsumes,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -54,6 +55,7 @@ import { User } from '../users/infrastructure/decorator/user.decorator';
 import { UsersBaseDto } from '../users/dtos/users.base.dto';
 import { AccessTokenGuard } from '../users/infrastructure/token/guards/jwt.access.guard';
 import { NOTFOUND_CALENDAR } from '../_common/http/errors/404';
+import { DATE_DAY, DATE_MONTH, DATE_YEAR } from '../_common/dtos/get.date';
 
 @ApiTags('calendar')
 @Controller('calendar')
@@ -156,9 +158,14 @@ export class CalendarController {
   @ApiResponse({ status: 401, description: `${UNAUTHORIZED}` })
   @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
   private async inquiry(
-    @Query() dto: CalendarInquiryInputDto,
+    @User() user: Pick<UsersBaseDto, 'id'>,
   ): Promise<CalendarInquiryOutputDto> {
-    return await this.service.inquiry(dto);
+    const { id } = user;
+    return await this.service.inquiry({
+      month: DATE_MONTH,
+      day: DATE_DAY,
+      authorId: id,
+    });
   }
 
   @Get('/list')
@@ -179,9 +186,10 @@ export class CalendarController {
     @User() user: Pick<UsersBaseDto, 'id'>,
   ): Promise<CalendarListOutputDto> {
     const { id } = user;
+
     return await this.service.list({
-      ...dto,
       authorId: id,
+      month: DATE_MONTH,
     });
   }
 }
