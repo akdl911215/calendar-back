@@ -34,11 +34,11 @@ export class CalendarRepository implements CalendarInterface {
   public async delete(
     dto: CalendarDeleteInputDto,
   ): Promise<CalendarDeleteOutputDto> {
-    const { todo, authorId } = dto;
+    const { todo, authorId, id } = dto;
 
     const authorIdAndTodoFindByCalendar: Calendar =
       await this.prisma.calendar.findFirst({
-        where: { AND: [{ authorId }, { todo }] },
+        where: { AND: [{ authorId }, { todo }, { id }] },
       });
     if (!authorIdAndTodoFindByCalendar)
       throw new NotFoundException(NOTFOUND_CALENDAR);
@@ -49,7 +49,7 @@ export class CalendarRepository implements CalendarInterface {
           return await this.prisma.calendar.update({
             where: { id: authorIdAndTodoFindByCalendar.id },
             data: {
-              updatedAt: DATE,
+              deletedAt: DATE,
             },
           });
         },
@@ -80,7 +80,7 @@ export class CalendarRepository implements CalendarInterface {
 
     const authorIdAndMonthFindByCalendar: Calendar[] =
       await this.prisma.calendar.findMany({
-        where: { AND: [{ authorId }, { month }] },
+        where: { AND: [{ authorId }, { month }, { deletedAt: null }] },
       });
 
     return { response: { monthList: authorIdAndMonthFindByCalendar } };

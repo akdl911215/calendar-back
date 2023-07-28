@@ -93,15 +93,21 @@ export class CalendarModel extends BaseCommonCoreDto {
   }
 
   public setDelete(param: CalendarDeleteInputDto): void {
-    const { authorId, todo } = param;
+    const { authorId, todo, id } = param;
 
     this.todo = todo;
     this.authorId = authorId;
+    super.setId(id);
   }
-  public getDelete(): { todo: string; authorId: string } {
+  public getDelete(): {
+    todo: string;
+    authorId: string;
+    id: string;
+  } {
     return {
       todo: this.todo,
       authorId: this.authorId,
+      id: super.getId(),
     };
   }
 }

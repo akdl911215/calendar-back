@@ -5,11 +5,12 @@ import { CalendarBaseDto } from './calendar.base.dto';
 export class CalendarDeleteInputDto extends PickType(CalendarBaseDto, [
   'todo',
   'authorId',
+  'id',
 ] as const) {}
 
 export class CalendarDeleteBodyInputDto extends PickType(
   CalendarDeleteInputDto,
-  ['todo'] as const,
+  ['todo', 'id'] as const,
 ) {}
 
 export class CalendarDeleteOutputDto extends BaseOutputDto<{

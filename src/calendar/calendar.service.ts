@@ -41,6 +41,7 @@ export class CalendarService implements CalendarInterface {
   ): Promise<CalendarDeleteOutputDto> {
     if (!dto?.authorId) throw new BadRequestException(AUTHOR_ID_REQUIRED);
     if (!dto?.todo) throw new BadRequestException(TODO_REQUIRED);
+    if (!dto?.id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
 
     const calendar = new CalendarModel();
     calendar.setDelete(dto);
