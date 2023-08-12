@@ -4,7 +4,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { RefreshTokenPayloadType } from '../type/refresh.token.payload.type';
-import { Users } from '@prisma/client';
+import { CalendarUsers } from '@prisma/client';
 import { BaseOutputDto } from '../../../../_common/dtos/base.output.dto';
 import { NOT_MATCH_REFRESH_TOKEN } from '../../../../_common/http/errors/400';
 import { UsersFindByEntityInterface } from '../../../interfaces/users.find.by.entity.interface';
@@ -29,14 +29,14 @@ export class RefreshTokenStrategy extends PassportStrategy(
   async validate(
     request: Request,
     payload: RefreshTokenPayloadType,
-  ): Promise<BaseOutputDto<Users>> {
+  ): Promise<BaseOutputDto<CalendarUsers>> {
     const token = request?.headers?.authorization?.split('Bearer ')[1];
     const user = await this.service.usersFindById({ id: payload.id });
-    const { refreshToken } = user.response;
+    const { refresh_token } = user;
 
-    if (token !== refreshToken)
+    if (token !== refresh_token)
       throw new BadRequestException(NOT_MATCH_REFRESH_TOKEN);
 
-    return user;
+    return { response: user };
   }
 }

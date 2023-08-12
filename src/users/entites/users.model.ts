@@ -5,6 +5,7 @@ export class UsersModel extends BaseCommonCoreDto {
   private nickname!: string;
   private password!: string;
   private phone!: string;
+  private email!: string;
   private refreshToken?: string;
 
   public setUsersFindById(param: { id: string }): void {
@@ -67,22 +68,25 @@ export class UsersModel extends BaseCommonCoreDto {
   public setUpdate(param: {
     id: string;
     appId: string;
-    nickname?: string;
-    password?: string;
-    phone?: string;
+    nickname: string;
+    password: string;
+    phone: string;
+    email: string;
   }): void {
     super.setId(param.id);
     this.appId = param.appId;
     this.nickname = param.nickname;
     this.password = param.password;
     this.phone = param.phone;
+    this.email = param.email;
   }
   public getUpdate(): {
     id: string;
     appId: string;
-    nickname?: string;
-    password?: string;
-    phone?: string;
+    nickname: string;
+    password: string;
+    email: string;
+    phone: string;
   } {
     return {
       id: super.getId(),
@@ -90,6 +94,7 @@ export class UsersModel extends BaseCommonCoreDto {
       nickname: this.nickname,
       password: this.password,
       phone: this.phone,
+      email: this.email,
     };
   }
 
@@ -116,24 +121,28 @@ export class UsersModel extends BaseCommonCoreDto {
     phone: string;
     nickname: string;
     password: string;
+    email: string;
   }): void {
-    const { appId, phone, nickname, password } = param;
+    const { appId, phone, nickname, password, email } = param;
     this.appId = appId;
     this.phone = phone;
     this.nickname = nickname;
     this.password = password;
+    this.email = email;
   }
   public getCreate(): {
     appId: string;
     phone: string;
     nickname: string;
     password: string;
+    email: string;
   } {
     return {
       appId: this.appId,
       phone: this.phone,
       nickname: this.nickname,
       password: this.password,
+      email: this.email,
     };
   }
 

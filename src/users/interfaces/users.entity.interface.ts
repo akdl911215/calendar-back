@@ -1,5 +1,3 @@
-import { Users } from '@prisma/client';
-import { BaseOffsetPaginationOutputDto } from '../../_common/dtos/base.pagination.dto';
 import {
   UsersCreateEntityInputType,
   UsersCreateEntityOutputType,
@@ -13,6 +11,8 @@ import {
   UsersLogoutEntityOutputType,
   UsersProfileEntityInputType,
   UsersProfileEntityOutputType,
+  UsersRefreshReIssuanceEntityInputType,
+  UsersRefreshReIssuanceEntityOutputType,
   UsersUpdateEntityInputType,
   UsersUpdateEntityOutputType,
 } from '../entites/users.entity.interface.type';

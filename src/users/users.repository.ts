@@ -7,20 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../_common/prisma/prisma.service';
-import {
-  UsersCreateInputDto,
-  UsersCreateOutputDto,
-} from './dtos/users.create.dto';
-import {
-  UsersDeleteInputDto,
-  UsersDeleteOutputDto,
-} from './dtos/users.delete.dto';
-import { UsersListInputDto, UsersListOutputDto } from './dtos/users.list.dto';
-import {
-  UsersUpdateInputDto,
-  UsersUpdateOutputDto,
-} from './dtos/users.update.dto';
-import { Users } from '@prisma/client';
+import { CalendarUsers } from '@prisma/client';
 import { errorHandling } from '../_common/dtos/error.handling';
 import { DATE } from '../_common/dtos/get.date';
 import { NOTFOUND_USER } from '../_common/http/errors/404';
@@ -37,32 +24,15 @@ import { HashEncodedService } from './infrastructure/bcrypt/hash.encoded.service
 import { HashDecodedService } from './infrastructure/bcrypt/hash.decoded.service';
 import { TokenService } from './infrastructure/token/token.service';
 import { UsersRefreshTokenReIssuanceInterface } from './interfaces/users.refresh.token.re.issuance.interface';
-import {
-  UsersLoginInputDto,
-  UsersLoginOutputDto,
-} from './dtos/users.login.dto';
-import {
-  UsersLogoutInputDto,
-  UsersLogoutOutputDto,
-} from './dtos/users.logout.dto';
-import {
-  UsersProfileInputDto,
-  UsersProfileOutputDto,
-} from './dtos/users.profile.dto';
-import {
-  UsersRefreshTokenReIssuanceInputDto,
-  UsersRefreshTokenReIssuanceOutputDto,
-} from './dtos/user.refresh.token.re.issuance.dto';
 import { NO_MATCH_APP_ID, NO_MATCH_PASSWORD } from '../_common/http/errors/400';
 import { AccessTokenPayloadType } from './infrastructure/token/type/access.token.payload.type';
 import { RefreshTokenPayloadType } from './infrastructure/token/type/refresh.token.payload.type';
 import { UsersFindByEntityInterface } from './interfaces/users.find.by.entity.interface';
 import {
-  UsersFindByIdInputDto,
-  UsersFindByIdOutputDto,
+  UsersFindByIdInputType,
+  UsersFindByIdOutputType,
 } from './dtos/users.find.by.id.dto';
 import { UsersEntityInterface } from './interfaces/users.entity.interface';
-import { BaseOffsetPaginationOutputDto } from '../_common/dtos/base.pagination.dto';
 import {
   UsersCreateEntityInputType,
   UsersCreateEntityOutputType,
@@ -76,6 +46,8 @@ import {
   UsersLogoutEntityOutputType,
   UsersProfileEntityInputType,
   UsersProfileEntityOutputType,
+  UsersRefreshReIssuanceEntityInputType,
+  UsersRefreshReIssuanceEntityOutputType,
   UsersUpdateEntityInputType,
   UsersUpdateEntityOutputType,
 } from './entites/users.entity.interface.type';
@@ -103,21 +75,24 @@ export class UsersRepository
   public async create(
     entity: UsersCreateEntityInputType,
   ): Promise<UsersCreateEntityOutputType> {
-    const { appId, phone, nickname, password } = entity;
+    const { appId, phone, nickname, password, email } = entity;
 
-    const userFindByAppId: Users = await this.prisma.users.findUnique({
-      where: { appId },
-    });
+    const userFindByAppId: CalendarUsers =
+      await this.prisma.calendarUsers.findUnique({
+        where: { app_id: appId },
+      });
     if (userFindByAppId) throw new ConflictException(ALREADY_APP_ID);
 
-    const userFindByPhone: Users = await this.prisma.users.findUnique({
-      where: { phone },
-    });
+    const userFindByPhone: CalendarUsers =
+      await this.prisma.calendarUsers.findUnique({
+        where: { phone },
+      });
     if (userFindByPhone) throw new ConflictException(ALREADY_PHONE);
 
-    const userFindByNickname: Users = await this.prisma.users.findUnique({
-      where: { nickname },
-    });
+    const userFindByNickname: CalendarUsers =
+      await this.prisma.calendarUsers.findUnique({
+        where: { nickname },
+      });
     if (userFindByNickname) throw new ConflictException(ALREADY_NICKNAME);
 
     const {
@@ -125,14 +100,15 @@ export class UsersRepository
     } = await this.hash.encoded({ password });
 
     try {
-      const createUser: Users = await this.prisma.$transaction(
+      const createUser: CalendarUsers = await this.prisma.$transaction(
         async () =>
-          await this.prisma.users.create({
+          await this.prisma.calendarUsers.create({
             data: {
-              appId,
+              app_id: appId,
               nickname,
               password: hashPassword,
               phone,
+              email,
             },
           }),
       );
@@ -148,18 +124,19 @@ export class UsersRepository
   ): Promise<UsersDeleteEntityOutputType> {
     const { id } = entity;
 
-    const userFindById: Users = await this.prisma.users.findUnique({
-      where: { id },
-    });
+    const userFindById: CalendarUsers =
+      await this.prisma.calendarUsers.findUnique({
+        where: { id },
+      });
     if (!userFindById) throw new NotFoundException(NOTFOUND_USER);
 
     try {
-      const deletedAtUser: Users = await this.prisma.$transaction(
+      const deletedAtUser: CalendarUsers = await this.prisma.$transaction(
         async () =>
-          await this.prisma.users.update({
+          await this.prisma.calendarUsers.update({
             where: { id },
             data: {
-              deletedAt: DATE,
+              deleted_at: DATE,
             },
           }),
       );
@@ -173,7 +150,7 @@ export class UsersRepository
   public async list(
     entity: UsersListEntityInputType,
   ): Promise<UsersListEntityOutputType> {
-    const userCount: number = await this.prisma.users.count();
+    const userCount: number = await this.prisma.calendarUsers.count();
     const totalTake: number = userCount;
 
     const pagination: PageReturnType = getListOffsetPagination({
@@ -182,11 +159,11 @@ export class UsersRepository
       totalTake,
     });
 
-    const list: Users[] = await this.prisma.users.findMany({
-      where: { deletedAt: null },
+    const list: CalendarUsers[] = await this.prisma.calendarUsers.findMany({
+      where: { deleted_at: null },
       orderBy: [
         {
-          createdAt: 'desc',
+          created_at: 'desc',
         },
       ],
       skip: pagination.skip,
@@ -196,10 +173,10 @@ export class UsersRepository
     const currentList = list.map((el) => {
       return {
         id: el.id,
-        appId: el.appId,
+        appId: el.app_id,
         nickname: el.nickname,
         phone: el.phone,
-        createdAt: el.createdAt,
+        created_at: el.created_at,
       };
     });
 
@@ -214,11 +191,12 @@ export class UsersRepository
   public async update(
     entity: UsersUpdateEntityInputType,
   ): Promise<UsersUpdateEntityOutputType> {
-    const { id, appId, nickname, phone, password } = entity;
+    const { id, appId, nickname, phone, password, email } = entity;
 
-    const userFindByIdAndAppId: Users = await this.prisma.users.findFirst({
-      where: { AND: [{ id }, { appId }] },
-    });
+    const userFindByIdAndAppId: CalendarUsers =
+      await this.prisma.calendarUsers.findFirst({
+        where: { AND: [{ id }, { app_id: appId }, { email }] },
+      });
     if (!userFindByIdAndAppId) throw new NotFoundException(NOTFOUND_USER);
 
     const {
@@ -229,15 +207,16 @@ export class UsersRepository
       password === '' ? userFindByIdAndAppId.password : hashPassword;
 
     try {
-      const updateUser: Users = await this.prisma.$transaction(
+      const updateUser: CalendarUsers = await this.prisma.$transaction(
         async () =>
-          await this.prisma.users.update({
+          await this.prisma.calendarUsers.update({
             where: { id },
             data: {
               nickname,
               phone,
+              email,
               password: updatePassword,
-              updatedAt: DATE,
+              updated_at: DATE,
             },
           }),
       );
@@ -253,9 +232,10 @@ export class UsersRepository
   ): Promise<UsersLoginEntityOutputType> {
     const { appId, password } = entity;
 
-    const userFindByAppId: Users = await this.prisma.users.findUnique({
-      where: { appId },
-    });
+    const userFindByAppId: CalendarUsers =
+      await this.prisma.calendarUsers.findUnique({
+        where: { app_id: appId },
+      });
     if (!userFindByAppId) throw new BadRequestException(NO_MATCH_APP_ID);
 
     const {
@@ -269,12 +249,12 @@ export class UsersRepository
 
     const accessPayload: AccessTokenPayloadType = {
       id: userFindByAppId.id,
-      appId: userFindByAppId.appId,
+      appId: userFindByAppId.app_id,
     };
 
     const refreshPayload: RefreshTokenPayloadType = {
       id: userFindByAppId.id,
-      appId: userFindByAppId.appId,
+      appId: userFindByAppId.app_id,
       phone: userFindByAppId.phone,
     };
 
@@ -283,17 +263,17 @@ export class UsersRepository
     } = await this.jwtToken.generateTokens(accessPayload, refreshPayload);
 
     try {
-      const loginSuccess: Users = await this.prisma.$transaction(
+      const loginSuccess: CalendarUsers = await this.prisma.$transaction(
         async () =>
-          await this.prisma.users.update({
+          await this.prisma.calendarUsers.update({
             where: { id: userFindByAppId.id },
-            data: { refreshToken },
+            data: { refresh_token: refreshToken },
           }),
       );
 
       return {
         ...loginSuccess,
-        accessToken,
+        access_token: accessToken,
       };
     } catch (e: any) {
       errorHandling(e);
@@ -305,21 +285,22 @@ export class UsersRepository
   ): Promise<UsersLogoutEntityOutputType> {
     const { id } = entity;
 
-    const userFindById: Users = await this.prisma.users.findUnique({
-      where: { id },
-    });
+    const userFindById: CalendarUsers =
+      await this.prisma.calendarUsers.findUnique({
+        where: { id },
+      });
     if (!userFindById) throw new NotFoundException(NOTFOUND_USER);
 
     try {
-      const logoutUsers: Users = await this.prisma.$transaction(
+      const logoutUsers: CalendarUsers = await this.prisma.$transaction(
         async () =>
-          await this.prisma.users.update({
+          await this.prisma.calendarUsers.update({
             where: { id },
-            data: { refreshToken: null },
+            data: { refresh_token: null },
           }),
       );
 
-      if (logoutUsers.refreshToken === null) {
+      if (logoutUsers.refresh_token === null) {
         return { logout: true };
       } else {
         return { logout: false };
@@ -334,17 +315,18 @@ export class UsersRepository
   ): Promise<UsersProfileEntityOutputType> {
     const { id } = entity;
 
-    const userFindById: Users = await this.prisma.users.findUnique({
-      where: { id },
-    });
+    const userFindById: CalendarUsers =
+      await this.prisma.calendarUsers.findUnique({
+        where: { id },
+      });
     if (!userFindById) throw new NotFoundException(NOTFOUND_USER);
 
     return userFindById;
   }
 
   public async refresh(
-    entity: UsersRefreshTokenReIssuanceInputDto,
-  ): Promise<UsersRefreshTokenReIssuanceOutputDto> {
+    entity: UsersRefreshReIssuanceEntityInputType,
+  ): Promise<UsersRefreshReIssuanceEntityOutputType> {
     const { id, appId, phone } = entity;
 
     const accessPayload: AccessTokenPayloadType = { id, appId };
@@ -355,22 +337,20 @@ export class UsersRepository
     } = await this.jwtToken.generateTokens(accessPayload, refreshPayload);
 
     try {
-      const refreshTokenUpdate: Users = await this.prisma.$transaction(
+      const refreshTokenUpdate: CalendarUsers = await this.prisma.$transaction(
         async () =>
-          await this.prisma.users.update({
+          await this.prisma.calendarUsers.update({
             where: { id },
-            data: { refreshToken },
+            data: { refresh_token: refreshToken },
           }),
       );
 
       return {
-        response: {
-          id: refreshTokenUpdate.id,
-          appId: refreshTokenUpdate.appId,
-          phone: refreshTokenUpdate.phone,
-          accessToken,
-          refreshToken,
-        },
+        id: refreshTokenUpdate.id,
+        app_id: refreshTokenUpdate.app_id,
+        phone: refreshTokenUpdate.phone,
+        access_token: accessToken,
+        refresh_token: refreshToken,
       };
     } catch (e: any) {
       errorHandling(e);
@@ -378,15 +358,16 @@ export class UsersRepository
   }
 
   public async usersFindById(
-    entity: UsersFindByIdInputDto,
-  ): Promise<UsersFindByIdOutputDto> {
+    entity: UsersFindByIdInputType,
+  ): Promise<UsersFindByIdOutputType> {
     const { id } = entity;
 
-    const userFindById: Users = await this.prisma.users.findUnique({
-      where: { id },
-    });
+    const userFindById: CalendarUsers =
+      await this.prisma.calendarUsers.findUnique({
+        where: { id },
+      });
     if (!userFindById) throw new NotFoundException(NOTFOUND_USER);
 
-    return { response: userFindById };
+    return userFindById;
   }
 }

@@ -68,5 +68,14 @@ export class UsersBaseDto {
   public phone!: string;
 
   @IsString()
+  @ApiProperty({
+    type: String,
+    default: '',
+    required: true,
+    description: '이메일',
+  })
+  public email!: string;
+
+  @IsString()
   public refreshToken?: string;
 }

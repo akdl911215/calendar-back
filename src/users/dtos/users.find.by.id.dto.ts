@@ -1,8 +1,5 @@
-import { PickType } from '@nestjs/swagger';
-import { Users } from '@prisma/client';
-import { UsersBaseDto } from './users.base.dto';
-import { BaseOutputDto } from '../../_common/dtos/base.output.dto';
+import { CalendarUsers } from '@prisma/client';
 
-export class UsersFindByIdInputDto extends PickType(UsersBaseDto, ['id']) {}
+export type UsersFindByIdInputType = { readonly id: string };
 
-export class UsersFindByIdOutputDto extends BaseOutputDto<Users> {}
+export type UsersFindByIdOutputType = CalendarUsers;

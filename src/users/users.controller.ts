@@ -62,14 +62,14 @@ import {
 import { NOTFOUND_USER } from '../_common/http/errors/404';
 import { UNAUTHORIZED } from '../_common/http/errors/401';
 import { UsersRefreshTokenReIssuanceOutputDto } from './dtos/user.refresh.token.re.issuance.dto';
-import { UsersRefreshTokenReIssuanceInterface } from './interfaces/users.refresh.token.re.issuance.interface';
+import { UsersRefreshTokenReIssuanceDtoInterface } from './interfaces/users.refresh.token.re.issuance.dto.interface';
 
 @Controller('users')
 export class UsersController {
   constructor(
     @Inject('SERVICE') private readonly service: UsersDtoInterface,
     @Inject('REFRESH_TOKEN_SERVICE')
-    private readonly refreshTokenService: UsersRefreshTokenReIssuanceInterface,
+    private readonly refreshTokenService: UsersRefreshTokenReIssuanceDtoInterface,
   ) {}
 
   @Get('/list')
@@ -185,7 +185,7 @@ export class UsersController {
   @ApiBody({ type: UsersUpdateInputDto })
   private async update(
     @Body()
-    dto: Pick<UsersUpdateInputDto, 'nickname' | 'password' | 'phone'>,
+    dto: UsersUpdateInputDto,
     @User() user: UsersBaseDto,
   ): Promise<UsersUpdateOutputDto> {
     return await this.service.update({

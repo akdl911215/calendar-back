@@ -1,10 +1,10 @@
 import {
-  UsersRefreshTokenReIssuanceInputDto,
-  UsersRefreshTokenReIssuanceOutputDto,
-} from '../dtos/user.refresh.token.re.issuance.dto';
+  UsersRefreshReIssuanceEntityInputType,
+  UsersRefreshReIssuanceEntityOutputType,
+} from '../entites/users.entity.interface.type';
 
 export interface UsersRefreshTokenReIssuanceInterface {
   readonly refresh: (
-    dto: UsersRefreshTokenReIssuanceInputDto,
-  ) => Promise<UsersRefreshTokenReIssuanceOutputDto>;
+    entity: UsersRefreshReIssuanceEntityInputType,
+  ) => Promise<UsersRefreshReIssuanceEntityOutputType>;
 }

@@ -42,20 +42,26 @@ import {
   UsersRefreshTokenReIssuanceOutputDto,
 } from './dtos/user.refresh.token.re.issuance.dto';
 import { UsersFindByEntityInterface } from './interfaces/users.find.by.entity.interface';
+import { UsersEntityInterface } from './interfaces/users.entity.interface';
 import {
-  UsersFindByIdInputDto,
-  UsersFindByIdOutputDto,
+  UsersFindByIdInputType,
+  UsersFindByIdOutputType,
 } from './dtos/users.find.by.id.dto';
+import { UsersRefreshTokenReIssuanceDtoInterface } from './interfaces/users.refresh.token.re.issuance.dto.interface';
 
 interface UsersMergeInterface
   extends UsersDtoInterface,
-    UsersRefreshTokenReIssuanceInterface,
-    UsersFindByEntityInterface {}
+    UsersRefreshTokenReIssuanceDtoInterface {}
 
 @Injectable()
 export class UsersService implements UsersMergeInterface {
   constructor(
-    @Inject('REPOSITORY') private readonly repository: UsersMergeInterface,
+    @Inject('REPOSITORY')
+    private readonly repository: UsersEntityInterface,
+    @Inject('FIND_BY_REPOSITORY')
+    private readonly findByRepository: UsersFindByEntityInterface,
+    @Inject('REFRESH_TOKEN_REPOSITORY')
+    private readonly refreshTokenRepository: UsersRefreshTokenReIssuanceInterface,
   ) {}
 
   public async create(dto: UsersCreateInputDto): Promise<UsersCreateOutputDto> {
@@ -69,7 +75,7 @@ export class UsersService implements UsersMergeInterface {
     const user = new UsersModel();
     user.setCreate(dto);
 
-    return await this.repository.create(user.getCreate());
+    return { response: await this.repository.create(user.getCreate()) };
   }
 
   public async delete(dto: UsersDeleteInputDto): Promise<UsersDeleteOutputDto> {
@@ -78,16 +84,14 @@ export class UsersService implements UsersMergeInterface {
 
     const user = new UsersModel();
     user.setDelete(dto);
-
-    return await this.repository.delete(user.getDelete());
+    return { response: await this.repository.delete(user.getDelete()) };
   }
 
   public async list(dto: UsersListInputDto): Promise<UsersListOutputDto> {
     const { take, page } = dto;
     if (take < 1) throw new BadRequestException(TAKE_REQUIRED);
     if (page < 1) throw new BadRequestException(PAGE_REQUIRED);
-
-    return await this.repository.list(dto);
+    return { response: await this.repository.list(dto) };
   }
 
   public async update(dto: UsersUpdateInputDto): Promise<UsersUpdateOutputDto> {
@@ -99,12 +103,13 @@ export class UsersService implements UsersMergeInterface {
     user.setUpdate({
       id: dto.id,
       appId: dto.appId,
-      nickname: dto?.nickname,
-      password: dto?.password,
-      phone: dto?.phone,
+      nickname: dto.nickname,
+      password: dto.password,
+      phone: dto.phone,
+      email: dto.email,
     });
 
-    return await this.repository.update(user.getUpdate());
+    return { response: await this.repository.update(user.getUpdate()) };
   }
 
   public async login(dto: UsersLoginInputDto): Promise<UsersLoginOutputDto> {
@@ -114,8 +119,7 @@ export class UsersService implements UsersMergeInterface {
 
     const user = new UsersModel();
     user.setLogin(dto);
-
-    return await this.repository.login(user.getLogin());
+    return { response: await this.repository.login(user.getLogin()) };
   }
 
   public async logout(dto: UsersLogoutInputDto): Promise<UsersLogoutOutputDto> {
@@ -124,8 +128,7 @@ export class UsersService implements UsersMergeInterface {
 
     const user = new UsersModel();
     user.setLogout(dto);
-
-    return await this.repository.logout(user.getLogout());
+    return { response: await this.repository.logout(user.getLogout()) };
   }
 
   public async profile(
@@ -136,8 +139,7 @@ export class UsersService implements UsersMergeInterface {
 
     const user = new UsersModel();
     user.setProfile(dto);
-
-    return await this.repository.profile(user.getProfile());
+    return { response: await this.repository.profile(user.getProfile()) };
   }
 
   public async refresh(
@@ -151,18 +153,21 @@ export class UsersService implements UsersMergeInterface {
     const user = new UsersModel();
     user.setRefreshTokenReIssuance(dto);
 
-    return await this.repository.refresh(user.getRefreshTokenReIssuance());
+    const re = await this.refreshTokenRepository.refresh(
+      user.getRefreshTokenReIssuance(),
+    );
+
+    return { response: re };
   }
 
   public async usersFindById(
-    dto: UsersFindByIdInputDto,
-  ): Promise<UsersFindByIdOutputDto> {
+    dto: UsersFindByIdInputType,
+  ): Promise<UsersFindByIdOutputType> {
     const { id } = dto;
     if (!id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
 
     const user = new UsersModel();
     user.setUsersFindById(dto);
-
-    return await this.repository.usersFindById(user.getUsersFindById());
+    return await this.findByRepository.usersFindById(user.getUsersFindById());
   }
 }

@@ -9,13 +9,14 @@ export class UsersLoginInputDto extends PickType(UsersBaseDto, [
 
 export class UsersLoginOutputDto extends BaseOutputDto<{
   readonly id: string;
-  readonly appId: string;
+  readonly app_id: string;
   readonly nickname: string;
   readonly password: string;
   readonly phone: string;
-  readonly refreshToken: string | null;
-  readonly createdAt: Date;
-  readonly updatedAt: Date | null;
-  readonly deletedAt: Date | null;
-  readonly accessToken: string | null;
+  readonly email: string;
+  readonly refresh_token: string | null;
+  readonly created_at: Date;
+  readonly updated_at: Date;
+  readonly deleted_at: Date | null;
+  readonly access_token: string | null;
 }> {}

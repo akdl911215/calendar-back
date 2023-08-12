@@ -12,6 +12,6 @@ export class UsersListOutputDto extends BaseOutputDto<
     readonly appId: string;
     readonly phone: string;
     readonly nickname: string;
-    readonly createdAt: Date;
+    readonly created_at: Date;
   }>
 > {}

@@ -9,8 +9,8 @@ export class UsersRefreshTokenReIssuanceInputDto extends PickType(
 
 export class UsersRefreshTokenReIssuanceOutputDto extends BaseOutputDto<{
   readonly id: string;
-  readonly appId: string;
+  readonly app_id: string;
   readonly phone: string;
-  readonly accessToken: string | null;
-  readonly refreshToken: string | null;
+  readonly access_token: string | null;
+  readonly refresh_token: string | null;
 }> {}

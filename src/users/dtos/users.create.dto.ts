@@ -1,13 +1,14 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { UsersBaseDto } from './users.base.dto';
 import { BaseOutputDto } from '../../_common/dtos/base.output.dto';
-import { Users } from '@prisma/client';
+import { CalendarUsers } from '@prisma/client';
 
 export class UsersCreateInputDto extends PickType(UsersBaseDto, [
   'appId',
   'nickname',
   'password',
   'phone',
+  'email',
 ] as const) {
   @ApiProperty({
     type: String,
@@ -18,4 +19,4 @@ export class UsersCreateInputDto extends PickType(UsersBaseDto, [
   public confirmPassword?: string;
 }
 
-export class UsersCreateOutputDto extends BaseOutputDto<Users> {}
+export class UsersCreateOutputDto extends BaseOutputDto<CalendarUsers> {}

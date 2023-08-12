@@ -27,6 +27,9 @@ import { UsersCompareCurrentPasswordAndPasswordRepository } from './infrastructu
 
     // repository
     { provide: 'REPOSITORY', useClass: UsersRepository },
+    { provide: 'FIND_BY_REPOSITORY', useClass: UsersRepository },
+    { provide: 'REFRESH_TOKEN_REPOSITORY', useClass: UsersRepository },
+
     {
       provide: 'COMPARE_CURRENT_PASSWORD_AND_PASSWORD',
       useClass: UsersCompareCurrentPasswordAndPasswordRepository,

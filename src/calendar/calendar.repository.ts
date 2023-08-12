@@ -38,7 +38,7 @@ export class CalendarRepository implements CalendarInterface {
 
     const authorIdAndTodoFindByCalendar: Calendar =
       await this.prisma.calendar.findFirst({
-        where: { AND: [{ authorId }, { todo }, { id }] },
+        where: { AND: [{ author_id: authorId }, { todo }, { id }] },
       });
     if (!authorIdAndTodoFindByCalendar)
       throw new NotFoundException(NOTFOUND_CALENDAR);
@@ -49,7 +49,7 @@ export class CalendarRepository implements CalendarInterface {
           return await this.prisma.calendar.update({
             where: { id: authorIdAndTodoFindByCalendar.id },
             data: {
-              deletedAt: DATE,
+              deleted_at: DATE,
             },
           });
         },
@@ -68,7 +68,7 @@ export class CalendarRepository implements CalendarInterface {
     const authorIdAndDateFindByCalendar: Calendar[] =
       await this.prisma.calendar.findMany({
         where: {
-          AND: [{ authorId }, { month }, { day }],
+          AND: [{ author_id: authorId }, { month }, { day }],
         },
       });
 
@@ -80,7 +80,9 @@ export class CalendarRepository implements CalendarInterface {
 
     const authorIdAndMonthFindByCalendar: Calendar[] =
       await this.prisma.calendar.findMany({
-        where: { AND: [{ authorId }, { month }, { deletedAt: null }] },
+        where: {
+          AND: [{ author_id: authorId }, { month }, { deleted_at: null }],
+        },
       });
 
     return { response: { monthList: authorIdAndMonthFindByCalendar } };
@@ -98,7 +100,7 @@ export class CalendarRepository implements CalendarInterface {
             data: {
               todo,
               date: String(DATE),
-              authorId,
+              author_id: authorId,
               month: month,
               day: day,
             },
@@ -134,9 +136,9 @@ export class CalendarRepository implements CalendarInterface {
               month,
               day,
               todo: updateTodo,
-              authorId,
+              author_id: authorId,
               done,
-              updatedAt: DATE,
+              updated_at: DATE,
             },
           });
         },

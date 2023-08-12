@@ -1,10 +1,10 @@
 import {
-  UsersFindByIdInputDto,
-  UsersFindByIdOutputDto,
+  UsersFindByIdInputType,
+  UsersFindByIdOutputType,
 } from '../dtos/users.find.by.id.dto';
 
 export interface UsersFindByEntityInterface {
   readonly usersFindById: (
-    entity: UsersFindByIdInputDto,
-  ) => Promise<UsersFindByIdOutputDto>;
+    entity: UsersFindByIdInputType,
+  ) => Promise<UsersFindByIdOutputType>;
 }

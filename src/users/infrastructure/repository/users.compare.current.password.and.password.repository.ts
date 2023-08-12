@@ -5,7 +5,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { HashDecodedService } from '../bcrypt/hash.decoded.service';
-import { Users } from '@prisma/client';
+import { CalendarUsers } from '@prisma/client';
 import { PrismaService } from '../../../_common/prisma/prisma.service';
 import { UsersCompareCurrentPasswordAndPasswordInterface } from '../../interfaces/users.compare.current.password.and.password.interface';
 import {
@@ -36,7 +36,7 @@ export class UsersCompareCurrentPasswordAndPasswordRepository
     const { id } = user.getCompareCurrentPasswordAndPassword();
     const { currentPassword } = dto;
 
-    const dbUser: Users = await this.prisma.users.findUnique({
+    const dbUser: CalendarUsers = await this.prisma.calendarUsers.findUnique({
       where: { id },
     });
     const { password } = dbUser;
