@@ -3,13 +3,13 @@
 //   UsersFindByIdInputDto,
 //   UsersFindByIdOutputDto,
 // } from '../../../../domain/interfaces/dto/users.find.by.id.dto';
-// import { UsersFindByInterface } from '../../../../domain/interfaces/users.find.by.interfaces';
+// import { UsersFindByEntityInterface } from '../../../../domain/interfaces/users.find.by.interfaces';
 // import { UNIQUE_ID_REQUIRED } from '../../../../../_common/constants/http/errors/400';
 // import { PrismaService } from '../../../../../_common/infrastructure/prisma/prisma.service';
 // import { Users } from '@prisma/client';
 //
 // @Injectable()
-// export class UsersFindByIdUseCase implements UsersFindByInterface {
+// export class UsersFindByIdUseCase implements UsersFindByEntityInterface {
 //   constructor(private readonly prisma: PrismaService) {}
 //
 //   public async usersFindById(

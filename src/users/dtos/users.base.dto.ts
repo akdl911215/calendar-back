@@ -67,5 +67,6 @@ export class UsersBaseDto {
   })
   public phone!: string;
 
+  @IsString()
   public refreshToken?: string;
 }

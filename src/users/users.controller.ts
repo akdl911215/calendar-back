@@ -9,7 +9,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { UsersInterface } from './interfaces/users.interface';
+import { UsersDtoInterface } from './interfaces/users.dto.interface';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -67,7 +67,7 @@ import { UsersRefreshTokenReIssuanceInterface } from './interfaces/users.refresh
 @Controller('users')
 export class UsersController {
   constructor(
-    @Inject('SERVICE') private readonly service: UsersInterface,
+    @Inject('SERVICE') private readonly service: UsersDtoInterface,
     @Inject('REFRESH_TOKEN_SERVICE')
     private readonly refreshTokenService: UsersRefreshTokenReIssuanceInterface,
   ) {}

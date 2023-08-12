@@ -2,7 +2,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { UsersFindByInterface } from '../../../interfaces/users.find.by.interface';
+import { UsersFindByEntityInterface } from '../../../interfaces/users.find.by.entity.interface';
 import {
   StrategyPayloadIdInputDto,
   StrategyPayloadOutputDto,
@@ -15,7 +15,7 @@ export class AccessTokenStrategy extends PassportStrategy(
 ) {
   constructor(
     @Inject('SERVICE')
-    private readonly service: UsersFindByInterface,
+    private readonly service: UsersFindByEntityInterface,
     private readonly configService: ConfigService,
   ) {
     super({

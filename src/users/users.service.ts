@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { UsersInterface } from './interfaces/users.interface';
+import { UsersDtoInterface } from './interfaces/users.dto.interface';
 import {
   UsersCreateInputDto,
   UsersCreateOutputDto,
@@ -41,16 +41,16 @@ import {
   UsersRefreshTokenReIssuanceInputDto,
   UsersRefreshTokenReIssuanceOutputDto,
 } from './dtos/user.refresh.token.re.issuance.dto';
-import { UsersFindByInterface } from './interfaces/users.find.by.interface';
+import { UsersFindByEntityInterface } from './interfaces/users.find.by.entity.interface';
 import {
   UsersFindByIdInputDto,
   UsersFindByIdOutputDto,
 } from './dtos/users.find.by.id.dto';
 
 interface UsersMergeInterface
-  extends UsersInterface,
+  extends UsersDtoInterface,
     UsersRefreshTokenReIssuanceInterface,
-    UsersFindByInterface {}
+    UsersFindByEntityInterface {}
 
 @Injectable()
 export class UsersService implements UsersMergeInterface {

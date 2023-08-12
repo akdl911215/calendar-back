@@ -7,7 +7,7 @@ import { RefreshTokenPayloadType } from '../type/refresh.token.payload.type';
 import { Users } from '@prisma/client';
 import { BaseOutputDto } from '../../../../_common/dtos/base.output.dto';
 import { NOT_MATCH_REFRESH_TOKEN } from '../../../../_common/http/errors/400';
-import { UsersFindByInterface } from '../../../interfaces/users.find.by.interface';
+import { UsersFindByEntityInterface } from '../../../interfaces/users.find.by.entity.interface';
 
 @Injectable()
 export class RefreshTokenStrategy extends PassportStrategy(
@@ -15,7 +15,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
   'JWT-REFRESH-TOKEN',
 ) {
   constructor(
-    @Inject('SERVICE') private readonly service: UsersFindByInterface,
+    @Inject('SERVICE') private readonly service: UsersFindByEntityInterface,
     private readonly configService: ConfigService,
   ) {
     super({

@@ -7,7 +7,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../_common/prisma/prisma.service';
-import { UsersInterface } from './interfaces/users.interface';
 import {
   UsersCreateInputDto,
   UsersCreateOutputDto,
@@ -57,11 +56,29 @@ import {
 import { NO_MATCH_APP_ID, NO_MATCH_PASSWORD } from '../_common/http/errors/400';
 import { AccessTokenPayloadType } from './infrastructure/token/type/access.token.payload.type';
 import { RefreshTokenPayloadType } from './infrastructure/token/type/refresh.token.payload.type';
-import { UsersFindByInterface } from './interfaces/users.find.by.interface';
+import { UsersFindByEntityInterface } from './interfaces/users.find.by.entity.interface';
 import {
   UsersFindByIdInputDto,
   UsersFindByIdOutputDto,
 } from './dtos/users.find.by.id.dto';
+import { UsersEntityInterface } from './interfaces/users.entity.interface';
+import { BaseOffsetPaginationOutputDto } from '../_common/dtos/base.pagination.dto';
+import {
+  UsersCreateEntityInputType,
+  UsersCreateEntityOutputType,
+  UsersDeleteEntityInputType,
+  UsersDeleteEntityOutputType,
+  UsersListEntityInputType,
+  UsersListEntityOutputType,
+  UsersLoginEntityInputType,
+  UsersLoginEntityOutputType,
+  UsersLogoutEntityInputType,
+  UsersLogoutEntityOutputType,
+  UsersProfileEntityInputType,
+  UsersProfileEntityOutputType,
+  UsersUpdateEntityInputType,
+  UsersUpdateEntityOutputType,
+} from './entites/users.entity.interface.type';
 
 @Injectable()
 @Dependencies([
@@ -72,9 +89,9 @@ import {
 ])
 export class UsersRepository
   implements
-    UsersInterface,
+    UsersEntityInterface,
     UsersRefreshTokenReIssuanceInterface,
-    UsersFindByInterface
+    UsersFindByEntityInterface
 {
   constructor(
     private readonly prisma: PrismaService,
@@ -84,8 +101,8 @@ export class UsersRepository
   ) {}
 
   public async create(
-    entity: UsersCreateInputDto,
-  ): Promise<UsersCreateOutputDto> {
+    entity: UsersCreateEntityInputType,
+  ): Promise<UsersCreateEntityOutputType> {
     const { appId, phone, nickname, password } = entity;
 
     const userFindByAppId: Users = await this.prisma.users.findUnique({
@@ -120,15 +137,15 @@ export class UsersRepository
           }),
       );
 
-      return { response: createUser };
+      return createUser;
     } catch (e: any) {
       errorHandling(e);
     }
   }
 
   public async delete(
-    entity: UsersDeleteInputDto,
-  ): Promise<UsersDeleteOutputDto> {
+    entity: UsersDeleteEntityInputType,
+  ): Promise<UsersDeleteEntityOutputType> {
     const { id } = entity;
 
     const userFindById: Users = await this.prisma.users.findUnique({
@@ -147,13 +164,15 @@ export class UsersRepository
           }),
       );
 
-      return { response: deletedAtUser };
+      return deletedAtUser;
     } catch (e: any) {
       errorHandling(e);
     }
   }
 
-  public async list(entity: UsersListInputDto): Promise<UsersListOutputDto> {
+  public async list(
+    entity: UsersListEntityInputType,
+  ): Promise<UsersListEntityOutputType> {
     const userCount: number = await this.prisma.users.count();
     const totalTake: number = userCount;
 
@@ -185,54 +204,22 @@ export class UsersRepository
     });
 
     return {
-      response: {
-        currentList,
-        totalTake,
-        totalPages: pagination.totalPages,
-        currentPage: pagination.currentPage,
-      },
+      currentList,
+      totalTake,
+      totalPages: pagination.totalPages,
+      currentPage: pagination.currentPage,
     };
   }
 
   public async update(
-    entity: UsersUpdateInputDto,
-  ): Promise<UsersUpdateOutputDto> {
+    entity: UsersUpdateEntityInputType,
+  ): Promise<UsersUpdateEntityOutputType> {
     const { id, appId, nickname, phone, password } = entity;
 
     const userFindByIdAndAppId: Users = await this.prisma.users.findFirst({
       where: { AND: [{ id }, { appId }] },
     });
     if (!userFindByIdAndAppId) throw new NotFoundException(NOTFOUND_USER);
-
-    const updateNickname: string =
-      nickname === '' ? userFindByIdAndAppId.nickname : nickname;
-    if (!!nickname) {
-      const userFindByNickname: Users = await this.prisma.users.findUnique({
-        where: { nickname },
-      });
-
-      if (
-        userFindByIdAndAppId.nickname !== nickname &&
-        userFindByNickname?.nickname === nickname
-      ) {
-        throw new ConflictException(ALREADY_NICKNAME);
-      }
-    }
-
-    const updatePhone: string =
-      phone === '' ? userFindByIdAndAppId.phone : phone;
-    if (!!phone) {
-      const userFindByPhone: Users = await this.prisma.users.findUnique({
-        where: { phone },
-      });
-
-      if (
-        userFindByIdAndAppId.phone !== phone &&
-        userFindByPhone?.phone === phone
-      ) {
-        throw new ConflictException(ALREADY_PHONE);
-      }
-    }
 
     const {
       response: { encoded: hashPassword },
@@ -247,21 +234,23 @@ export class UsersRepository
           await this.prisma.users.update({
             where: { id },
             data: {
-              nickname: updateNickname,
-              phone: updatePhone,
+              nickname,
+              phone,
               password: updatePassword,
               updatedAt: DATE,
             },
           }),
       );
 
-      return { response: updateUser };
+      return updateUser;
     } catch (e: any) {
       errorHandling(e);
     }
   }
 
-  public async login(entity: UsersLoginInputDto): Promise<UsersLoginOutputDto> {
+  public async login(
+    entity: UsersLoginEntityInputType,
+  ): Promise<UsersLoginEntityOutputType> {
     const { appId, password } = entity;
 
     const userFindByAppId: Users = await this.prisma.users.findUnique({
@@ -303,10 +292,8 @@ export class UsersRepository
       );
 
       return {
-        response: {
-          ...loginSuccess,
-          accessToken,
-        },
+        ...loginSuccess,
+        accessToken,
       };
     } catch (e: any) {
       errorHandling(e);
@@ -314,8 +301,8 @@ export class UsersRepository
   }
 
   public async logout(
-    entity: UsersLogoutInputDto,
-  ): Promise<UsersLogoutOutputDto> {
+    entity: UsersLogoutEntityInputType,
+  ): Promise<UsersLogoutEntityOutputType> {
     const { id } = entity;
 
     const userFindById: Users = await this.prisma.users.findUnique({
@@ -333,9 +320,9 @@ export class UsersRepository
       );
 
       if (logoutUsers.refreshToken === null) {
-        return { response: { logout: true } };
+        return { logout: true };
       } else {
-        return { response: { logout: false } };
+        return { logout: false };
       }
     } catch (e: any) {
       errorHandling(e);
@@ -343,8 +330,8 @@ export class UsersRepository
   }
 
   public async profile(
-    entity: UsersProfileInputDto,
-  ): Promise<UsersProfileOutputDto> {
+    entity: UsersProfileEntityInputType,
+  ): Promise<UsersProfileEntityOutputType> {
     const { id } = entity;
 
     const userFindById: Users = await this.prisma.users.findUnique({
@@ -352,7 +339,7 @@ export class UsersRepository
     });
     if (!userFindById) throw new NotFoundException(NOTFOUND_USER);
 
-    return { response: userFindById };
+    return userFindById;
   }
 
   public async refresh(
