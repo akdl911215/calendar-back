@@ -11,8 +11,10 @@ import {
 
 import { UsersListInputDto, UsersListOutputDto } from './dtos/users.list.dto';
 import {
-  UsersUpdateInputDto,
-  UsersUpdateOutputDto,
+  UsersUpdateNicknameInputDto,
+  UsersUpdateNicknameOutputDto,
+  UsersUpdatePhoneInputDto,
+  UsersUpdatePhoneOutputDto,
 } from './dtos/users.update.dto';
 import {
   APP_ID_REQUIRED,
@@ -43,11 +45,11 @@ import {
 } from './dtos/user.refresh.token.re.issuance.dto';
 import { UsersFindByEntityInterface } from './interfaces/users.find.by.entity.interface';
 import { UsersEntityInterface } from './interfaces/users.entity.interface';
+import { UsersRefreshTokenReIssuanceDtoInterface } from './interfaces/users.refresh.token.re.issuance.dto.interface';
 import {
   UsersFindByIdInputType,
   UsersFindByIdOutputType,
-} from './dtos/users.find.by.id.dto';
-import { UsersRefreshTokenReIssuanceDtoInterface } from './interfaces/users.refresh.token.re.issuance.dto.interface';
+} from './entites/users.entity.interface.type';
 
 interface UsersMergeInterface
   extends UsersDtoInterface,
@@ -73,9 +75,9 @@ export class UsersService implements UsersMergeInterface {
     if (!nickname) throw new BadRequestException(NICKNAME_REQUIRED);
 
     const user = new UsersModel();
-    user.setCreate(dto);
+    user._create = dto;
 
-    return { response: await this.repository.create(user.getCreate()) };
+    return { response: await this.repository.create(user._create) };
   }
 
   public async delete(dto: UsersDeleteInputDto): Promise<UsersDeleteOutputDto> {
@@ -83,8 +85,8 @@ export class UsersService implements UsersMergeInterface {
     if (!id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
 
     const user = new UsersModel();
-    user.setDelete(dto);
-    return { response: await this.repository.delete(user.getDelete()) };
+    user._delete = dto;
+    return { response: await this.repository.delete(user._delete) };
   }
 
   public async list(dto: UsersListInputDto): Promise<UsersListOutputDto> {
@@ -94,22 +96,34 @@ export class UsersService implements UsersMergeInterface {
     return { response: await this.repository.list(dto) };
   }
 
-  public async update(dto: UsersUpdateInputDto): Promise<UsersUpdateOutputDto> {
-    const { id, appId } = dto;
+  public async updateNickname(
+    dto: UsersUpdateNicknameInputDto,
+  ): Promise<UsersUpdateNicknameOutputDto> {
+    const { id, nickname } = dto;
     if (!id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
-    if (!appId) throw new BadRequestException(APP_ID_REQUIRED);
+    if (!nickname) throw new BadRequestException(NICKNAME_REQUIRED);
 
     const user = new UsersModel();
-    user.setUpdate({
-      id: dto.id,
-      appId: dto.appId,
-      nickname: dto.nickname,
-      password: dto.password,
-      phone: dto.phone,
-      email: dto.email,
-    });
+    user._updateNickname = dto;
 
-    return { response: await this.repository.update(user.getUpdate()) };
+    return {
+      response: await this.repository.updateNickname(user._updateNickname),
+    };
+  }
+
+  public async updatePhone(
+    dto: UsersUpdatePhoneInputDto,
+  ): Promise<UsersUpdatePhoneOutputDto> {
+    const { id, phone } = dto;
+    if (!id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
+    if (!phone) throw new BadRequestException(PHONE_REQUIRED);
+
+    const user = new UsersModel();
+    user._updatePhone = dto;
+
+    return {
+      response: await this.repository.updatePhone(user._updatePhone),
+    };
   }
 
   public async login(dto: UsersLoginInputDto): Promise<UsersLoginOutputDto> {

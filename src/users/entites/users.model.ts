@@ -65,36 +65,31 @@ export class UsersModel extends BaseCommonCoreDto {
     };
   }
 
-  public setUpdate(param: {
-    id: string;
-    appId: string;
-    nickname: string;
-    password: string;
-    phone: string;
-    email: string;
-  }): void {
+  public set _updateNickname(param: { id: string; nickname: string }) {
     super.setId(param.id);
-    this.appId = param.appId;
     this.nickname = param.nickname;
-    this.password = param.password;
-    this.phone = param.phone;
-    this.email = param.email;
   }
-  public getUpdate(): {
+  public get _updateNickname(): {
     id: string;
-    appId: string;
     nickname: string;
-    password: string;
-    email: string;
+  } {
+    return {
+      id: super.getId(),
+      nickname: this.nickname,
+    };
+  }
+
+  public set _updatePhone(param: { id: string; phone: string }) {
+    super.setId(param.id);
+    this.phone = param.phone;
+  }
+  public get _updatePhone(): {
+    id: string;
     phone: string;
   } {
     return {
       id: super.getId(),
-      appId: this.appId,
-      nickname: this.nickname,
-      password: this.password,
       phone: this.phone,
-      email: this.email,
     };
   }
 
@@ -107,22 +102,22 @@ export class UsersModel extends BaseCommonCoreDto {
     };
   }
 
-  public setDelete(param: { id: string }): void {
+  public set _delete(param: { id: string }) {
     super.setId(param.id);
   }
-  public getDelete(): { id: string } {
+  public get _delete(): { id: string } {
     return {
       id: super.getId(),
     };
   }
 
-  public setCreate(param: {
+  public set _create(param: {
     appId: string;
     phone: string;
     nickname: string;
     password: string;
     email: string;
-  }): void {
+  }) {
     const { appId, phone, nickname, password, email } = param;
     this.appId = appId;
     this.phone = phone;
@@ -130,7 +125,7 @@ export class UsersModel extends BaseCommonCoreDto {
     this.password = password;
     this.email = email;
   }
-  public getCreate(): {
+  public get _create(): {
     appId: string;
     phone: string;
     nickname: string;

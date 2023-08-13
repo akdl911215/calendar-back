@@ -1,7 +1,7 @@
 import {
   UsersFindByIdInputType,
   UsersFindByIdOutputType,
-} from '../dtos/users.find.by.id.dto';
+} from '../entites/users.entity.interface.type';
 
 export interface UsersFindByEntityInterface {
   readonly usersFindById: (

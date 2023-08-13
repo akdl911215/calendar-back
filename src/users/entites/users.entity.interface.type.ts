@@ -28,16 +28,33 @@ export type UsersListEntityOutputType = BaseOffsetPaginationOutputDto<{
   readonly created_at: Date;
 }>;
 
-export type UsersUpdateEntityInputType = {
+export type UsersUpdateNicknameEntityInputType = {
   readonly id: string;
-  readonly appId: string;
   readonly nickname: string;
+};
+
+export type UsersUpdateNicknameEntityOutputType = CalendarUsers;
+
+export type UsersReIssuancePasswordEntityInputType = {
+  readonly id: string;
   readonly password: string;
+};
+
+export type UsersReIssuancePasswordEntityOutputType = CalendarUsers;
+
+export type UsersUpdatePhoneEntityInputType = {
+  readonly id: string;
   readonly phone: string;
+};
+
+export type UsersUpdatePhoneEntityOutputType = CalendarUsers;
+
+export type UsersUpdateEmailEntityInputType = {
+  readonly id: string;
   readonly email: string;
 };
 
-export type UsersUpdateEntityOutputType = CalendarUsers;
+export type UsersUpdateEmailEntityOutputType = CalendarUsers;
 
 export type UsersLoginEntityInputType = {
   readonly appId: string;
@@ -81,3 +98,7 @@ export type UsersRefreshReIssuanceEntityOutputType = {
   readonly access_token: string | null;
   readonly refresh_token: string | null;
 };
+
+export type UsersFindByIdInputType = { readonly id: string };
+
+export type UsersFindByIdOutputType = CalendarUsers;

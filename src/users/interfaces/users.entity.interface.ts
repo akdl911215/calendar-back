@@ -11,10 +11,14 @@ import {
   UsersLogoutEntityOutputType,
   UsersProfileEntityInputType,
   UsersProfileEntityOutputType,
-  UsersRefreshReIssuanceEntityInputType,
-  UsersRefreshReIssuanceEntityOutputType,
-  UsersUpdateEntityInputType,
-  UsersUpdateEntityOutputType,
+  UsersReIssuancePasswordEntityInputType,
+  UsersReIssuancePasswordEntityOutputType,
+  UsersUpdateEmailEntityInputType,
+  UsersUpdateEmailEntityOutputType,
+  UsersUpdateNicknameEntityInputType,
+  UsersUpdateNicknameEntityOutputType,
+  UsersUpdatePhoneEntityInputType,
+  UsersUpdatePhoneEntityOutputType,
 } from '../entites/users.entity.interface.type';
 
 export interface UsersEntityInterface {
@@ -30,9 +34,21 @@ export interface UsersEntityInterface {
     entity: UsersListEntityInputType,
   ) => Promise<UsersListEntityOutputType>;
 
-  readonly update: (
-    entity: UsersUpdateEntityInputType,
-  ) => Promise<UsersUpdateEntityOutputType>;
+  readonly updateNickname: (
+    entity: UsersUpdateNicknameEntityInputType,
+  ) => Promise<UsersUpdateNicknameEntityOutputType>;
+
+  readonly reIssuancePassword: (
+    entity: UsersReIssuancePasswordEntityInputType,
+  ) => Promise<UsersReIssuancePasswordEntityOutputType>;
+
+  readonly updatePhone: (
+    entity: UsersUpdatePhoneEntityInputType,
+  ) => Promise<UsersUpdatePhoneEntityOutputType>;
+
+  readonly updateEmail: (
+    email: UsersUpdateEmailEntityInputType,
+  ) => Promise<UsersUpdateEmailEntityOutputType>;
 
   readonly login: (
     entity: UsersLoginEntityInputType,

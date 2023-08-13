@@ -8,10 +8,6 @@ import {
 } from '../dtos/users.delete.dto';
 import { UsersListInputDto, UsersListOutputDto } from '../dtos/users.list.dto';
 import {
-  UsersUpdateInputDto,
-  UsersUpdateOutputDto,
-} from '../dtos/users.update.dto';
-import {
   UsersLoginInputDto,
   UsersLoginOutputDto,
 } from '../dtos/users.login.dto';
@@ -23,6 +19,16 @@ import {
   UsersProfileInputDto,
   UsersProfileOutputDto,
 } from '../dtos/users.profile.dto';
+import {
+  UsersReIssuancePasswordInputDto,
+  UsersReIssuancePasswordOutputDto,
+  UsersUpdateEmailInputDto,
+  UsersUpdateEmailOutputDto,
+  UsersUpdateNicknameInputDto,
+  UsersUpdateNicknameOutputDto,
+  UsersUpdatePhoneInputDto,
+  UsersUpdatePhoneOutputDto,
+} from '../dtos/users.update.dto';
 
 export interface UsersDtoInterface {
   readonly create: (dto: UsersCreateInputDto) => Promise<UsersCreateOutputDto>;
@@ -31,7 +37,21 @@ export interface UsersDtoInterface {
 
   readonly list: (dto: UsersListInputDto) => Promise<UsersListOutputDto>;
 
-  readonly update: (dto: UsersUpdateInputDto) => Promise<UsersUpdateOutputDto>;
+  readonly updateNickname: (
+    dto: UsersUpdateNicknameInputDto,
+  ) => Promise<UsersUpdateNicknameOutputDto>;
+
+  readonly updatePhone: (
+    dto: UsersUpdatePhoneInputDto,
+  ) => Promise<UsersUpdatePhoneOutputDto>;
+
+  readonly updateEmail: (
+    dto: UsersUpdateEmailInputDto,
+  ) => Promise<UsersUpdateEmailOutputDto>;
+
+  readonly reIssuancePassword: (
+    dto: UsersReIssuancePasswordInputDto,
+  ) => Promise<UsersReIssuancePasswordOutputDto>;
 
   readonly login: (dto: UsersLoginInputDto) => Promise<UsersLoginOutputDto>;
 
