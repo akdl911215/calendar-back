@@ -44,9 +44,9 @@ export class CalendarService implements CalendarInterface {
     if (!dto?.id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
 
     const calendar = new CalendarModel();
-    calendar.setDelete(dto);
+    calendar._delete = dto;
 
-    return await this.repository.delete(calendar.getDelete());
+    return await this.repository.delete(calendar._delete);
   }
 
   public async inquiry(
@@ -57,9 +57,9 @@ export class CalendarService implements CalendarInterface {
     if (dto?.day < 0) throw new BadRequestException(DAY_REQUIRED);
 
     const calendar = new CalendarModel();
-    calendar.setInquiry(dto);
+    calendar._inquiry = dto;
 
-    return await this.repository.inquiry(calendar.getInquiry());
+    return await this.repository.inquiry(calendar._inquiry);
   }
 
   public async list(dto: CalendarListInputDto): Promise<CalendarListOutputDto> {
@@ -67,9 +67,9 @@ export class CalendarService implements CalendarInterface {
     if (!dto?.month) throw new BadRequestException(MONTH_REQUIRED);
 
     const calendar = new CalendarModel();
-    calendar.setList(dto);
+    calendar._list = dto;
 
-    return await this.repository.list(calendar.getList());
+    return await this.repository.list(calendar._list);
   }
 
   public async register(
@@ -83,9 +83,9 @@ export class CalendarService implements CalendarInterface {
       throw new BadRequestException(DAY_REQUIRED);
 
     const calendar = new CalendarModel();
-    calendar.setRegister(dto);
+    calendar._register = dto;
 
-    return await this.repository.register(calendar.getRegister());
+    return await this.repository.register(calendar._register);
   }
 
   public async update(
@@ -99,8 +99,8 @@ export class CalendarService implements CalendarInterface {
       throw new BadRequestException(DAY_REQUIRED);
 
     const calendar = new CalendarModel();
-    calendar.setUpdate(dto);
+    calendar._update = dto;
 
-    return await this.repository.update(calendar.getUpdate());
+    return await this.repository.update(calendar._update);
   }
 }

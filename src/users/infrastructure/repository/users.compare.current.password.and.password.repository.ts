@@ -31,9 +31,9 @@ export class UsersCompareCurrentPasswordAndPasswordRepository
     if (!dto?.id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
 
     const user = new UsersModel();
-    user.setCompareCurrentPasswordAndPassword({ id: dto.id });
+    user._compareCurrentPasswordAndPassword = { id: dto.id };
 
-    const { id } = user.getCompareCurrentPasswordAndPassword();
+    const { id } = user._compareCurrentPasswordAndPassword;
     const { currentPassword } = dto;
 
     const dbUser: CalendarUsers = await this.prisma.calendarUsers.findUnique({

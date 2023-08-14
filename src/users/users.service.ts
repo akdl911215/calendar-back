@@ -1,4 +1,9 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { UsersDtoInterface } from './interfaces/users.dto.interface';
 import {
   UsersCreateInputDto,
@@ -11,6 +16,10 @@ import {
 
 import { UsersListInputDto, UsersListOutputDto } from './dtos/users.list.dto';
 import {
+  UsersReIssuancePasswordInputDto,
+  UsersReIssuancePasswordOutputDto,
+  UsersUpdateEmailInputDto,
+  UsersUpdateEmailOutputDto,
   UsersUpdateNicknameInputDto,
   UsersUpdateNicknameOutputDto,
   UsersUpdatePhoneInputDto,
@@ -18,6 +27,7 @@ import {
 } from './dtos/users.update.dto';
 import {
   APP_ID_REQUIRED,
+  EMAIL_REQUIRED,
   NICKNAME_REQUIRED,
   PAGE_REQUIRED,
   PASSWORD_REQUIRED,
@@ -47,9 +57,10 @@ import { UsersFindByEntityInterface } from './interfaces/users.find.by.entity.in
 import { UsersEntityInterface } from './interfaces/users.entity.interface';
 import { UsersRefreshTokenReIssuanceDtoInterface } from './interfaces/users.refresh.token.re.issuance.dto.interface';
 import {
-  UsersFindByIdInputType,
-  UsersFindByIdOutputType,
-} from './entites/users.entity.interface.type';
+  ALREADY_EMAIL,
+  ALREADY_NICKNAME,
+  ALREADY_PHONE,
+} from '../_common/http/errors/409';
 
 interface UsersMergeInterface
   extends UsersDtoInterface,
@@ -103,6 +114,12 @@ export class UsersService implements UsersMergeInterface {
     if (!id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
     if (!nickname) throw new BadRequestException(NICKNAME_REQUIRED);
 
+    const userFindById = await this.findByRepository.userFindById({
+      id,
+    });
+    if (userFindById?.nickname === nickname)
+      throw new ConflictException(ALREADY_NICKNAME);
+
     const user = new UsersModel();
     user._updateNickname = dto;
 
@@ -118,11 +135,53 @@ export class UsersService implements UsersMergeInterface {
     if (!id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
     if (!phone) throw new BadRequestException(PHONE_REQUIRED);
 
+    const userFindById = await this.findByRepository.userFindById({
+      id,
+    });
+    if (userFindById?.phone === phone)
+      throw new ConflictException(ALREADY_PHONE);
+
     const user = new UsersModel();
     user._updatePhone = dto;
 
     return {
       response: await this.repository.updatePhone(user._updatePhone),
+    };
+  }
+
+  public async updateEmail(
+    dto: UsersUpdateEmailInputDto,
+  ): Promise<UsersUpdateEmailOutputDto> {
+    const { id, email } = dto;
+    if (!id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
+    if (!email) throw new BadRequestException(EMAIL_REQUIRED);
+
+    const userFindById = await this.findByRepository.userFindById({
+      id,
+    });
+    if (userFindById?.email === email)
+      throw new ConflictException(ALREADY_EMAIL);
+
+    const user = new UsersModel();
+    user._updateEmail = dto;
+
+    return { response: await this.repository.updateEmail(user._updateEmail) };
+  }
+
+  public async reIssuancePassword(
+    dto: UsersReIssuancePasswordInputDto,
+  ): Promise<UsersReIssuancePasswordOutputDto> {
+    const { id, password } = dto;
+    if (!id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
+    if (!password) throw new BadRequestException(PASSWORD_REQUIRED);
+
+    const user = new UsersModel();
+    user._reIssuancePassword = dto;
+
+    return {
+      response: await this.repository.reIssuancePassword(
+        user._reIssuancePassword,
+      ),
     };
   }
 
@@ -132,8 +191,8 @@ export class UsersService implements UsersMergeInterface {
     if (!password) throw new BadRequestException(PASSWORD_REQUIRED);
 
     const user = new UsersModel();
-    user.setLogin(dto);
-    return { response: await this.repository.login(user.getLogin()) };
+    user._login = dto;
+    return { response: await this.repository.login(user._login) };
   }
 
   public async logout(dto: UsersLogoutInputDto): Promise<UsersLogoutOutputDto> {
@@ -141,8 +200,8 @@ export class UsersService implements UsersMergeInterface {
     if (!id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
 
     const user = new UsersModel();
-    user.setLogout(dto);
-    return { response: await this.repository.logout(user.getLogout()) };
+    user._logout = dto;
+    return { response: await this.repository.logout(user._logout) };
   }
 
   public async profile(
@@ -152,8 +211,8 @@ export class UsersService implements UsersMergeInterface {
     if (!id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
 
     const user = new UsersModel();
-    user.setProfile(dto);
-    return { response: await this.repository.profile(user.getProfile()) };
+    user._profile = dto;
+    return { response: await this.repository.profile(user._profile) };
   }
 
   public async refresh(
@@ -165,23 +224,12 @@ export class UsersService implements UsersMergeInterface {
     if (!phone) throw new BadRequestException(PHONE_REQUIRED);
 
     const user = new UsersModel();
-    user.setRefreshTokenReIssuance(dto);
+    user._refreshTokenReIssuance = dto;
 
-    const re = await this.refreshTokenRepository.refresh(
-      user.getRefreshTokenReIssuance(),
-    );
-
-    return { response: re };
-  }
-
-  public async usersFindById(
-    dto: UsersFindByIdInputType,
-  ): Promise<UsersFindByIdOutputType> {
-    const { id } = dto;
-    if (!id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
-
-    const user = new UsersModel();
-    user.setUsersFindById(dto);
-    return await this.findByRepository.usersFindById(user.getUsersFindById());
+    return {
+      response: await this.refreshTokenRepository.refresh(
+        user._refreshTokenReIssuance,
+      ),
+    };
   }
 }

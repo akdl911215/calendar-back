@@ -13,31 +13,35 @@ export abstract class BaseCommonCoreDto {
   @IsDate()
   private deletedAt?: Date;
 
-  public setId(id: string): void {
-    this.id = id;
+  public set _id(param: { readonly id: string }) {
+    this.id = param.id;
   }
-  public getId(): string {
-    return this.id;
-  }
-
-  public setCreatedAt(createdAt: Date): void {
-    this.createdAt = createdAt;
-  }
-  public getCreatedAt(): Date {
-    return this.createdAt;
+  public get _id(): { readonly id: string } {
+    return { id: this.id };
   }
 
-  public setUpdatedAt(updatedAt: Date): void {
-    this.updatedAt = updatedAt;
+  public set _createdAt(param: { readonly createdAt: Date }) {
+    this.createdAt = param.createdAt;
   }
-  public getUpdatedAt(): Date {
-    return this.updatedAt;
+  public get _createdAt(): { readonly createdAt: Date } {
+    return { createdAt: this.createdAt };
   }
 
-  public setDeletedAt(deletedAt: Date): void {
-    this.deletedAt = deletedAt;
+  public set _updatedAt(param: { readonly updatedAt: Date }) {
+    this.updatedAt = param.updatedAt;
   }
-  public getDeletedAt(): Date {
-    return this.deletedAt;
+  public get _updatedAt(): { readonly updatedAt: Date } {
+    return {
+      updatedAt: this.updatedAt,
+    };
+  }
+
+  public set _deletedAt(param: { readonly deletedAt: Date }) {
+    this.deletedAt = param.deletedAt;
+  }
+  public get _deletedAt(): { readonly deletedAt: Date } {
+    return {
+      deletedAt: this.deletedAt,
+    };
   }
 }

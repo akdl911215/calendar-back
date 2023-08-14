@@ -8,6 +8,11 @@ export class UsersUpdateNicknameInputDto extends PickType(UsersBaseDto, [
   'nickname',
 ] as const) {}
 
+export class UsersUpdateNicknameInputDateDto extends PickType(
+  UsersUpdateNicknameInputDto,
+  ['nickname'] as const,
+) {}
+
 export class UsersUpdateNicknameOutputDto extends BaseOutputDto<CalendarUsers> {}
 
 export class UsersUpdatePhoneInputDto extends PickType(UsersBaseDto, [

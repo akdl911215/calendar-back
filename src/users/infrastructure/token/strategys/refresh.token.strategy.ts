@@ -31,7 +31,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
     payload: RefreshTokenPayloadType,
   ): Promise<BaseOutputDto<CalendarUsers>> {
     const token = request?.headers?.authorization?.split('Bearer ')[1];
-    const user = await this.service.usersFindById({ id: payload.id });
+    const user = await this.service.userFindById({ id: payload.id });
     const { refresh_token } = user;
 
     if (token !== refresh_token)

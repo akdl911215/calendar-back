@@ -33,10 +33,6 @@ import { TWO_HUNDRED_FOUR_DELETE_SUCCESS } from '../_common/http/success/204';
 import { UsersProfileOutputDto } from './dtos/users.profile.dto';
 import { UsersListInputDto, UsersListOutputDto } from './dtos/users.list.dto';
 import {
-  UsersUpdateInputDto,
-  UsersUpdateOutputDto,
-} from './dtos/users.update.dto';
-import {
   UsersLoginInputDto,
   UsersLoginOutputDto,
 } from './dtos/users.login.dto';
@@ -63,6 +59,10 @@ import { NOTFOUND_USER } from '../_common/http/errors/404';
 import { UNAUTHORIZED } from '../_common/http/errors/401';
 import { UsersRefreshTokenReIssuanceOutputDto } from './dtos/user.refresh.token.re.issuance.dto';
 import { UsersRefreshTokenReIssuanceDtoInterface } from './interfaces/users.refresh.token.re.issuance.dto.interface';
+import {
+  UsersUpdateNicknameInputDto,
+  UsersUpdateNicknameOutputDto,
+} from './dtos/users.update.dto';
 
 @Controller('users')
 export class UsersController {
@@ -182,16 +182,15 @@ export class UsersController {
     description: `${ALREADY_NICKNAME}, ${ALREADY_PHONE}`,
   })
   @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
-  @ApiBody({ type: UsersUpdateInputDto })
-  private async update(
+  @ApiBody({ type: UsersUpdateNicknameInputDto })
+  private async updateNickname(
     @Body()
-    dto: UsersUpdateInputDto,
+    dto: UsersUpdateNicknameInputDto,
     @User() user: UsersBaseDto,
-  ): Promise<UsersUpdateOutputDto> {
-    return await this.service.update({
-      ...dto,
+  ): Promise<UsersUpdateNicknameOutputDto> {
+    return await this.service.updateNickname({
       id: user.id,
-      appId: user.appId,
+      nickname: dto.nickname,
     });
   }
 

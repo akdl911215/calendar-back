@@ -21,3 +21,4 @@ export const APP_ID_REQUIRED = 'app_id_required';
 export const PHONE_REQUIRED = 'phone_required';
 export const NICKNAME_REQUIRED = 'nickname_required';
 export const PASSWORD_REQUIRED = 'password_required';
+export const EMAIL_REQUIRED = 'email_required';

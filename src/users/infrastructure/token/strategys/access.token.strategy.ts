@@ -28,7 +28,7 @@ export class AccessTokenStrategy extends PassportStrategy(
   async validate({
     id,
   }: StrategyPayloadIdInputDto): Promise<StrategyPayloadOutputDto> {
-    const user = await this.service.usersFindById({ id });
+    const user = await this.service.userFindById({ id });
     return { response: user };
   }
 }

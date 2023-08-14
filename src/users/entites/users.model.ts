@@ -8,117 +8,157 @@ export class UsersModel extends BaseCommonCoreDto {
   private email!: string;
   private refreshToken?: string;
 
-  public setUsersFindById(param: { id: string }): void {
-    super.setId(param.id);
+  public set _usersFindById(param: { readonly id: string }) {
+    super._id = { id: param.id };
   }
-  public getUsersFindById(): { id: string } {
-    return { id: super.getId() };
+  public get _usersFindById(): { readonly id: string } {
+    return { id: super._id.id };
   }
 
-  public setRefreshTokenReIssuance(param: {
-    id: string;
-    appId: string;
-    phone: string;
-  }): void {
-    super.setId(param.id);
-    this.appId = param.appId;
-    this.phone = param.phone;
+  public set _refreshTokenReIssuance(params: {
+    readonly id: string;
+    readonly appId: string;
+    readonly phone: string;
+  }) {
+    super._id = { id: params.id };
+    this.appId = params.appId;
+    this.phone = params.phone;
   }
-  public getRefreshTokenReIssuance(): {
-    id: string;
-    appId: string;
-    phone: string;
+  public get _refreshTokenReIssuance(): {
+    readonly id: string;
+    readonly appId: string;
+    readonly phone: string;
   } {
     return {
-      id: super.getId(),
+      id: super._id.id,
       appId: this.appId,
       phone: this.phone,
     };
   }
 
-  public setProfile(param: { id: string }): void {
-    super.setId(param.id);
+  public set _profile(param: { readonly id: string }) {
+    super._id = { id: param.id };
   }
-  public getProfile(): { id: string } {
+  public get _profile(): { readonly id: string } {
     return {
-      id: super.getId(),
+      id: super._id.id,
     };
   }
 
-  public setLogout(param: { id: string }): void {
-    super.setId(param.id);
+  public set _logout(param: { readonly id: string }) {
+    super._id = { id: param.id };
   }
-  public getLogout(): { id: string } {
+  public get _logout(): { readonly id: string } {
     return {
-      id: super.getId(),
+      id: super._id.id,
     };
   }
 
-  public setLogin(param: { appId: string; password: string }): void {
-    this.appId = param.appId;
-    this.password = param.password;
+  public set _login(params: {
+    readonly appId: string;
+    readonly password: string;
+  }) {
+    this.appId = params.appId;
+    this.password = params.password;
   }
-  public getLogin(): { appId: string; password: string } {
+  public get _login(): { readonly appId: string; readonly password: string } {
     return {
       appId: this.appId,
       password: this.password,
     };
   }
 
-  public set _updateNickname(param: { id: string; nickname: string }) {
-    super.setId(param.id);
-    this.nickname = param.nickname;
+  public set _updateNickname(params: {
+    readonly id: string;
+    readonly nickname: string;
+  }) {
+    super._id = { id: params.id };
+    this.nickname = params.nickname;
   }
   public get _updateNickname(): {
-    id: string;
-    nickname: string;
+    readonly id: string;
+    readonly nickname: string;
   } {
     return {
-      id: super.getId(),
+      id: super._id.id,
       nickname: this.nickname,
     };
   }
 
-  public set _updatePhone(param: { id: string; phone: string }) {
-    super.setId(param.id);
-    this.phone = param.phone;
+  public set _updatePhone(params: {
+    readonly id: string;
+    readonly phone: string;
+  }) {
+    super._id = { id: params.id };
+    this.phone = params.phone;
   }
   public get _updatePhone(): {
     id: string;
     phone: string;
   } {
     return {
-      id: super.getId(),
+      id: super._id.id,
       phone: this.phone,
     };
   }
 
-  public setInquiry(param: { id: string }): void {
-    super.setId(param.id);
+  public set _updateEmail(params: {
+    readonly id: string;
+    readonly email: string;
+  }) {
+    super._id = { id: params.id };
+    this.email = params.email;
   }
-  public getInquiry(): { id: string } {
+  public get _updateEmail(): { readonly id: string; readonly email: string } {
     return {
-      id: super.getId(),
+      id: this._id.id,
+      email: this.email,
+    };
+  }
+
+  public set _reIssuancePassword(params: {
+    readonly id: string;
+    readonly password: string;
+  }) {
+    super._id = { id: params.id };
+    this.password = params.password;
+  }
+  public get _reIssuancePassword(): {
+    readonly id: string;
+    readonly password: string;
+  } {
+    return {
+      id: super._id.id,
+      password: this.password,
+    };
+  }
+
+  public set _inquiry(param: { readonly id: string }) {
+    super._id = { id: param.id };
+  }
+  public get _inquiry(): { readonly id: string } {
+    return {
+      id: super._id.id,
     };
   }
 
   public set _delete(param: { id: string }) {
-    super.setId(param.id);
+    super._id = { id: param.id };
   }
   public get _delete(): { id: string } {
     return {
-      id: super.getId(),
+      id: super._id.id,
     };
   }
 
-  public set _create(param: {
-    appId: string;
-    phone: string;
-    nickname: string;
-    password: string;
-    email: string;
+  public set _create(params: {
+    readonly appId: string;
+    readonly phone: string;
+    readonly nickname: string;
+    readonly password: string;
+    readonly email: string;
   }) {
-    const { appId, phone, nickname, password, email } = param;
+    const { appId, phone, nickname, password, email } = params;
     this.appId = appId;
     this.phone = phone;
     this.nickname = nickname;
@@ -126,11 +166,11 @@ export class UsersModel extends BaseCommonCoreDto {
     this.email = email;
   }
   public get _create(): {
-    appId: string;
-    phone: string;
-    nickname: string;
-    password: string;
-    email: string;
+    readonly appId: string;
+    readonly phone: string;
+    readonly nickname: string;
+    readonly password: string;
+    readonly email: string;
   } {
     return {
       appId: this.appId,
@@ -141,12 +181,14 @@ export class UsersModel extends BaseCommonCoreDto {
     };
   }
 
-  public setCompareCurrentPasswordAndPassword(param: { id: string }): void {
-    super.setId(param.id);
+  public set _compareCurrentPasswordAndPassword(param: {
+    readonly id: string;
+  }) {
+    super._id = { id: param.id };
   }
-  public getCompareCurrentPasswordAndPassword(): { id: string } {
+  public get _compareCurrentPasswordAndPassword(): { readonly id: string } {
     return {
-      id: super.getId(),
+      id: super._id.id,
     };
   }
 }

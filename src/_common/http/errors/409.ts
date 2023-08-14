@@ -7,3 +7,4 @@ export const UPDATE_FAILED = 'update_failed';
 export const ALREADY_NICKNAME = 'already_nickname';
 export const ALREADY_PHONE = 'already_phone';
 export const ALREADY_APP_ID = 'already_app_id';
+export const ALREADY_EMAIL = 'already_email';

@@ -98,7 +98,3 @@ export type UsersRefreshReIssuanceEntityOutputType = {
   readonly access_token: string | null;
   readonly refresh_token: string | null;
 };
-
-export type UsersFindByIdInputType = { readonly id: string };
-
-export type UsersFindByIdOutputType = CalendarUsers;

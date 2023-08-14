@@ -13,10 +13,10 @@ export class CalendarModel extends BaseCommonCoreDto {
   private month!: number;
   private day!: number;
 
-  public setUpdate(param: CalendarUpdateInputDto): void {
+  public set _update(param: CalendarUpdateInputDto) {
     const { id, authorId, todo, done, month, day } = param;
 
-    this.setId(id);
+    this._id = { id };
     this.authorId = authorId;
     this.todo = todo;
     this.done = done;
@@ -24,16 +24,16 @@ export class CalendarModel extends BaseCommonCoreDto {
     this.day = day;
   }
 
-  public getUpdate(): {
-    id: string;
-    authorId: string;
-    todo: string;
-    done: boolean;
-    month: number;
-    day: number;
+  public get _update(): {
+    readonly id: string;
+    readonly authorId: string;
+    readonly todo: string;
+    readonly done: boolean;
+    readonly month: number;
+    readonly day: number;
   } {
     return {
-      id: super.getId(),
+      id: super._id.id,
       authorId: this.authorId,
       todo: this.todo,
       done: this.done,
@@ -42,7 +42,7 @@ export class CalendarModel extends BaseCommonCoreDto {
     };
   }
 
-  public setRegister(param: CalendarRegisterInputDto): void {
+  public set _register(param: CalendarRegisterInputDto) {
     const { authorId, todo, month, day } = param;
 
     this.authorId = authorId;
@@ -50,11 +50,11 @@ export class CalendarModel extends BaseCommonCoreDto {
     this.month = month;
     this.day = day;
   }
-  public getRegister(): {
-    authorId: string;
-    todo: string;
-    month: number;
-    day: number;
+  public get _register(): {
+    readonly authorId: string;
+    readonly todo: string;
+    readonly month: number;
+    readonly day: number;
   } {
     return {
       authorId: this.authorId,
@@ -64,27 +64,31 @@ export class CalendarModel extends BaseCommonCoreDto {
     };
   }
 
-  public setList(param: CalendarListInputDto): void {
+  public set _list(param: CalendarListInputDto) {
     const { authorId, month } = param;
 
     this.authorId = authorId;
     this.month = month;
   }
-  public getList(): { authorId: string; month: number } {
+  public get _list(): { readonly authorId: string; readonly month: number } {
     return {
       authorId: this.authorId,
       month: this.month,
     };
   }
 
-  public setInquiry(param: CalendarInquiryInputDto): void {
+  public set _inquiry(param: CalendarInquiryInputDto) {
     const { authorId, month, day } = param;
 
     this.authorId = authorId;
     this.month = month;
     this.day = day;
   }
-  public getInquiry(): { authorId: string; month: number; day: number } {
+  public get _inquiry(): {
+    readonly authorId: string;
+    readonly month: number;
+    readonly day: number;
+  } {
     return {
       authorId: this.authorId,
       month: this.month,
@@ -92,22 +96,23 @@ export class CalendarModel extends BaseCommonCoreDto {
     };
   }
 
-  public setDelete(param: CalendarDeleteInputDto): void {
-    const { authorId, todo, id } = param;
+  public set _delete(params: CalendarDeleteInputDto) {
+    const { authorId, todo, id } = params;
 
     this.todo = todo;
     this.authorId = authorId;
-    super.setId(id);
+    super._id = { id };
   }
-  public getDelete(): {
-    todo: string;
-    authorId: string;
-    id: string;
+
+  public get _delete(): {
+    readonly id: string;
+    readonly authorId: string;
+    readonly todo: string;
   } {
     return {
-      todo: this.todo,
+      id: this._id.id,
       authorId: this.authorId,
-      id: super.getId(),
+      todo: this.todo,
     };
   }
 }

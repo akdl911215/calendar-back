@@ -34,8 +34,6 @@ import {
   UsersCreateEntityOutputType,
   UsersDeleteEntityInputType,
   UsersDeleteEntityOutputType,
-  UsersFindByIdInputType,
-  UsersFindByIdOutputType,
   UsersListEntityInputType,
   UsersListEntityOutputType,
   UsersLoginEntityInputType,
@@ -55,6 +53,18 @@ import {
   UsersUpdatePhoneEntityInputType,
   UsersUpdatePhoneEntityOutputType,
 } from './entites/users.entity.interface.type';
+import {
+  UsersFindByAppIdInputType,
+  UsersFindByAppIdOutputType,
+  UsersFindByEmailInputType,
+  UsersFindByEmailOutputType,
+  UsersFindByIdInputType,
+  UsersFindByIdOutputType,
+  UsersFindByNicknameInputType,
+  UsersFindByNicknameOutputType,
+  UsersFindByPhoneInputType,
+  UsersFindByPhoneOutputType,
+} from './entites/users.find.by.entity.interface.type';
 
 @Injectable()
 @Dependencies([
@@ -442,17 +452,57 @@ export class UsersRepository
     }
   }
 
-  public async usersFindById(
+  public async userFindById(
     entity: UsersFindByIdInputType,
   ): Promise<UsersFindByIdOutputType> {
-    const { id } = entity;
-
     const userFindById: CalendarUsers =
       await this.prisma.calendarUsers.findUnique({
-        where: { id },
+        where: entity,
       });
     if (!userFindById) throw new NotFoundException(NOTFOUND_USER);
 
     return userFindById;
+  }
+
+  public async usersFindByAppId(
+    entity: UsersFindByAppIdInputType,
+  ): Promise<UsersFindByAppIdOutputType> {
+    const userFindByAppId: CalendarUsers =
+      await this.prisma.calendarUsers.findUnique({
+        where: { app_id: entity.appId },
+      });
+    if (!userFindByAppId) throw new NotFoundException(NOTFOUND_USER);
+
+    return userFindByAppId;
+  }
+
+  public async usersFindByEmail(
+    entity: UsersFindByEmailInputType,
+  ): Promise<UsersFindByEmailOutputType> {
+    const userFindByEmail: CalendarUsers =
+      await this.prisma.calendarUsers.findUnique({ where: entity });
+    if (!userFindByEmail) throw new NotFoundException(NOTFOUND_USER);
+
+    return userFindByEmail;
+  }
+
+  public async usersFindByNickname(
+    entity: UsersFindByNicknameInputType,
+  ): Promise<UsersFindByNicknameOutputType> {
+    const userFindByNickname: CalendarUsers =
+      await this.prisma.calendarUsers.findUnique({ where: entity });
+    if (!userFindByNickname) throw new NotFoundException(NOTFOUND_USER);
+
+    return userFindByNickname;
+  }
+
+  public async usersFindByPhone(
+    entity: UsersFindByPhoneInputType,
+  ): Promise<UsersFindByPhoneOutputType> {
+    const userFindByPhone: CalendarUsers =
+      await this.prisma.calendarUsers.findUnique({ where: entity });
+    if (!userFindByPhone) throw new NotFoundException(NOTFOUND_USER);
+
+    return userFindByPhone;
   }
 }
