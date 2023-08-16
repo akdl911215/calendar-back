@@ -11,6 +11,7 @@ import { UsersListInputDto } from './dtos/users.list.dto';
 import { jestErrorHandling } from '../_common/dtos/jest.error.handling';
 import { BadRequestException } from '@nestjs/common';
 import { DATE } from '../_common/dtos/get.date';
+import { PAGE_REQUIRED, TAKE_REQUIRED } from '../_common/http/errors/400';
 
 describe('Users List Process', () => {
   let service: UsersService;
@@ -33,6 +34,14 @@ describe('Users List Process', () => {
         { provide: 'TOKEN_SERVICE', useClass: TokenService },
         ConfigService,
         JwtService,
+        {
+          provide: 'FIND_BY_REPOSITORY',
+          useClass: UsersRepository,
+        },
+        {
+          provide: 'REFRESH_TOKEN_REPOSITORY',
+          useClass: UsersRepository,
+        },
       ],
     }).compile();
 
@@ -59,7 +68,7 @@ describe('Users List Process', () => {
           console.log(response);
           expect(response).toStrictEqual({
             error: 'Bad Request',
-            message: 'take_required',
+            message: TAKE_REQUIRED,
             statusCode: 400,
           });
         }
@@ -84,7 +93,7 @@ describe('Users List Process', () => {
           console.log(response);
           expect(response).toStrictEqual({
             error: 'Bad Request',
-            message: 'page_required',
+            message: PAGE_REQUIRED,
             statusCode: 400,
           });
         }
@@ -93,34 +102,52 @@ describe('Users List Process', () => {
 
     it('success should user list', async () => {
       const dto: UsersListInputDto = {
-        take: 1,
+        take: 2,
         page: 1,
       };
 
-      const listDtoArr = [
-        {
-          id: 'eb999c69-d784-4b2f-a7a5-bbf31172b7c4',
-          appId: 'testId',
-          password: 'qwer!234',
-          phone: '01012312344',
-          nickname: 'testNick',
-          refreshToken: null,
-          createdAt: DATE,
-          updatedAt: DATE,
-          deletedAt: null,
-        },
-      ];
+      const listDto = {
+        id: 'eb999c69-d784-4b2f-a7a5-bbf31172b7c4',
+        app_id: 'testId',
+        password: 'qwer!234',
+        phone: '01012312344',
+        nickname: 'testNick',
+        email: 'akdl911215@naver.com',
+        refresh_token: null,
+        created_at: DATE,
+        updated_at: DATE,
+        deleted_at: null,
+      };
+      const listDtoArr = [listDto, listDto];
+      const responseList = listDtoArr.map((el) => {
+        return {
+          id: el.id,
+          app_id: el.app_id,
+          nickname: el.nickname,
+          email: el.email,
+          phone: el.phone,
+          created_at: el.created_at,
+        };
+      });
 
-      jest.spyOn(prisma.users, 'findMany').mockResolvedValue(listDtoArr);
+      const countMock = jest
+        .spyOn(prisma.calendarUsers, 'count')
+        .mockResolvedValue(2);
+
+      const findManyMock = jest
+        .spyOn(prisma.calendarUsers, 'findMany')
+        .mockResolvedValue(listDtoArr);
 
       try {
         const { response } = await service.list(dto);
-        console.log(response);
+        console.log('response.current_list : ', response.current_list);
 
-        expect(response.currentList).toStrictEqual(listDtoArr);
-        expect(response.totalTake).toStrictEqual(1);
-        expect(response.totalPages).toStrictEqual(1);
-        expect(response.currentPage).toStrictEqual(1);
+        expect(countMock).toHaveBeenCalledTimes(1);
+        expect(findManyMock).toHaveBeenCalledTimes(1);
+        expect(response.current_list).toStrictEqual(responseList);
+        expect(response.total_take).toStrictEqual(2);
+        expect(response.total_pages).toStrictEqual(1);
+        expect(response.current_page).toStrictEqual(1);
       } catch (e: any) {
         console.log(e);
       }

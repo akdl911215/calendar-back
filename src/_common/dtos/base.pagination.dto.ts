@@ -40,14 +40,14 @@ export class BaseCursorPaginationInputDto {
 
 export class BaseOffsetPaginationOutputDto<T> {
   @IsNumber()
-  public readonly currentPage!: number;
+  public readonly current_page!: number;
 
   @IsNumber()
-  public readonly totalPages!: number;
+  public readonly total_pages!: number;
 
   @IsNumber()
-  public readonly totalTake!: number;
+  public readonly total_take!: number;
 
   @IsArray()
-  public readonly currentList!: T[];
+  public readonly current_list!: T[];
 }

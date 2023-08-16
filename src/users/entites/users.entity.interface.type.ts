@@ -22,9 +22,10 @@ export type UsersListEntityInputType = {
 
 export type UsersListEntityOutputType = BaseOffsetPaginationOutputDto<{
   readonly id: string;
-  readonly appId: string;
+  readonly app_id: string;
   readonly phone: string;
   readonly nickname: string;
+  readonly email: string;
   readonly created_at: Date;
 }>;
 

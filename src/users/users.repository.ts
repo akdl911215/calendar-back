@@ -15,11 +15,7 @@ import {
   getListOffsetPagination,
   PageReturnType,
 } from '../_common/dtos/get.list.page.nation';
-import {
-  ALREADY_APP_ID,
-  ALREADY_NICKNAME,
-  ALREADY_PHONE,
-} from '../_common/http/errors/409';
+import { ALREADY_USER } from '../_common/http/errors/409';
 import { HashEncodedService } from './infrastructure/bcrypt/hash.encoded.service';
 import { HashDecodedService } from './infrastructure/bcrypt/hash.decoded.service';
 import { TokenService } from './infrastructure/token/token.service';
@@ -91,23 +87,12 @@ export class UsersRepository
   ): Promise<UsersCreateEntityOutputType> {
     const { appId, phone, nickname, password, email } = entity;
 
-    const userFindByAppId: CalendarUsers =
-      await this.prisma.calendarUsers.findUnique({
-        where: { app_id: appId },
-      });
-    if (userFindByAppId) throw new ConflictException(ALREADY_APP_ID);
-
-    const userFindByPhone: CalendarUsers =
-      await this.prisma.calendarUsers.findUnique({
-        where: { phone },
-      });
-    if (userFindByPhone) throw new ConflictException(ALREADY_PHONE);
-
-    const userFindByNickname: CalendarUsers =
-      await this.prisma.calendarUsers.findUnique({
-        where: { nickname },
-      });
-    if (userFindByNickname) throw new ConflictException(ALREADY_NICKNAME);
+    const searchUser: CalendarUsers = await this.prisma.calendarUsers.findFirst(
+      {
+        where: { OR: [{ app_id: appId }, { phone }, { nickname }, { email }] },
+      },
+    );
+    if (searchUser) throw new ConflictException(ALREADY_USER);
 
     const {
       response: { encoded: hashPassword },
@@ -161,11 +146,15 @@ export class UsersRepository
     }
   }
 
+  private count = async (): Promise<number> =>
+    await this.prisma.calendarUsers.count({
+      where: { deleted_at: null },
+    });
+
   public async list(
     entity: UsersListEntityInputType,
   ): Promise<UsersListEntityOutputType> {
-    const userCount: number = await this.prisma.calendarUsers.count();
-    const totalTake: number = userCount;
+    const totalTake: number = await this.count();
 
     const pagination: PageReturnType = getListOffsetPagination({
       page: entity.page,
@@ -184,21 +173,22 @@ export class UsersRepository
       take: pagination.take,
     });
 
-    const currentList = list.map((el) => {
+    const currentList = list.map((el: CalendarUsers) => {
       return {
         id: el.id,
-        appId: el.app_id,
+        app_id: el.app_id,
         nickname: el.nickname,
+        email: el.email,
         phone: el.phone,
         created_at: el.created_at,
       };
     });
 
     return {
-      currentList,
-      totalTake,
-      totalPages: pagination.totalPages,
-      currentPage: pagination.currentPage,
+      current_list: currentList,
+      total_take: totalTake,
+      total_pages: pagination.totalPages,
+      current_page: pagination.currentPage,
     };
   }
 
@@ -333,13 +323,16 @@ export class UsersRepository
       });
     if (!userFindByAppId) throw new BadRequestException(NO_MATCH_APP_ID);
 
+    console.log('userFindByAppId.password : ', userFindByAppId.password);
     const {
       response: { decoded },
     } = await this.compare.decoded({
       password,
       hashPassword: userFindByAppId.password,
     });
+    console.log('decoded : ', decoded);
     const comparePassword: boolean = decoded;
+    console.log('!comparePassword : ', !comparePassword);
     if (!comparePassword) throw new BadRequestException(NO_MATCH_PASSWORD);
 
     const accessPayload: AccessTokenPayloadType = {

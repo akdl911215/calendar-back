@@ -11,6 +11,8 @@ import { UsersDeleteInputDto } from './dtos/users.delete.dto';
 import { jestErrorHandling } from '../_common/dtos/jest.error.handling';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { DATE } from '../_common/dtos/get.date';
+import { UNIQUE_ID_REQUIRED } from '../_common/http/errors/400';
+import { NOTFOUND_USER } from '../_common/http/errors/404';
 
 describe('Users Delete Process', () => {
   let service: UsersService;
@@ -33,6 +35,14 @@ describe('Users Delete Process', () => {
         { provide: 'TOKEN_SERVICE', useClass: TokenService },
         ConfigService,
         JwtService,
+        {
+          provide: 'FIND_BY_REPOSITORY',
+          useClass: UsersRepository,
+        },
+        {
+          provide: 'REFRESH_TOKEN_REPOSITORY',
+          useClass: UsersRepository,
+        },
       ],
     }).compile();
 
@@ -58,7 +68,7 @@ describe('Users Delete Process', () => {
           console.log(response);
           expect(response).toStrictEqual({
             statusCode: 400,
-            message: 'unique_id_required',
+            message: UNIQUE_ID_REQUIRED,
             error: 'Bad Request',
           });
         }
@@ -70,7 +80,7 @@ describe('Users Delete Process', () => {
         id: 'eb999c69-d784-4b2f-a7a5-bbf31172b7c4',
       };
 
-      jest.spyOn(prisma.users, 'findUnique').mockResolvedValue(null);
+      jest.spyOn(prisma.calendarUsers, 'findUnique').mockResolvedValue(null);
 
       try {
         await service.delete(dto);
@@ -84,7 +94,7 @@ describe('Users Delete Process', () => {
           console.log(response);
           expect(response).toStrictEqual({
             error: 'Not Found',
-            message: 'user',
+            message: NOTFOUND_USER,
             statusCode: 404,
           });
         }
@@ -98,18 +108,21 @@ describe('Users Delete Process', () => {
 
       const deleteDto = {
         id: dto.id,
-        appId: 'testId',
+        app_id: 'testId',
         password: 'qwer!234',
         phone: '01012312344',
         nickname: 'testNick',
-        refreshToken: null,
-        createdAt: DATE,
-        updatedAt: DATE,
-        deletedAt: DATE,
+        email: 'akdl911215@naver.com',
+        refresh_token: null,
+        created_at: DATE,
+        updated_at: DATE,
+        deleted_at: DATE,
       };
 
-      jest.spyOn(prisma.users, 'findUnique').mockResolvedValue(deleteDto);
-      jest.spyOn(prisma.users, 'update').mockResolvedValue(deleteDto);
+      jest
+        .spyOn(prisma.calendarUsers, 'findUnique')
+        .mockResolvedValue(deleteDto);
+      jest.spyOn(prisma.calendarUsers, 'update').mockResolvedValue(deleteDto);
 
       try {
         const { response } = await service.delete(dto);

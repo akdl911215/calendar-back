@@ -8,8 +8,9 @@ export class UsersListInputDto extends BaseOffsetPaginationInputDto {}
 
 export class UsersListOutputDto extends BaseOutputDto<
   BaseOffsetPaginationOutputDto<{
+    readonly email: string;
     readonly id: string;
-    readonly appId: string;
+    readonly app_id: string;
     readonly phone: string;
     readonly nickname: string;
     readonly created_at: Date;

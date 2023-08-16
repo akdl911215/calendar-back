@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersLoginInputDto } from './dtos/users.login.dto';
 import { jestErrorHandling } from '../_common/dtos/jest.error.handling';
 import { BadRequestException } from '@nestjs/common';
+import { DATE } from '../_common/dtos/get.date';
 
 describe('Users Login Process', () => {
   let service: UsersService;
@@ -29,11 +30,19 @@ describe('Users Login Process', () => {
           provide: 'HASH_ENCODED',
           useClass: HashEncodedService,
         },
-        HashDecodedService,
         { provide: 'HASH_DECODED', useClass: HashDecodedService },
+        HashDecodedService,
         { provide: 'TOKEN_SERVICE', useClass: TokenService },
         ConfigService,
         JwtService,
+        {
+          provide: 'FIND_BY_REPOSITORY',
+          useClass: UsersRepository,
+        },
+        {
+          provide: 'REFRESH_TOKEN_REPOSITORY',
+          useClass: UsersRepository,
+        },
       ],
     }).compile();
 
@@ -99,7 +108,7 @@ describe('Users Login Process', () => {
         password: 'qwer!234',
       };
 
-      jest.spyOn(prisma.users, 'findUnique').mockResolvedValue(null);
+      jest.spyOn(prisma.calendarUsers, 'findUnique').mockResolvedValue(null);
       try {
         await service.login(dto);
       } catch (e: any) {
@@ -125,7 +134,8 @@ describe('Users Login Process', () => {
         password: 'qwer!234',
       };
 
-      jest.spyOn(prisma.users, 'findUnique').mockResolvedValue(null);
+      jest.spyOn(prisma.calendarUsers, 'findUnique').mockResolvedValue(null);
+
       try {
         await service.login(dto);
       } catch (e: any) {
@@ -151,9 +161,33 @@ describe('Users Login Process', () => {
         password: 'qwer!234',
       };
 
+      const loginDto = {
+        id: 'eb999c69-d784-4b2f-a7a5-bbf31172b7c4',
+        app_id: 'master',
+        password: 'qwer!234',
+        phone: '01012312344',
+        nickname: 'testNick',
+        email: 'akdl911215@naver.com',
+        refresh_token: null,
+        created_at: DATE,
+        updated_at: DATE,
+        deleted_at: null,
+      };
+
+      const findUniqueMock = jest
+        .spyOn(prisma.calendarUsers, 'findUnique')
+        .mockResolvedValue(loginDto);
+
+      const decodeMock = jest
+        .spyOn(decode, 'decoded')
+        .mockResolvedValue({ response: { decoded: true } });
+
       try {
         const { response } = await service.login(dto);
         console.log(response);
+
+        expect(decodeMock).toHaveBeenCalledTimes(1);
+        expect(findUniqueMock).toHaveBeenCalledTimes(1);
       } catch (e: any) {
         console.log(e);
       }

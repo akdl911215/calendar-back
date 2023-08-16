@@ -78,12 +78,13 @@ export class UsersService implements UsersMergeInterface {
   ) {}
 
   public async create(dto: UsersCreateInputDto): Promise<UsersCreateOutputDto> {
-    const { appId, phone, nickname, password } = dto;
+    const { appId, phone, nickname, password, email } = dto;
 
     if (!appId) throw new BadRequestException(APP_ID_REQUIRED);
     if (!password) throw new BadRequestException(PASSWORD_REQUIRED);
     if (!phone) throw new BadRequestException(PHONE_REQUIRED);
     if (!nickname) throw new BadRequestException(NICKNAME_REQUIRED);
+    if (!email) throw new BadRequestException(EMAIL_REQUIRED);
 
     const user = new UsersModel();
     user._create = dto;
