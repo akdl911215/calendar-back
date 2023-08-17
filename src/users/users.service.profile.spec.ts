@@ -11,6 +11,8 @@ import { UsersProfileInputDto } from './dtos/users.profile.dto';
 import { jestErrorHandling } from '../_common/dtos/jest.error.handling';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { DATE } from '../_common/dtos/get.date';
+import { NOTFOUND_USER } from '../_common/http/errors/404';
+import { UNIQUE_ID_REQUIRED } from '../_common/http/errors/400';
 
 describe('Users Profile Process', () => {
   let service: UsersService;
@@ -29,6 +31,14 @@ describe('Users Profile Process', () => {
         { provide: 'TOKEN_SERVICE', useClass: TokenService },
         ConfigService,
         JwtService,
+        {
+          provide: 'FIND_BY_REPOSITORY',
+          useClass: UsersRepository,
+        },
+        {
+          provide: 'REFRESH_TOKEN_REPOSITORY',
+          useClass: UsersRepository,
+        },
       ],
     }).compile();
 
@@ -54,7 +64,7 @@ describe('Users Profile Process', () => {
           console.log(response);
           expect(response).toStrictEqual({
             error: 'Bad Request',
-            message: 'unique_id_required',
+            message: UNIQUE_ID_REQUIRED,
             statusCode: 400,
           });
         }
@@ -66,7 +76,7 @@ describe('Users Profile Process', () => {
         id: 'eb999c69-d784-4b2f-a7a5-bbf31172b7c4',
       };
 
-      jest.spyOn(prisma.users, 'findUnique').mockResolvedValue(null);
+      jest.spyOn(prisma.calendarUsers, 'findUnique').mockResolvedValue(null);
 
       try {
         await service.profile(dto);
@@ -80,7 +90,7 @@ describe('Users Profile Process', () => {
           console.log(response);
           expect(response).toStrictEqual({
             error: 'Not Found',
-            message: 'user',
+            message: NOTFOUND_USER,
             statusCode: 404,
           });
         }
@@ -94,22 +104,26 @@ describe('Users Profile Process', () => {
 
       const profileDto = {
         id: dto.id,
-        appId: 'test',
+        app_id: 'test',
         nickname: 'test',
         password: 'test',
         phone: 'test',
-        refreshToken: null,
-        createdAt: DATE,
-        updatedAt: DATE,
-        deletedAt: null,
+        email: 'akdl911215@naver.com',
+        refresh_token: null,
+        created_at: DATE,
+        updated_at: DATE,
+        deleted_at: null,
       };
 
-      jest.spyOn(prisma.users, 'findUnique').mockResolvedValue(profileDto);
+      const findUniqueMock = jest
+        .spyOn(prisma.calendarUsers, 'findUnique')
+        .mockResolvedValue(profileDto);
 
       try {
         const { response } = await service.profile(dto);
         console.log(response);
 
+        expect(findUniqueMock).toHaveBeenCalledTimes(1);
         expect(response).toStrictEqual(profileDto);
       } catch (e: any) {
         console.log(e);

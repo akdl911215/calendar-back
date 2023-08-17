@@ -11,6 +11,8 @@ import { UsersLogoutInputDto } from './dtos/users.logout.dto';
 import { jestErrorHandling } from '../_common/dtos/jest.error.handling';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { DATE } from '../_common/dtos/get.date';
+import { UNIQUE_ID_REQUIRED } from '../_common/http/errors/400';
+import { NOTFOUND_USER } from '../_common/http/errors/404';
 
 describe('Users Logout Process', () => {
   let service: UsersService;
@@ -29,6 +31,14 @@ describe('Users Logout Process', () => {
         { provide: 'TOKEN_SERVICE', useClass: TokenService },
         ConfigService,
         JwtService,
+        {
+          provide: 'FIND_BY_REPOSITORY',
+          useClass: UsersRepository,
+        },
+        {
+          provide: 'REFRESH_TOKEN_REPOSITORY',
+          useClass: UsersRepository,
+        },
       ],
     }).compile();
 
@@ -54,7 +64,7 @@ describe('Users Logout Process', () => {
           console.log(response);
           expect(response).toStrictEqual({
             error: 'Bad Request',
-            message: 'unique_id_required',
+            message: UNIQUE_ID_REQUIRED,
             statusCode: 400,
           });
         }
@@ -66,22 +76,14 @@ describe('Users Logout Process', () => {
         id: 'eb999c69-d784-4b2f-a7a5-bbf31172b7c4',
       };
 
-      // const logoutDto = {
-      //   id: dto.id,
-      //   appId: 'test',
-      //   nickname: 'test',
-      //   password: 'test',
-      //   phone: 'test',
-      //   refreshToken: null,
-      //   createdAt: DATE,
-      //   updatedAt: DATE,
-      //   deletedAt: null,
-      // };
-
-      jest.spyOn(prisma.users, 'findUnique').mockResolvedValue(null);
+      const findUniqueMock = jest
+        .spyOn(prisma.calendarUsers, 'findUnique')
+        .mockResolvedValue(null);
 
       try {
         await service.logout(dto);
+
+        expect(findUniqueMock).toHaveBeenCalledTimes(1);
       } catch (e: any) {
         console.log(e);
 
@@ -92,7 +94,7 @@ describe('Users Logout Process', () => {
           console.log(response);
           expect(response).toStrictEqual({
             error: 'Not Found',
-            message: 'user',
+            message: NOTFOUND_USER,
             statusCode: 404,
           });
         }
@@ -106,18 +108,24 @@ describe('Users Logout Process', () => {
 
       const logoutDto = {
         id: dto.id,
-        appId: 'test',
+        app_id: 'test',
         nickname: 'test',
         password: 'test',
+        email: 'akdl911215@naver.com',
         phone: 'test',
-        refreshToken: null,
-        createdAt: DATE,
-        updatedAt: DATE,
-        deletedAt: null,
+        refresh_token: null,
+        created_at: DATE,
+        updated_at: DATE,
+        deleted_at: null,
       };
 
-      jest.spyOn(prisma.users, 'findUnique').mockResolvedValue(logoutDto);
-      jest.spyOn(prisma.users, 'update').mockResolvedValue(logoutDto);
+      const findUniqueMock = jest
+        .spyOn(prisma.calendarUsers, 'findUnique')
+        .mockResolvedValue(logoutDto);
+
+      const updateMock = jest
+        .spyOn(prisma.calendarUsers, 'update')
+        .mockResolvedValue(logoutDto);
 
       try {
         const {
@@ -125,6 +133,8 @@ describe('Users Logout Process', () => {
         } = await service.logout(dto);
         console.log(logout);
 
+        expect(findUniqueMock).toHaveBeenCalledTimes(1);
+        expect(updateMock).toHaveBeenCalledTimes(1);
         expect(logout).toStrictEqual(true);
       } catch (e: any) {
         console.log(e);

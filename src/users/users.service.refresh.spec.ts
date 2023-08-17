@@ -31,6 +31,14 @@ describe('Users Profile Process', () => {
         ConfigService,
         TokenService,
         JwtService,
+        {
+          provide: 'FIND_BY_REPOSITORY',
+          useClass: UsersRepository,
+        },
+        {
+          provide: 'REFRESH_TOKEN_REPOSITORY',
+          useClass: UsersRepository,
+        },
       ],
     }).compile();
 
@@ -127,23 +135,27 @@ describe('Users Profile Process', () => {
 
       const refreshDto = {
         id: dto.id,
-        appId: 'test',
+        app_id: 'test',
         nickname: 'test',
         password: 'test',
         phone: 'test',
-        refreshToken: null,
-        createdAt: DATE,
-        updatedAt: DATE,
-        deletedAt: null,
+        email: 'akdl911215@naver.com',
+        refresh_token: null,
+        created_at: DATE,
+        updated_at: DATE,
+        deleted_at: null,
       };
 
-      jest.spyOn(prisma.users, 'update').mockResolvedValue(refreshDto);
+      const updateMock = jest
+        .spyOn(prisma.calendarUsers, 'update')
+        .mockResolvedValue(refreshDto);
       try {
         const { response } = await service.refresh(dto);
         console.log(response);
 
+        expect(updateMock).toHaveBeenCalledTimes(1);
         expect(response.id).toStrictEqual(refreshDto.id);
-        expect(response.appId).toStrictEqual(refreshDto.appId);
+        expect(response.app_id).toStrictEqual(refreshDto.app_id);
         expect(response.phone).toStrictEqual(refreshDto.phone);
       } catch (e: any) {
         console.log(e);
