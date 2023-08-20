@@ -14,8 +14,8 @@ export class AccessTokenStrategy extends PassportStrategy(
   'JWT-ACCESS-TOKEN',
 ) {
   constructor(
-    @Inject('SERVICE')
-    private readonly service: UsersFindByEntityInterface,
+    @Inject('FIND_BY_REPOSITORY')
+    private readonly repository: UsersFindByEntityInterface,
     private readonly configService: ConfigService,
   ) {
     super({
@@ -28,7 +28,7 @@ export class AccessTokenStrategy extends PassportStrategy(
   async validate({
     id,
   }: StrategyPayloadIdInputDto): Promise<StrategyPayloadOutputDto> {
-    const user = await this.service.userFindById({ id });
+    const user = await this.repository.userFindById({ id });
     return { response: user };
   }
 }

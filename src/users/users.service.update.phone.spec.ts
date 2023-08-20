@@ -14,14 +14,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { DATE } from '../_common/dtos/get.date';
-import { UsersUpdateNicknameInputDto } from './dtos/users.update.dto';
-import {
-  NICKNAME_REQUIRED,
-  UNIQUE_ID_REQUIRED,
-} from '../_common/http/errors/400';
+import { UsersUpdatePhoneInputDto } from './dtos/users.update.dto';
+import { PHONE_REQUIRED, UNIQUE_ID_REQUIRED } from '../_common/http/errors/400';
 import { NOTFOUND_USER } from '../_common/http/errors/404';
+import { ALREADY_EMAIL } from '../_common/http/errors/409';
 
-describe('Users Update Nickname Process', () => {
+describe('Users Update Email Process', () => {
   let service: UsersService;
   let prisma: PrismaService;
 
@@ -57,15 +55,15 @@ describe('Users Update Nickname Process', () => {
     prisma = module.get<PrismaService>(PrismaService);
   });
 
-  describe('user nickname update unit test', () => {
+  describe('user email update unit test', () => {
     it('id empty, so it fails', async () => {
-      const dto: UsersUpdateNicknameInputDto = {
+      const dto: UsersUpdatePhoneInputDto = {
         id: '',
-        nickname: '',
+        phone: '',
       };
 
       try {
-        await service.updateNickname(dto);
+        await service.updatePhone(dto);
       } catch (e: any) {
         console.log(e);
 
@@ -83,14 +81,14 @@ describe('Users Update Nickname Process', () => {
       }
     });
 
-    it('nickname empty, so it fails', async () => {
-      const dto: UsersUpdateNicknameInputDto = {
+    it('phone empty, so it fails', async () => {
+      const dto: UsersUpdatePhoneInputDto = {
         id: 'eb999c69-d784-4b2f-a7a5-bbf31172b7c4',
-        nickname: '',
+        phone: '',
       };
 
       try {
-        await service.updateNickname(dto);
+        await service.updatePhone(dto);
       } catch (e: any) {
         console.log(e);
 
@@ -101,21 +99,45 @@ describe('Users Update Nickname Process', () => {
           console.log(response);
           expect(response).toStrictEqual({
             error: 'Bad Request',
-            message: NICKNAME_REQUIRED,
+            message: PHONE_REQUIRED,
             statusCode: 400,
           });
         }
       }
     });
 
-    it('user find by id and nickname not-found, so it fails', async () => {
-      const dto: UsersUpdateNicknameInputDto = {
+    it('user find by id and email not-found, so it fails', async () => {
+      const dto: UsersUpdatePhoneInputDto = {
         id: 'eb999c69-d784-4b2f-a7a5-bbf31172b7c4',
-        nickname: 'aaa',
+        phone: 'akdl911215@naver.com',
       };
 
+      const findByIdDto = {
+        id: dto.id,
+        app_id: 'ddd',
+        nickname: 'sss',
+        password: 'qwer!234',
+        phone: '111',
+        email: 'akdl911211@naver.com',
+        refresh_token: null,
+        created_at: DATE,
+        updated_at: DATE,
+        deleted_at: null,
+      };
+
+      const findUniqueMock = jest
+        .spyOn(prisma.calendarUsers, 'findUnique')
+        .mockResolvedValue(findByIdDto);
+
+      const findFirstMock = jest
+        .spyOn(prisma.calendarUsers, 'findFirst')
+        .mockResolvedValue(null);
+
       try {
-        await service.updateNickname(dto);
+        await service.updatePhone(dto);
+
+        expect(findUniqueMock).toHaveBeenCalledTimes(1);
+        expect(findFirstMock).toHaveBeenCalledTimes(1);
       } catch (e: any) {
         console.log(e);
 
@@ -133,47 +155,33 @@ describe('Users Update Nickname Process', () => {
       }
     });
 
-    it('already nickname, so it fails', async () => {
-      const dto: UsersUpdateNicknameInputDto = {
+    it('already phone, so it fails', async () => {
+      const dto: UsersUpdatePhoneInputDto = {
         id: 'eb999c69-d784-4b2f-a7a5-bbf31172b7c4',
-        nickname: 'test1111Nick',
+        phone: 'akdl911215@naver.com',
       };
 
-      const updateDto = {
+      const findUniqueDto = {
         id: dto.id,
-        app_id: 'test',
+        app_id: 'ddd',
+        nickname: 'sss',
         password: 'qwer!234',
-        phone: '01012312344',
-        nickname: 'testNick',
-        email: 'akdl911215@naver.com',
+        phone: '111',
+        email: 'aa',
         refresh_token: null,
         created_at: DATE,
         updated_at: DATE,
         deleted_at: null,
       };
 
-      const conflictNickname = {
-        id: dto.id,
-        app_id: 'test',
-        password: 'qwer!234',
-        phone: '01012312344',
-        nickname: dto.nickname,
-        email: 'akdl911215@naver.com',
-        refresh_token: null,
-        created_at: DATE,
-        updated_at: DATE,
-        deleted_at: null,
-      };
-
-      jest
-        .spyOn(prisma.calendarUsers, 'findFirst')
-        .mockResolvedValue(updateDto);
-      jest
+      const findUniqueMock = jest
         .spyOn(prisma.calendarUsers, 'findUnique')
-        .mockResolvedValue(conflictNickname);
+        .mockResolvedValue(findUniqueDto);
 
       try {
-        await service.updateNickname(dto);
+        await service.updatePhone(dto);
+
+        expect(findUniqueMock).toHaveBeenCalledTimes(1);
       } catch (e: any) {
         console.log(e);
 
@@ -184,17 +192,17 @@ describe('Users Update Nickname Process', () => {
           console.log(response);
           expect(response).toStrictEqual({
             statusCode: 409,
-            message: 'already_nickname',
+            message: ALREADY_EMAIL,
             error: 'Conflict',
           });
         }
       }
     });
 
-    it('success should user nickname update', async () => {
-      const dto: UsersUpdateNicknameInputDto = {
+    it('success should user phone update', async () => {
+      const dto: UsersUpdatePhoneInputDto = {
         id: 'eb999c69-d784-4b2f-a7a5-bbf31172b7c4',
-        nickname: 'testNick',
+        phone: 'testNick',
       };
 
       const findUniqueDto = {
@@ -215,8 +223,8 @@ describe('Users Update Nickname Process', () => {
         app_id: 'test-id',
         password: 'qwer!234',
         phone: '01012312344',
-        nickname: dto.nickname,
-        email: 'akdl911215@naver.com',
+        nickname: 'dd',
+        email: 'akdl911211@naver.com',
         refresh_token: null,
         created_at: DATE,
         updated_at: DATE,
@@ -235,9 +243,10 @@ describe('Users Update Nickname Process', () => {
         .mockResolvedValue(updateDto);
 
       try {
-        const { response } = await service.updateNickname(dto);
+        const { response } = await service.updatePhone(dto);
         console.log('response', response);
 
+        expect(response).toStrictEqual(updateDto);
         expect(findFirstMock).toHaveBeenCalledTimes(1);
         expect(findUniqueMock).toHaveBeenCalledTimes(1);
         expect(updateMock).toHaveBeenCalledTimes(1);
