@@ -150,7 +150,7 @@ describe('Users Profile Process', () => {
         .spyOn(prisma.calendarUsers, 'update')
         .mockResolvedValue(refreshDto);
       try {
-        const { response } = await service.refresh(dto);
+        const response = await service.refresh(dto);
         console.log(response);
 
         expect(updateMock).toHaveBeenCalledTimes(1);

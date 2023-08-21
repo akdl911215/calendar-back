@@ -26,11 +26,17 @@ import {
 import { PasswordCheckingInterceptor } from './infrastructure/interceptor/password.checking.interceptor';
 import { User } from './infrastructure/decorator/user.decorator';
 import { UsersBaseDto } from './dtos/users.base.dto';
-import { UsersDeleteOutputDto } from './dtos/users.delete.dto';
+import {
+  UsersDeleteInputDto,
+  UsersDeleteOutputDto,
+} from './dtos/users.delete.dto';
 import { AccessTokenGuard } from './infrastructure/token/guards/jwt.access.guard';
 import { TWO_HUNDRED_OK } from '../_common/https/success/200';
 import { TWO_HUNDRED_FOUR_DELETE_SUCCESS } from '../_common/https/success/204';
-import { UsersProfileOutputDto } from './dtos/users.profile.dto';
+import {
+  UsersProfileInputDto,
+  UsersProfileOutputDto,
+} from './dtos/users.profile.dto';
 import { UsersListInputDto, UsersListOutputDto } from './dtos/users.list.dto';
 import {
   UsersLoginInputDto,
@@ -60,6 +66,7 @@ import { UNAUTHORIZED } from '../_common/https/errors/401';
 import { UsersRefreshTokenReIssuanceOutputDto } from './dtos/user.refresh.token.re.issuance.dto';
 import { UsersRefreshTokenReIssuanceDtoInterface } from './interfaces/users.refresh.token.re.issuance.dto.interface';
 import {
+  UsersUpdateNicknameInputDateDto,
   UsersUpdateNicknameInputDto,
   UsersUpdateNicknameOutputDto,
 } from './dtos/users.update.dto';
@@ -133,7 +140,7 @@ export class UsersController {
   @ApiResponse({ status: 404, description: `${NOTFOUND_USER}` })
   @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
   private async delete(
-    @User() user: Pick<UsersBaseDto, 'id'>,
+    @User() user: UsersBaseDto,
   ): Promise<UsersDeleteOutputDto> {
     const { id } = user;
     return await this.service.delete({ id });
@@ -155,8 +162,9 @@ export class UsersController {
   @ApiResponse({ status: 401, description: `${UNAUTHORIZED}` })
   @ApiResponse({ status: 404, description: `${NOTFOUND_USER}` })
   @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
+  @ApiBody({ type: UsersProfileInputDto })
   private async profile(
-    @User() user: Pick<UsersBaseDto, 'id'>,
+    @User() user: UsersProfileInputDto,
   ): Promise<UsersProfileOutputDto> {
     return await this.service.profile({ id: user.id });
   }
@@ -185,7 +193,7 @@ export class UsersController {
   @ApiBody({ type: UsersUpdateNicknameInputDto })
   private async updateNickname(
     @Body()
-    dto: UsersUpdateNicknameInputDto,
+    dto: UsersUpdateNicknameInputDateDto,
     @User() user: UsersBaseDto,
   ): Promise<UsersUpdateNicknameOutputDto> {
     return await this.service.updateNickname({

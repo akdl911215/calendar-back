@@ -1,6 +1,6 @@
 import { PickType } from '@nestjs/swagger';
-import { BaseOutputDto } from '../../_common/dtos/base.output.dto';
 import { CalendarBaseDto } from './calendar.base.dto';
+import { Calendar } from '@prisma/client';
 
 export class CalendarDeleteInputDto extends PickType(CalendarBaseDto, [
   'todo',
@@ -13,6 +13,4 @@ export class CalendarDeleteBodyInputDto extends PickType(
   ['todo', 'id'] as const,
 ) {}
 
-export class CalendarDeleteOutputDto extends BaseOutputDto<{
-  readonly calendarErase: boolean;
-}> {}
+export type CalendarDeleteOutputDto = Calendar;

@@ -55,7 +55,7 @@ export class CalendarRepository implements CalendarInterface {
         },
       );
 
-      return { response: { calendarErase: !!deleteCalendar } };
+      return deleteCalendar;
     } catch (e: any) {
       errorHandling(e);
     }
@@ -72,7 +72,7 @@ export class CalendarRepository implements CalendarInterface {
         },
       });
 
-    return { response: { inquiryList: authorIdAndDateFindByCalendar } };
+    return { inquiryList: authorIdAndDateFindByCalendar };
   }
 
   public async list(dto: CalendarListInputDto): Promise<CalendarListOutputDto> {
@@ -85,7 +85,7 @@ export class CalendarRepository implements CalendarInterface {
         },
       });
 
-    return { response: { monthList: authorIdAndMonthFindByCalendar } };
+    return { monthList: authorIdAndMonthFindByCalendar };
   }
 
   public async register(
@@ -107,7 +107,7 @@ export class CalendarRepository implements CalendarInterface {
           }),
       );
 
-      return { response: registerCalendar };
+      return registerCalendar;
     } catch (e: any) {
       errorHandling(e);
     }
@@ -144,7 +144,7 @@ export class CalendarRepository implements CalendarInterface {
         },
       );
 
-      return { response: updateCalendar };
+      return updateCalendar;
     } catch (e: any) {
       errorHandling(e);
     }

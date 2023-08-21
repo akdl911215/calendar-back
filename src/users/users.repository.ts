@@ -97,9 +97,7 @@ export class UsersRepository
     );
     if (searchUser) throw new ConflictException(ALREADY_USER);
 
-    const {
-      response: { encoded: hashPassword },
-    } = await this.hash.encoded({ password });
+    const { encoded: hashPassword } = await this.hash.encoded({ password });
 
     try {
       const createUser: CalendarUsers = await this.prisma.$transaction(
@@ -235,9 +233,7 @@ export class UsersRepository
       });
     if (!userFindById) throw new NotFoundException(NOTFOUND_USER);
 
-    const {
-      response: { encoded: hashPassword },
-    } = await this.hash.encoded({ password });
+    const { encoded: hashPassword } = await this.hash.encoded({ password });
 
     try {
       const reIssuancePassword: CalendarUsers = await this.prisma.$transaction(
@@ -327,9 +323,7 @@ export class UsersRepository
     if (!userFindByAppId) throw new BadRequestException(NO_MATCH_APP_ID);
 
     console.log('userFindByAppId.password : ', userFindByAppId.password);
-    const {
-      response: { decoded },
-    } = await this.compare.decoded({
+    const { decoded } = await this.compare.decoded({
       password,
       hashPassword: userFindByAppId.password,
     });
@@ -349,9 +343,10 @@ export class UsersRepository
       phone: userFindByAppId.phone,
     };
 
-    const {
-      response: { refreshToken, accessToken },
-    } = await this.jwtToken.generateTokens(accessPayload, refreshPayload);
+    const { refreshToken, accessToken } = await this.jwtToken.generateTokens(
+      accessPayload,
+      refreshPayload,
+    );
 
     try {
       const loginSuccess: CalendarUsers = await this.prisma.$transaction(
@@ -423,9 +418,10 @@ export class UsersRepository
     const accessPayload: AccessTokenPayloadType = { id, appId };
     const refreshPayload: RefreshTokenPayloadType = { id, appId, phone };
 
-    const {
-      response: { accessToken, refreshToken },
-    } = await this.jwtToken.generateTokens(accessPayload, refreshPayload);
+    const { accessToken, refreshToken } = await this.jwtToken.generateTokens(
+      accessPayload,
+      refreshPayload,
+    );
 
     try {
       const refreshTokenUpdate: CalendarUsers = await this.prisma.$transaction(

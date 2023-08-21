@@ -424,7 +424,7 @@ describe('Users Create Process', () => {
         .spyOn(prisma.calendarUsers, 'create')
         .mockResolvedValue(createDto);
 
-      const { response } = await service.create(dto);
+      const response = await service.create(dto);
       console.log(response);
 
       expect(findFirstMock).toHaveBeenCalledTimes(1);

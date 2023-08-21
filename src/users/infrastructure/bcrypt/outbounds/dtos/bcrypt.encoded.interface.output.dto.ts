@@ -1,5 +1,3 @@
-import { BaseOutputDto } from '../../../../../_common/dtos/base.output.dto';
-
-export class BcryptEncodedInterfaceOutputDto extends BaseOutputDto<{
+export class BcryptEncodedInterfaceOutputDto {
   readonly encoded: string;
-}> {}
+}

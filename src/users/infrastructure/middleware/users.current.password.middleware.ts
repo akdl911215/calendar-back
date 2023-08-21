@@ -19,9 +19,7 @@ export class UsersCurrentPasswordMiddleware implements NestMiddleware {
     const compareCurrentPasswordAndPassword =
       await this.repository.compareCurrentPasswordAndPassword(req.body);
 
-    const {
-      response: { compare },
-    } = compareCurrentPasswordAndPassword;
+    const { compare } = compareCurrentPasswordAndPassword;
 
     if (compare) next();
     else throw new BadRequestException(NO_MATCH_PASSWORD);

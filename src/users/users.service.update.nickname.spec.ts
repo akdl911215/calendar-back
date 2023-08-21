@@ -235,7 +235,7 @@ describe('Users Update Nickname Process', () => {
         .mockResolvedValue(updateDto);
 
       try {
-        const { response } = await service.updateNickname(dto);
+        const response = await service.updateNickname(dto);
         console.log('response', response);
 
         expect(findFirstMock).toHaveBeenCalledTimes(1);

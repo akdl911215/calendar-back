@@ -246,7 +246,7 @@ describe('Users Update Email Process', () => {
         .mockResolvedValue(updateDto);
 
       try {
-        const { response } = await service.updatePhone(dto);
+        const response = await service.updatePhone(dto);
         console.log('response', response);
 
         expect(response).toStrictEqual(updateDto);

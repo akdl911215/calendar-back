@@ -30,10 +30,8 @@ export class TokenService {
     ]);
 
     return {
-      response: {
-        accessToken,
-        refreshToken,
-      },
+      accessToken,
+      refreshToken,
     };
   }
 }

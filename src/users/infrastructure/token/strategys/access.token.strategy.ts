@@ -29,6 +29,6 @@ export class AccessTokenStrategy extends PassportStrategy(
     id,
   }: StrategyPayloadIdInputDto): Promise<StrategyPayloadOutputDto> {
     const user = await this.repository.userFindById({ id });
-    return { response: user };
+    return user;
   }
 }

@@ -1,6 +1,5 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { UsersBaseDto } from './users.base.dto';
-import { BaseOutputDto } from '../../_common/dtos/base.output.dto';
 import { CalendarUsers } from '@prisma/client';
 
 export class UsersCreateInputDto extends PickType(UsersBaseDto, [
@@ -19,4 +18,4 @@ export class UsersCreateInputDto extends PickType(UsersBaseDto, [
   public confirmPassword?: string;
 }
 
-export class UsersCreateOutputDto extends BaseOutputDto<CalendarUsers> {}
+export type UsersCreateOutputDto = CalendarUsers;

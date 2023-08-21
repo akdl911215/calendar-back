@@ -89,15 +89,15 @@ describe('Calendar Inquiry Process', () => {
 
       const dto = {
         id: '8654f7b1-d588-4c2b-87a3-124365f13cc1',
-        authorId: inquiryDto.authorId,
+        author_id: inquiryDto.authorId,
         todo: '',
         date: '',
         day: 0,
         month: 0,
         done: true,
-        createdAt: DATE,
-        updatedAt: DATE,
-        deletedAt: null,
+        created_at: DATE,
+        updated_at: DATE,
+        deleted_at: null,
       };
 
       const inquiryDtoArr: Calendar[] = [dto];
@@ -105,9 +105,7 @@ describe('Calendar Inquiry Process', () => {
       jest.spyOn(prisma.calendar, 'findMany').mockResolvedValue(inquiryDtoArr);
 
       try {
-        const {
-          response: { inquiryList },
-        } = await service.inquiry(inquiryDto);
+        const { inquiryList } = await service.inquiry(inquiryDto);
         console.log('inquiryList : ', inquiryList);
 
         expect(inquiryList).toStrictEqual(inquiryDtoArr);

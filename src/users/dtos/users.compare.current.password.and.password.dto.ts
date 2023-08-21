@@ -1,6 +1,5 @@
 import { UsersBaseDto } from './users.base.dto';
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { BaseOutputDto } from '../../_common/dtos/base.output.dto';
 
 export class UsersCompareCurrentPasswordAndPasswordInputDto extends PickType(
   UsersBaseDto,
@@ -13,6 +12,6 @@ export class UsersCompareCurrentPasswordAndPasswordInputDto extends PickType(
   public currentPassword!: string;
 }
 
-export class UsersCompareCurrentPasswordAndPasswordOutputDto extends BaseOutputDto<{
+export class UsersCompareCurrentPasswordAndPasswordOutputDto {
   readonly compare: boolean;
-}> {}
+}

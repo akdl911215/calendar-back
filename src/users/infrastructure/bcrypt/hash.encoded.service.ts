@@ -19,9 +19,7 @@ export class HashEncodedService implements BcryptEncodedInterface {
     );
 
     return {
-      response: {
-        encoded: encodedPassword,
-      },
+      encoded: encodedPassword,
     };
   }
 }

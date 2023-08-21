@@ -139,7 +139,7 @@ describe('Users List Process', () => {
         .mockResolvedValue(listDtoArr);
 
       try {
-        const { response } = await service.list(dto);
+        const response = await service.list(dto);
         console.log('response.current_list : ', response.current_list);
 
         expect(countMock).toHaveBeenCalledTimes(1);

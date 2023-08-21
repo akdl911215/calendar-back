@@ -89,7 +89,7 @@ export class UsersService implements UsersMergeInterface {
     const user = new UsersModel();
     user._create = dto;
 
-    return { response: await this.repository.create(user._create) };
+    return await this.repository.create(user._create);
   }
 
   public async delete(dto: UsersDeleteInputDto): Promise<UsersDeleteOutputDto> {
@@ -98,14 +98,15 @@ export class UsersService implements UsersMergeInterface {
 
     const user = new UsersModel();
     user._delete = dto;
-    return { response: await this.repository.delete(user._delete) };
+    return await this.repository.delete(user._delete);
   }
 
   public async list(dto: UsersListInputDto): Promise<UsersListOutputDto> {
     const { take, page } = dto;
     if (take < 1) throw new BadRequestException(TAKE_REQUIRED);
     if (page < 1) throw new BadRequestException(PAGE_REQUIRED);
-    return { response: await this.repository.list(dto) };
+
+    return await this.repository.list(dto);
   }
 
   public async updateNickname(
@@ -124,9 +125,7 @@ export class UsersService implements UsersMergeInterface {
     const user = new UsersModel();
     user._updateNickname = dto;
 
-    return {
-      response: await this.repository.updateNickname(user._updateNickname),
-    };
+    return await this.repository.updateNickname(user._updateNickname);
   }
 
   public async updatePhone(
@@ -145,9 +144,7 @@ export class UsersService implements UsersMergeInterface {
     const user = new UsersModel();
     user._updatePhone = dto;
 
-    return {
-      response: await this.repository.updatePhone(user._updatePhone),
-    };
+    return await this.repository.updatePhone(user._updatePhone);
   }
 
   public async updateEmail(
@@ -166,7 +163,7 @@ export class UsersService implements UsersMergeInterface {
     const user = new UsersModel();
     user._updateEmail = dto;
 
-    return { response: await this.repository.updateEmail(user._updateEmail) };
+    return await this.repository.updateEmail(user._updateEmail);
   }
 
   public async reIssuancePassword(
@@ -179,11 +176,7 @@ export class UsersService implements UsersMergeInterface {
     const user = new UsersModel();
     user._reIssuancePassword = dto;
 
-    return {
-      response: await this.repository.reIssuancePassword(
-        user._reIssuancePassword,
-      ),
-    };
+    return await this.repository.reIssuancePassword(user._reIssuancePassword);
   }
 
   public async login(dto: UsersLoginInputDto): Promise<UsersLoginOutputDto> {
@@ -193,7 +186,7 @@ export class UsersService implements UsersMergeInterface {
 
     const user = new UsersModel();
     user._login = dto;
-    return { response: await this.repository.login(user._login) };
+    return await this.repository.login(user._login);
   }
 
   public async logout(dto: UsersLogoutInputDto): Promise<UsersLogoutOutputDto> {
@@ -202,7 +195,7 @@ export class UsersService implements UsersMergeInterface {
 
     const user = new UsersModel();
     user._logout = dto;
-    return { response: await this.repository.logout(user._logout) };
+    return await this.repository.logout(user._logout);
   }
 
   public async profile(
@@ -213,7 +206,7 @@ export class UsersService implements UsersMergeInterface {
 
     const user = new UsersModel();
     user._profile = dto;
-    return { response: await this.repository.profile(user._profile) };
+    return await this.repository.profile(user._profile);
   }
 
   public async refresh(
@@ -227,10 +220,8 @@ export class UsersService implements UsersMergeInterface {
     const user = new UsersModel();
     user._refreshTokenReIssuance = dto;
 
-    return {
-      response: await this.refreshTokenRepository.refresh(
-        user._refreshTokenReIssuance,
-      ),
-    };
+    return await this.refreshTokenRepository.refresh(
+      user._refreshTokenReIssuance,
+    );
   }
 }

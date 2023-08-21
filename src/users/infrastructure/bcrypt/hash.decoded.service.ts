@@ -17,8 +17,6 @@ export class HashDecodedService implements BcryptDecodedInterface {
       password,
       hashPassword,
     );
-    return {
-      response: { decoded: decodePassword },
-    };
+    return { decoded: decodePassword };
   }
 }

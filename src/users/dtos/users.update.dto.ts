@@ -1,6 +1,5 @@
 import { PickType } from '@nestjs/swagger';
 import { CalendarUsers } from '@prisma/client';
-import { BaseOutputDto } from '../../_common/dtos/base.output.dto';
 import { UsersBaseDto } from './users.base.dto';
 
 export class UsersUpdateNicknameInputDto extends PickType(UsersBaseDto, [
@@ -13,25 +12,25 @@ export class UsersUpdateNicknameInputDateDto extends PickType(
   ['nickname'] as const,
 ) {}
 
-export class UsersUpdateNicknameOutputDto extends BaseOutputDto<CalendarUsers> {}
+export type UsersUpdateNicknameOutputDto = CalendarUsers;
 
 export class UsersUpdatePhoneInputDto extends PickType(UsersBaseDto, [
   'id',
   'phone',
 ] as const) {}
 
-export class UsersUpdatePhoneOutputDto extends BaseOutputDto<CalendarUsers> {}
+export type UsersUpdatePhoneOutputDto = CalendarUsers;
 
 export class UsersUpdateEmailInputDto extends PickType(UsersBaseDto, [
   'id',
   'email',
 ] as const) {}
 
-export class UsersUpdateEmailOutputDto extends BaseOutputDto<CalendarUsers> {}
+export type UsersUpdateEmailOutputDto = CalendarUsers;
 
 export class UsersReIssuancePasswordInputDto extends PickType(UsersBaseDto, [
   'id',
   'password',
 ] as const) {}
 
-export class UsersReIssuancePasswordOutputDto extends BaseOutputDto<CalendarUsers> {}
+export type UsersReIssuancePasswordOutputDto = CalendarUsers;

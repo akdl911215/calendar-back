@@ -13,7 +13,6 @@ import {
   ApiBody,
   ApiConsumes,
   ApiOperation,
-  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -30,13 +29,9 @@ import {
   CalendarDeleteInputDto,
   CalendarDeleteOutputDto,
 } from './dtos/calendar.delete.dto';
-import {
-  CalendarInquiryInputDto,
-  CalendarInquiryOutputDto,
-} from './dtos/calendar.inquiry.dto';
+import { CalendarInquiryOutputDto } from './dtos/calendar.inquiry.dto';
 import {
   CalendarListBodyInputDto,
-  CalendarListInputDto,
   CalendarListOutputDto,
 } from './dtos/calendar.list.dto';
 import {

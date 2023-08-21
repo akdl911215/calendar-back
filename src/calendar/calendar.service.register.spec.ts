@@ -227,21 +227,21 @@ describe('Calendar Register Process', () => {
 
       const dto = {
         id: '8654f7b1-d588-4c2b-87a3-124365f13cc1',
-        authorId: registerDto.authorId,
+        author_id: registerDto.authorId,
         todo: registerDto.todo,
         date: '',
         day: registerDto.day,
         month: registerDto.month,
         done: true,
-        createdAt: DATE,
-        updatedAt: DATE,
-        deletedAt: null,
+        created_at: DATE,
+        updated_at: DATE,
+        deleted_at: null,
       };
 
       jest.spyOn(prisma.calendar, 'create').mockResolvedValue(dto);
 
       try {
-        const { response } = await service.register(registerDto);
+        const response = await service.register(registerDto);
         console.log('response : ', response);
 
         expect(response).toStrictEqual(dto);

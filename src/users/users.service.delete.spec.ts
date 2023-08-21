@@ -125,7 +125,7 @@ describe('Users Delete Process', () => {
       jest.spyOn(prisma.calendarUsers, 'update').mockResolvedValue(deleteDto);
 
       try {
-        const { response } = await service.delete(dto);
+        const response = await service.delete(dto);
         console.log('response : ', response);
       } catch (e: any) {
         console.log(e);

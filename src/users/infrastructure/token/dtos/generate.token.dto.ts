@@ -1,6 +1,5 @@
 import { IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { BaseOutputDto } from '../../../../_common/dtos/base.output.dto';
 
 export class GenerateTokenInputDto {
   @IsString()
@@ -21,4 +20,4 @@ export class GenerateTokenInputDto {
   refreshToken: string;
 }
 
-export class GenerateTokenOutputDto extends BaseOutputDto<GenerateTokenInputDto> {}
+export class GenerateTokenOutputDto extends GenerateTokenInputDto {}

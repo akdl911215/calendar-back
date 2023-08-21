@@ -46,10 +46,10 @@ export class UsersCompareCurrentPasswordAndPasswordRepository
       hashPassword: password,
     });
 
-    if (compare.response.decoded) {
-      return { response: { compare: true } };
+    if (compare.decoded) {
+      return { compare: true };
     } else {
-      return { response: { compare: false } };
+      return { compare: false };
     }
   }
 }

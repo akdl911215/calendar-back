@@ -120,7 +120,7 @@ describe('Users Profile Process', () => {
         .mockResolvedValue(profileDto);
 
       try {
-        const { response } = await service.profile(dto);
+        const response = await service.profile(dto);
         console.log(response);
 
         expect(findUniqueMock).toHaveBeenCalledTimes(1);

@@ -128,9 +128,7 @@ describe('Users Logout Process', () => {
         .mockResolvedValue(logoutDto);
 
       try {
-        const {
-          response: { logout },
-        } = await service.logout(dto);
+        const { logout } = await service.logout(dto);
         console.log(logout);
 
         expect(findUniqueMock).toHaveBeenCalledTimes(1);

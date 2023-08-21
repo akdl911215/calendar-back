@@ -5,7 +5,6 @@ import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { RefreshTokenPayloadType } from '../type/refresh.token.payload.type';
 import { CalendarUsers } from '@prisma/client';
-import { BaseOutputDto } from '../../../../_common/dtos/base.output.dto';
 import { NOT_MATCH_REFRESH_TOKEN } from '../../../../_common/https/errors/400';
 import { UsersFindByEntityInterface } from '../../../interfaces/users.find.by.entity.interface';
 
@@ -29,7 +28,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
   async validate(
     request: Request,
     payload: RefreshTokenPayloadType,
-  ): Promise<BaseOutputDto<CalendarUsers>> {
+  ): Promise<CalendarUsers> {
     const token = request?.headers?.authorization?.split('Bearer ')[1];
     const user = await this.service.userFindById({ id: payload.id });
     const { refresh_token } = user;
@@ -37,6 +36,6 @@ export class RefreshTokenStrategy extends PassportStrategy(
     if (token !== refresh_token)
       throw new BadRequestException(NOT_MATCH_REFRESH_TOKEN);
 
-    return { response: user };
+    return user;
   }
 }

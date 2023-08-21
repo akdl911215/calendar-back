@@ -239,30 +239,30 @@ describe('Calendar Update Process', () => {
       const updateDto: CalendarUpdateInputDto = {
         id: '8654f7b1-d588-4c2b-87a3-124365f13cc1',
         todo: '',
-        day: 0,
-        month: 0,
+        day: 1,
+        month: 1,
         done: true,
-        authorId: '',
+        authorId: 'authorId',
       };
 
       const dto = {
         id: updateDto.id,
-        authorId: updateDto.authorId,
+        author_id: updateDto.authorId,
         todo: '',
         date: '',
-        day: 0,
-        month: 0,
+        day: updateDto.day,
+        month: updateDto.month,
         done: true,
-        createdAt: DATE,
-        updatedAt: DATE,
-        deletedAt: null,
+        created_at: DATE,
+        updated_at: DATE,
+        deleted_at: null,
       };
 
       jest.spyOn(prisma.calendar, 'findFirst').mockResolvedValue(dto);
       jest.spyOn(prisma.calendar, 'update').mockResolvedValue(dto);
 
       try {
-        const { response } = await service.update(updateDto);
+        const response = await service.update(updateDto);
         console.log(response);
       } catch (e: any) {
         console.log(e);

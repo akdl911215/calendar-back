@@ -180,10 +180,10 @@ describe('Users Login Process', () => {
 
       const decodeMock = jest
         .spyOn(decode, 'decoded')
-        .mockResolvedValue({ response: { decoded: true } });
+        .mockResolvedValue({ decoded: true });
 
       try {
-        const { response } = await service.login(dto);
+        const response = await service.login(dto);
         console.log(response);
 
         expect(decodeMock).toHaveBeenCalledTimes(1);

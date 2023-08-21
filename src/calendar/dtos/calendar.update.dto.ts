@@ -1,5 +1,4 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { BaseOutputDto } from '../../_common/dtos/base.output.dto';
 import { Calendar } from '@prisma/client';
 import { IsBoolean, IsOptional, IsString } from 'class-validator';
 import { CalendarBaseDto } from './calendar.base.dto';
@@ -38,4 +37,4 @@ export class CalendarUpdateBodyInputDto extends PickType(
   ['todo', 'done', 'id', 'month', 'day'] as const,
 ) {}
 
-export class CalendarUpdateOutputDto extends BaseOutputDto<Calendar> {}
+export type CalendarUpdateOutputDto = Calendar;
