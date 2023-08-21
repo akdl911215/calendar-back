@@ -11,8 +11,8 @@ import { UsersDeleteInputDto } from './dtos/users.delete.dto';
 import { jestErrorHandling } from '../_common/dtos/jest.error.handling';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { DATE } from '../_common/dtos/get.date';
-import { UNIQUE_ID_REQUIRED } from '../_common/http/errors/400';
-import { NOTFOUND_USER } from '../_common/http/errors/404';
+import { UNIQUE_ID_REQUIRED } from '../_common/https/errors/400';
+import { NOTFOUND_USER } from '../_common/https/errors/404';
 
 describe('Users Delete Process', () => {
   let service: UsersService;

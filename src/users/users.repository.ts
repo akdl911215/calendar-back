@@ -10,17 +10,20 @@ import { PrismaService } from '../_common/prisma/prisma.service';
 import { CalendarUsers } from '@prisma/client';
 import { errorHandling } from '../_common/dtos/error.handling';
 import { DATE } from '../_common/dtos/get.date';
-import { NOTFOUND_USER } from '../_common/http/errors/404';
+import { NOTFOUND_USER } from '../_common/https/errors/404';
 import {
   getListOffsetPagination,
   PageReturnType,
 } from '../_common/dtos/get.list.page.nation';
-import { ALREADY_USER } from '../_common/http/errors/409';
+import { ALREADY_USER } from '../_common/https/errors/409';
 import { HashEncodedService } from './infrastructure/bcrypt/hash.encoded.service';
 import { HashDecodedService } from './infrastructure/bcrypt/hash.decoded.service';
 import { TokenService } from './infrastructure/token/token.service';
 import { UsersRefreshTokenReIssuanceInterface } from './interfaces/users.refresh.token.re.issuance.interface';
-import { NO_MATCH_APP_ID, NO_MATCH_PASSWORD } from '../_common/http/errors/400';
+import {
+  NO_MATCH_APP_ID,
+  NO_MATCH_PASSWORD,
+} from '../_common/https/errors/400';
 import { AccessTokenPayloadType } from './infrastructure/token/type/access.token.payload.type';
 import { RefreshTokenPayloadType } from './infrastructure/token/type/refresh.token.payload.type';
 import { UsersFindByEntityInterface } from './interfaces/users.find.by.entity.interface';
@@ -226,11 +229,11 @@ export class UsersRepository
   ): Promise<UsersReIssuancePasswordEntityOutputType> {
     const { id, password } = entity;
 
-    const userFindByIdAndAppId: CalendarUsers =
-      await this.prisma.calendarUsers.findFirst({
-        where: { AND: [{ id }, { password }] },
+    const userFindById: CalendarUsers =
+      await this.prisma.calendarUsers.findUnique({
+        where: { id },
       });
-    if (!userFindByIdAndAppId) throw new NotFoundException(NOTFOUND_USER);
+    if (!userFindById) throw new NotFoundException(NOTFOUND_USER);
 
     const {
       response: { encoded: hashPassword },

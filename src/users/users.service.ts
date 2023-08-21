@@ -34,7 +34,7 @@ import {
   PHONE_REQUIRED,
   TAKE_REQUIRED,
   UNIQUE_ID_REQUIRED,
-} from '../_common/http/errors/400';
+} from '../_common/https/errors/400';
 import { UsersModel } from './entites/users.model';
 import { UsersRefreshTokenReIssuanceInterface } from './interfaces/users.refresh.token.re.issuance.interface';
 import {
@@ -60,7 +60,7 @@ import {
   ALREADY_EMAIL,
   ALREADY_NICKNAME,
   ALREADY_PHONE,
-} from '../_common/http/errors/409';
+} from '../_common/https/errors/409';
 
 interface UsersMergeInterface
   extends UsersDtoInterface,

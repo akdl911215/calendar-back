@@ -23,8 +23,8 @@ import {
   CalendarRegisterBodyInputDto,
   CalendarRegisterOutputDto,
 } from './dtos/calendar.register.dto';
-import { CREATE_SUCCESS } from '../_common/http/success/201';
-import { INTERNAL_SERVER_ERROR } from '../_common/http/errors/500';
+import { CREATE_SUCCESS } from '../_common/https/success/201';
+import { INTERNAL_SERVER_ERROR } from '../_common/https/errors/500';
 import {
   CalendarDeleteBodyInputDto,
   CalendarDeleteInputDto,
@@ -47,9 +47,9 @@ import {
   TODO_REQUIRED,
   TOKEN_NOT_EXIST,
   UNIQUE_ID_REQUIRED,
-} from '../_common/http/errors/400';
-import { UNAUTHORIZED } from '../_common/http/errors/401';
-import { TWO_HUNDRED_OK } from '../_common/http/success/200';
+} from '../_common/https/errors/400';
+import { UNAUTHORIZED } from '../_common/https/errors/401';
+import { TWO_HUNDRED_OK } from '../_common/https/success/200';
 import {
   CalendarUpdateBodyInputDto,
   CalendarUpdateInputDto,
@@ -58,7 +58,7 @@ import {
 import { User } from '../users/infrastructure/decorator/user.decorator';
 import { UsersBaseDto } from '../users/dtos/users.base.dto';
 import { AccessTokenGuard } from '../users/infrastructure/token/guards/jwt.access.guard';
-import { NOTFOUND_CALENDAR } from '../_common/http/errors/404';
+import { NOTFOUND_CALENDAR } from '../_common/https/errors/404';
 import { DATE_DAY, DATE_MONTH, DATE_YEAR } from '../_common/dtos/get.date';
 import { CalendarBaseDto } from './dtos/calendar.base.dto';
 

@@ -15,9 +15,12 @@ import {
 } from '@nestjs/common';
 import { DATE } from '../_common/dtos/get.date';
 import { UsersUpdateEmailInputDto } from './dtos/users.update.dto';
-import { EMAIL_REQUIRED, UNIQUE_ID_REQUIRED } from '../_common/http/errors/400';
-import { NOTFOUND_USER } from '../_common/http/errors/404';
-import { ALREADY_EMAIL } from '../_common/http/errors/409';
+import {
+  EMAIL_REQUIRED,
+  UNIQUE_ID_REQUIRED,
+} from '../_common/https/errors/400';
+import { NOTFOUND_USER } from '../_common/https/errors/404';
+import { ALREADY_EMAIL } from '../_common/https/errors/409';
 
 describe('Users Update Email Process', () => {
   let service: UsersService;

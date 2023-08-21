@@ -12,7 +12,7 @@ import {
   UsersCompareCurrentPasswordAndPasswordInputDto,
   UsersCompareCurrentPasswordAndPasswordOutputDto,
 } from '../../dtos/users.compare.current.password.and.password.dto';
-import { UNIQUE_ID_REQUIRED } from '../../../_common/http/errors/400';
+import { UNIQUE_ID_REQUIRED } from '../../../_common/https/errors/400';
 import { UsersModel } from '../../entites/users.model';
 
 @Injectable()

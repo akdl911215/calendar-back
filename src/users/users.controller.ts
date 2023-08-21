@@ -17,8 +17,8 @@ import {
   ApiOperation,
   ApiResponse,
 } from '@nestjs/swagger';
-import { CREATE_SUCCESS, LOGIN_SUCCESS } from '../_common/http/success/201';
-import { INTERNAL_SERVER_ERROR } from '../_common/http/errors/500';
+import { CREATE_SUCCESS, LOGIN_SUCCESS } from '../_common/https/success/201';
+import { INTERNAL_SERVER_ERROR } from '../_common/https/errors/500';
 import {
   UsersCreateInputDto,
   UsersCreateOutputDto,
@@ -28,8 +28,8 @@ import { User } from './infrastructure/decorator/user.decorator';
 import { UsersBaseDto } from './dtos/users.base.dto';
 import { UsersDeleteOutputDto } from './dtos/users.delete.dto';
 import { AccessTokenGuard } from './infrastructure/token/guards/jwt.access.guard';
-import { TWO_HUNDRED_OK } from '../_common/http/success/200';
-import { TWO_HUNDRED_FOUR_DELETE_SUCCESS } from '../_common/http/success/204';
+import { TWO_HUNDRED_OK } from '../_common/https/success/200';
+import { TWO_HUNDRED_FOUR_DELETE_SUCCESS } from '../_common/https/success/204';
 import { UsersProfileOutputDto } from './dtos/users.profile.dto';
 import { UsersListInputDto, UsersListOutputDto } from './dtos/users.list.dto';
 import {
@@ -49,14 +49,14 @@ import {
   TAKE_REQUIRED,
   TOKEN_NOT_EXIST,
   UNIQUE_ID_REQUIRED,
-} from '../_common/http/errors/400';
+} from '../_common/https/errors/400';
 import {
   ALREADY_APP_ID,
   ALREADY_NICKNAME,
   ALREADY_PHONE,
-} from '../_common/http/errors/409';
-import { NOTFOUND_USER } from '../_common/http/errors/404';
-import { UNAUTHORIZED } from '../_common/http/errors/401';
+} from '../_common/https/errors/409';
+import { NOTFOUND_USER } from '../_common/https/errors/404';
+import { UNAUTHORIZED } from '../_common/https/errors/401';
 import { UsersRefreshTokenReIssuanceOutputDto } from './dtos/user.refresh.token.re.issuance.dto';
 import { UsersRefreshTokenReIssuanceDtoInterface } from './interfaces/users.refresh.token.re.issuance.dto.interface';
 import {

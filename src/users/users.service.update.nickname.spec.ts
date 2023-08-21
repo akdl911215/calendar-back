@@ -18,8 +18,8 @@ import { UsersUpdateNicknameInputDto } from './dtos/users.update.dto';
 import {
   NICKNAME_REQUIRED,
   UNIQUE_ID_REQUIRED,
-} from '../_common/http/errors/400';
-import { NOTFOUND_USER } from '../_common/http/errors/404';
+} from '../_common/https/errors/400';
+import { NOTFOUND_USER } from '../_common/https/errors/404';
 
 describe('Users Update Nickname Process', () => {
   let service: UsersService;

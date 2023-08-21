@@ -27,7 +27,7 @@ import {
   MONTH_REQUIRED,
   TODO_REQUIRED,
   UNIQUE_ID_REQUIRED,
-} from '../_common/http/errors/400';
+} from '../_common/https/errors/400';
 import { CalendarModel } from './entites/calendar.model';
 
 @Injectable()

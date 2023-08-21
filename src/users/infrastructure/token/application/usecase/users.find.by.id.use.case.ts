@@ -4,7 +4,7 @@
 //   UsersFindByIdOutputDto,
 // } from '../../../../domain/interfaces/dto/users.find.by.id.dto';
 // import { UsersFindByEntityInterface } from '../../../../domain/interfaces/users.find.by.interfaces';
-// import { UNIQUE_ID_REQUIRED } from '../../../../../_common/constants/http/errors/400';
+// import { UNIQUE_ID_REQUIRED } from '../../../../../_common/constants/https/errors/400';
 // import { PrismaService } from '../../../../../_common/infrastructure/prisma/prisma.service';
 // import { Users } from '@prisma/client';
 //

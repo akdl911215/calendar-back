@@ -21,7 +21,7 @@ import {
   CalendarUpdateOutputDto,
 } from './dtos/calendar.update.dto';
 import { Calendar } from '@prisma/client';
-import { NOTFOUND_CALENDAR } from '../_common/http/errors/404';
+import { NOTFOUND_CALENDAR } from '../_common/https/errors/404';
 import { errorHandling } from '../_common/dtos/error.handling';
 import { PrismaService } from '../_common/prisma/prisma.service';
 import { DATE } from '../_common/dtos/get.date';

@@ -4,6 +4,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpExceptionFilter } from './_common/exceptions/http.exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { GlobalReturnResponseInterceptor } from './_common/interceptors/global.return.response.interceptor';
 
 async function bootstrap() {
   const logger = new Logger();
@@ -19,6 +20,7 @@ async function bootstrap() {
     }),
   );
   app.useGlobalFilters(new HttpExceptionFilter(logger));
+  app.useGlobalInterceptors(new GlobalReturnResponseInterceptor());
 
   const configService = app.get(ConfigService);
   const PORT: number = configService.get<number>('PORT');

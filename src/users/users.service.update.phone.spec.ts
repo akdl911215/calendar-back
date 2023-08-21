@@ -15,9 +15,12 @@ import {
 } from '@nestjs/common';
 import { DATE } from '../_common/dtos/get.date';
 import { UsersUpdatePhoneInputDto } from './dtos/users.update.dto';
-import { PHONE_REQUIRED, UNIQUE_ID_REQUIRED } from '../_common/http/errors/400';
-import { NOTFOUND_USER } from '../_common/http/errors/404';
-import { ALREADY_EMAIL } from '../_common/http/errors/409';
+import {
+  PHONE_REQUIRED,
+  UNIQUE_ID_REQUIRED,
+} from '../_common/https/errors/400';
+import { NOTFOUND_USER } from '../_common/https/errors/404';
+import { ALREADY_EMAIL, ALREADY_PHONE } from '../_common/https/errors/409';
 
 describe('Users Update Email Process', () => {
   let service: UsersService;
@@ -106,7 +109,7 @@ describe('Users Update Email Process', () => {
       }
     });
 
-    it('user find by id and email not-found, so it fails', async () => {
+    it('user find by id and phone not-found, so it fails', async () => {
       const dto: UsersUpdatePhoneInputDto = {
         id: 'eb999c69-d784-4b2f-a7a5-bbf31172b7c4',
         phone: 'akdl911215@naver.com',
@@ -166,7 +169,7 @@ describe('Users Update Email Process', () => {
         app_id: 'ddd',
         nickname: 'sss',
         password: 'qwer!234',
-        phone: '111',
+        phone: dto.phone,
         email: 'aa',
         refresh_token: null,
         created_at: DATE,
@@ -192,7 +195,7 @@ describe('Users Update Email Process', () => {
           console.log(response);
           expect(response).toStrictEqual({
             statusCode: 409,
-            message: ALREADY_EMAIL,
+            message: ALREADY_PHONE,
             error: 'Conflict',
           });
         }

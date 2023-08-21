@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { RefreshTokenPayloadType } from '../type/refresh.token.payload.type';
 import { CalendarUsers } from '@prisma/client';
 import { BaseOutputDto } from '../../../../_common/dtos/base.output.dto';
-import { NOT_MATCH_REFRESH_TOKEN } from '../../../../_common/http/errors/400';
+import { NOT_MATCH_REFRESH_TOKEN } from '../../../../_common/https/errors/400';
 import { UsersFindByEntityInterface } from '../../../interfaces/users.find.by.entity.interface';
 
 @Injectable()

@@ -17,8 +17,8 @@ import {
   NICKNAME_REQUIRED,
   PASSWORD_REQUIRED,
   PHONE_REQUIRED,
-} from '../_common/http/errors/400';
-import { ALREADY_USER } from '../_common/http/errors/409';
+} from '../_common/https/errors/400';
+import { ALREADY_USER } from '../_common/https/errors/409';
 
 describe('Users Create Process', () => {
   let service: UsersService;

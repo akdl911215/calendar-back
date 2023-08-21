@@ -5,7 +5,7 @@ import {
   NestMiddleware,
 } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { NO_MATCH_PASSWORD } from '../../../_common/http/errors/400';
+import { NO_MATCH_PASSWORD } from '../../../_common/https/errors/400';
 import { UsersCompareCurrentPasswordAndPasswordInterface } from '../../interfaces/users.compare.current.password.and.password.interface';
 
 @Injectable()

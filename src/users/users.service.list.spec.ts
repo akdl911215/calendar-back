@@ -11,7 +11,7 @@ import { UsersListInputDto } from './dtos/users.list.dto';
 import { jestErrorHandling } from '../_common/dtos/jest.error.handling';
 import { BadRequestException } from '@nestjs/common';
 import { DATE } from '../_common/dtos/get.date';
-import { PAGE_REQUIRED, TAKE_REQUIRED } from '../_common/http/errors/400';
+import { PAGE_REQUIRED, TAKE_REQUIRED } from '../_common/https/errors/400';
 
 describe('Users List Process', () => {
   let service: UsersService;
