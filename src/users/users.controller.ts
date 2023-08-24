@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   Inject,
+  Param,
+  ParseFilePipe,
   Patch,
   Post,
   Query,
@@ -26,10 +28,7 @@ import {
 import { PasswordCheckingInterceptor } from './infrastructure/interceptor/password.checking.interceptor';
 import { User } from './infrastructure/decorator/user.decorator';
 import { UsersBaseDto } from './dtos/users.base.dto';
-import {
-  UsersDeleteInputDto,
-  UsersDeleteOutputDto,
-} from './dtos/users.delete.dto';
+import { UsersDeleteOutputDto } from './dtos/users.delete.dto';
 import { AccessTokenGuard } from './infrastructure/token/guards/jwt.access.guard';
 import { TWO_HUNDRED_OK } from '../_common/https/success/200';
 import { TWO_HUNDRED_FOUR_DELETE_SUCCESS } from '../_common/https/success/204';
@@ -46,6 +45,7 @@ import { UsersLogoutOutputDto } from './dtos/users.logout.dto';
 import { RefreshTokenGuard } from './infrastructure/token/guards/jwt.refresh.guard';
 import {
   APP_ID_REQUIRED,
+  EMAIL_REQUIRED,
   NICKNAME_REQUIRED,
   NO_MATCH_APP_ID,
   NO_MATCH_PASSWORD,
@@ -70,6 +70,13 @@ import {
   UsersUpdateNicknameInputDto,
   UsersUpdateNicknameOutputDto,
 } from './dtos/users.update.dto';
+import { UsersDuplicateVerificationDtoInterface } from './interfaces/users.duplicate.verification.dto.interface';
+import {
+  UsersAppIdDuplicateVerificationOutputDto,
+  UsersEmailDuplicateVerificationOutputDto,
+  UsersNicknameDuplicateVerificationOutputDto,
+  UsersPhoneDuplicateVerificationOutputDto,
+} from './dtos/users.duplicate.verification.dto';
 
 @Controller('users')
 export class UsersController {
@@ -77,6 +84,8 @@ export class UsersController {
     @Inject('SERVICE') private readonly service: UsersDtoInterface,
     @Inject('REFRESH_TOKEN_SERVICE')
     private readonly refreshTokenService: UsersRefreshTokenReIssuanceDtoInterface,
+    @Inject('DUPLICATE_VERIFICATION_SERVICE')
+    private readonly duplicateVerificationService: UsersDuplicateVerificationDtoInterface,
   ) {}
 
   @Get('/list')
@@ -232,7 +241,7 @@ export class UsersController {
   @ApiResponse({ status: 404, description: `${NOTFOUND_USER}` })
   @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
   private async logout(
-    @User() user: Pick<UsersBaseDto, 'id'>,
+    @User() user: UsersBaseDto,
   ): Promise<UsersLogoutOutputDto> {
     const { id } = user;
     return await this.service.logout({ id });
@@ -253,8 +262,77 @@ export class UsersController {
   @ApiResponse({ status: 401, description: `${UNAUTHORIZED}` })
   @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
   private async refreshTokenReIssuance(
-    @User() user: Pick<UsersBaseDto, 'id' | 'appId' | 'phone'>,
+    @User() user: UsersBaseDto,
   ): Promise<UsersRefreshTokenReIssuanceOutputDto> {
-    return await this.refreshTokenService.refresh(user);
+    const { id, appId, phone } = user;
+
+    return await this.refreshTokenService.refresh({ id, appId, phone });
+  }
+
+  @Get('/duplicate/verification/appId/:appId')
+  @ApiOperation({
+    summary: 'USER APP ID DUPLICATE VERIFICATION API',
+    description: '유저 앱 아이디 중복 확인 절차',
+  })
+  @ApiResponse({ status: 200, description: `${TWO_HUNDRED_OK}` })
+  @ApiResponse({ status: 400, description: `${APP_ID_REQUIRED}` })
+  @ApiResponse({ status: 401, description: `${UNAUTHORIZED}` })
+  @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
+  private async appIdDuplicateVerification(
+    @Param('appId') appId: string,
+  ): Promise<UsersAppIdDuplicateVerificationOutputDto> {
+    return await this.duplicateVerificationService.appIdDuplicateVerification({
+      appId,
+    });
+  }
+
+  @Get('/duplicate/verification/email/:email')
+  @ApiOperation({
+    summary: 'USER EMAIL DUPLICATE VERIFICATION API',
+    description: '유저 이메일 중복 확인 절차',
+  })
+  @ApiResponse({ status: 200, description: `${TWO_HUNDRED_OK}` })
+  @ApiResponse({ status: 400, description: `${EMAIL_REQUIRED}` })
+  @ApiResponse({ status: 401, description: `${UNAUTHORIZED}` })
+  @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
+  private async emailDuplicateVerification(
+    @Param('email') email: string,
+  ): Promise<UsersEmailDuplicateVerificationOutputDto> {
+    return await this.duplicateVerificationService.emailDuplicateVerification({
+      email,
+    });
+  }
+
+  @Get('/duplicate/verification/nickname/:nickname')
+  @ApiOperation({
+    summary: 'USER NICKNAME DUPLICATE VERIFICATION API',
+    description: '유저 닉네임 중복 확인 절차',
+  })
+  @ApiResponse({ status: 200, description: `${TWO_HUNDRED_OK}` })
+  @ApiResponse({ status: 400, description: `${NICKNAME_REQUIRED}` })
+  @ApiResponse({ status: 401, description: `${UNAUTHORIZED}` })
+  @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
+  private async nicknameDuplicateVerification(
+    @Param('nickname') nickname: string,
+  ): Promise<UsersNicknameDuplicateVerificationOutputDto> {
+    return await this.duplicateVerificationService.nicknameDuplicateVerification(
+      { nickname },
+    );
+  }
+
+  @Get('/duplicate/verification/phone/:phone')
+  @ApiOperation({
+    summary: 'USER PHONE DUPLICATE VERIFICATION API',
+    description: '유저 핸드폰 중복 확인 절차',
+  })
+  @ApiResponse({ status: 200, description: `${TWO_HUNDRED_OK}` })
+  @ApiResponse({ status: 400, description: `${PHONE_REQUIRED}` })
+  @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
+  private async phoneDuplicateVerification(
+    @Param('phone') phone: string,
+  ): Promise<UsersPhoneDuplicateVerificationOutputDto> {
+    return await this.duplicateVerificationService.phoneDuplicateVerification({
+      phone,
+    });
   }
 }

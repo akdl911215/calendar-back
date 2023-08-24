@@ -24,11 +24,13 @@ import { UsersCompareCurrentPasswordAndPasswordRepository } from './infrastructu
     { provide: 'REFRESH_TOKEN_SERVICE', useClass: UsersService },
     { provide: 'HASH_ENCODED', useClass: HashEncodedService },
     { provide: 'HASH_DECODED', useClass: HashDecodedService },
+    { provide: 'DUPLICATE_VERIFICATION_SERVICE', useClass: UsersService },
 
     // repository
     { provide: 'REPOSITORY', useClass: UsersRepository },
     { provide: 'FIND_BY_REPOSITORY', useClass: UsersRepository },
     { provide: 'REFRESH_TOKEN_REPOSITORY', useClass: UsersRepository },
+    { provide: 'DUPLICATE_VERIFICATION_REPOSITORY', useClass: UsersRepository },
 
     {
       provide: 'COMPARE_CURRENT_PASSWORD_AND_PASSWORD',

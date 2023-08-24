@@ -55,7 +55,6 @@ import { UsersBaseDto } from '../users/dtos/users.base.dto';
 import { AccessTokenGuard } from '../users/infrastructure/token/guards/jwt.access.guard';
 import { NOTFOUND_CALENDAR } from '../_common/https/errors/404';
 import { DATE_DAY, DATE_MONTH, DATE_YEAR } from '../_common/dtos/get.date';
-import { CalendarBaseDto } from './dtos/calendar.base.dto';
 
 @ApiTags('calendar')
 @Controller('calendar')
@@ -84,7 +83,7 @@ export class CalendarController {
   private async register(
     @Body()
     dto: CalendarRegisterBodyInputDto,
-    @User() user: Pick<UsersBaseDto, 'id'>,
+    @User() user: UsersBaseDto,
   ): Promise<CalendarRegisterOutputDto> {
     const { id } = user;
 
@@ -113,7 +112,7 @@ export class CalendarController {
   })
   private async delete(
     @Body() dto: CalendarDeleteBodyInputDto,
-    @User() user: Pick<UsersBaseDto, 'id'>,
+    @User() user: UsersBaseDto,
   ): Promise<CalendarDeleteOutputDto> {
     const { id } = user;
 
@@ -144,7 +143,7 @@ export class CalendarController {
   private async update(
     @Body()
     dto: CalendarUpdateBodyInputDto,
-    @User() user: Pick<UsersBaseDto, 'id'>,
+    @User() user: UsersBaseDto,
   ): Promise<CalendarUpdateOutputDto> {
     const { id } = user;
 
@@ -165,7 +164,7 @@ export class CalendarController {
   @ApiResponse({ status: 401, description: `${UNAUTHORIZED}` })
   @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
   private async inquiry(
-    @User() user: Pick<UsersBaseDto, 'id'>,
+    @User() user: UsersBaseDto,
   ): Promise<CalendarInquiryOutputDto> {
     const { id } = user;
     return await this.service.inquiry({
@@ -190,7 +189,7 @@ export class CalendarController {
   @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
   private async list(
     @Query() dto: CalendarListBodyInputDto,
-    @User() user: Pick<UsersBaseDto, 'id'>,
+    @User() user: UsersBaseDto,
   ): Promise<CalendarListOutputDto> {
     const { id } = user;
 

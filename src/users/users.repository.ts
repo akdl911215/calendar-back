@@ -64,6 +64,17 @@ import {
   UsersFindByPhoneInputType,
   UsersFindByPhoneOutputType,
 } from './entites/users.find.by.entity.interface.type';
+import { UsersDuplicateVerificationEntityInterface } from './interfaces/users.duplicate.verification.entity.interface';
+import {
+  UsersAppIdDuplicateVerificationInputType,
+  UsersAppIdDuplicateVerificationOutputType,
+  UsersEmailDuplicateVerificationInputType,
+  UsersEmailDuplicateVerificationOutputType,
+  UsersNicknameDuplicateVerificationInputType,
+  UsersNicknameDuplicateVerificationOutputType,
+  UsersPhoneDuplicateVerificationInputType,
+  UsersPhoneDuplicateVerificationOutputType,
+} from './entites/users.duplicate.verification.entity.interface.type';
 
 @Injectable()
 @Dependencies([
@@ -76,7 +87,8 @@ export class UsersRepository
   implements
     UsersEntityInterface,
     UsersRefreshTokenReIssuanceInterface,
-    UsersFindByEntityInterface
+    UsersFindByEntityInterface,
+    UsersDuplicateVerificationEntityInterface
 {
   constructor(
     private readonly prisma: PrismaService,
@@ -322,14 +334,11 @@ export class UsersRepository
       });
     if (!userFindByAppId) throw new BadRequestException(NO_MATCH_APP_ID);
 
-    console.log('userFindByAppId.password : ', userFindByAppId.password);
     const { decoded } = await this.compare.decoded({
       password,
       hashPassword: userFindByAppId.password,
     });
-    console.log('decoded : ', decoded);
     const comparePassword: boolean = decoded;
-    console.log('!comparePassword : ', !comparePassword);
     if (!comparePassword) throw new BadRequestException(NO_MATCH_PASSWORD);
 
     const accessPayload: AccessTokenPayloadType = {
@@ -496,5 +505,42 @@ export class UsersRepository
     if (!userFindByPhone) throw new NotFoundException(NOTFOUND_USER);
 
     return userFindByPhone;
+  }
+
+  public async appIdDuplicateVerification(
+    entity: UsersAppIdDuplicateVerificationInputType,
+  ): Promise<UsersAppIdDuplicateVerificationOutputType> {
+    const { appId } = entity;
+    const userFindByAppId: CalendarUsers =
+      await this.prisma.calendarUsers.findUnique({ where: { app_id: appId } });
+
+    return { appIdExists: !!userFindByAppId };
+  }
+
+  public async emailDuplicateVerification(
+    entity: UsersEmailDuplicateVerificationInputType,
+  ): Promise<UsersEmailDuplicateVerificationOutputType> {
+    const userFindByEmail: CalendarUsers =
+      await this.prisma.calendarUsers.findUnique({ where: entity });
+
+    return { emailExists: !!userFindByEmail };
+  }
+
+  public async nicknameDuplicateVerification(
+    entity: UsersNicknameDuplicateVerificationInputType,
+  ): Promise<UsersNicknameDuplicateVerificationOutputType> {
+    const userFindByNickname: CalendarUsers =
+      await this.prisma.calendarUsers.findUnique({ where: entity });
+
+    return { nicknameExists: !!userFindByNickname };
+  }
+
+  public async phoneDuplicateVerification(
+    entity: UsersPhoneDuplicateVerificationInputType,
+  ): Promise<UsersPhoneDuplicateVerificationOutputType> {
+    const userFindByPhone: CalendarUsers =
+      await this.prisma.calendarUsers.findUnique({ where: entity });
+
+    return { phoneExists: !!userFindByPhone };
   }
 }

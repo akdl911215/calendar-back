@@ -61,10 +61,23 @@ import {
   ALREADY_NICKNAME,
   ALREADY_PHONE,
 } from '../_common/https/errors/409';
+import { UsersDuplicateVerificationEntityInterface } from './interfaces/users.duplicate.verification.entity.interface';
+import { UsersDuplicateVerificationDtoInterface } from './interfaces/users.duplicate.verification.dto.interface';
+import {
+  UsersAppIdDuplicateVerificationInputDto,
+  UsersAppIdDuplicateVerificationOutputDto,
+  UsersEmailDuplicateVerificationInputDto,
+  UsersEmailDuplicateVerificationOutputDto,
+  UsersNicknameDuplicateVerificationInputDto,
+  UsersNicknameDuplicateVerificationOutputDto,
+  UsersPhoneDuplicateVerificationInputDto,
+  UsersPhoneDuplicateVerificationOutputDto,
+} from './dtos/users.duplicate.verification.dto';
 
 interface UsersMergeInterface
   extends UsersDtoInterface,
-    UsersRefreshTokenReIssuanceDtoInterface {}
+    UsersRefreshTokenReIssuanceDtoInterface,
+    UsersDuplicateVerificationDtoInterface {}
 
 @Injectable()
 export class UsersService implements UsersMergeInterface {
@@ -75,6 +88,8 @@ export class UsersService implements UsersMergeInterface {
     private readonly findByRepository: UsersFindByEntityInterface,
     @Inject('REFRESH_TOKEN_REPOSITORY')
     private readonly refreshTokenRepository: UsersRefreshTokenReIssuanceInterface,
+    @Inject('DUPLICATE_VERIFICATION_REPOSITORY')
+    private readonly duplicateVerificationRepository: UsersDuplicateVerificationEntityInterface,
   ) {}
 
   public async create(dto: UsersCreateInputDto): Promise<UsersCreateOutputDto> {
@@ -223,5 +238,73 @@ export class UsersService implements UsersMergeInterface {
     return await this.refreshTokenRepository.refresh(
       user._refreshTokenReIssuance,
     );
+  }
+
+  public async appIdDuplicateVerification(
+    dto: UsersAppIdDuplicateVerificationInputDto,
+  ): Promise<UsersAppIdDuplicateVerificationOutputDto> {
+    const { appId } = dto;
+    if (!appId) throw new BadRequestException(APP_ID_REQUIRED);
+
+    const user = new UsersModel();
+    user._appId = dto;
+
+    const { appIdExists } =
+      await this.duplicateVerificationRepository.appIdDuplicateVerification(
+        user._appId,
+      );
+
+    return { appIdExists };
+  }
+
+  public async emailDuplicateVerification(
+    dto: UsersEmailDuplicateVerificationInputDto,
+  ): Promise<UsersEmailDuplicateVerificationOutputDto> {
+    const { email } = dto;
+    if (!email) throw new BadRequestException(EMAIL_REQUIRED);
+
+    const user = new UsersModel();
+    user._email = dto;
+
+    const { emailExists } =
+      await this.duplicateVerificationRepository.emailDuplicateVerification(
+        user._email,
+      );
+
+    return { emailExists };
+  }
+
+  public async nicknameDuplicateVerification(
+    dto: UsersNicknameDuplicateVerificationInputDto,
+  ): Promise<UsersNicknameDuplicateVerificationOutputDto> {
+    const { nickname } = dto;
+    if (!nickname) throw new BadRequestException(NICKNAME_REQUIRED);
+
+    const user = new UsersModel();
+    user._nickname = dto;
+
+    const { nicknameExists } =
+      await this.duplicateVerificationRepository.nicknameDuplicateVerification(
+        user._nickname,
+      );
+
+    return { nicknameExists };
+  }
+
+  public async phoneDuplicateVerification(
+    dto: UsersPhoneDuplicateVerificationInputDto,
+  ): Promise<UsersPhoneDuplicateVerificationOutputDto> {
+    const { phone } = dto;
+    if (!phone) throw new BadRequestException(PHONE_REQUIRED);
+
+    const user = new UsersModel();
+    user._phone = dto;
+
+    const { phoneExists } =
+      await this.duplicateVerificationRepository.phoneDuplicateVerification(
+        user._phone,
+      );
+
+    return { phoneExists };
   }
 }

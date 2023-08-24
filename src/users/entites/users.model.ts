@@ -8,6 +8,42 @@ export class UsersModel extends BaseCommonCoreDto {
   private email!: string;
   private refreshToken?: string;
 
+  public set _appId(param: { readonly appId: string }) {
+    this.appId = param.appId;
+  }
+  public get _appId(): { readonly appId: string } {
+    return {
+      appId: this.appId,
+    };
+  }
+
+  public set _nickname(param: { readonly nickname: string }) {
+    this.nickname = param.nickname;
+  }
+  public get _nickname(): { readonly nickname: string } {
+    return {
+      nickname: this.nickname,
+    };
+  }
+
+  public set _phone(param: { readonly phone: string }) {
+    this.phone = param.phone;
+  }
+  public get _phone(): { readonly phone: string } {
+    return {
+      phone: this.phone,
+    };
+  }
+
+  public set _email(param: { readonly email: string }) {
+    this.email = param.email;
+  }
+  public get _email(): { readonly email: string } {
+    return {
+      email: this.email,
+    };
+  }
+
   public set _usersFindById(param: { readonly id: string }) {
     super._id = { id: param.id };
   }
