@@ -3,7 +3,7 @@ export type UsersAppIdDuplicateVerificationInputType = {
 };
 
 export type UsersAppIdDuplicateVerificationOutputType = {
-  readonly appIdExists: boolean;
+  readonly appIdExists: string;
 };
 
 export type UsersPhoneDuplicateVerificationInputType = {
@@ -11,7 +11,7 @@ export type UsersPhoneDuplicateVerificationInputType = {
 };
 
 export type UsersPhoneDuplicateVerificationOutputType = {
-  readonly phoneExists: boolean;
+  readonly phoneExists: string;
 };
 
 export type UsersEmailDuplicateVerificationInputType = {
@@ -19,7 +19,7 @@ export type UsersEmailDuplicateVerificationInputType = {
 };
 
 export type UsersEmailDuplicateVerificationOutputType = {
-  readonly emailExists: boolean;
+  readonly emailExists: string;
 };
 
 export type UsersNicknameDuplicateVerificationInputType = {
@@ -27,5 +27,5 @@ export type UsersNicknameDuplicateVerificationInputType = {
 };
 
 export type UsersNicknameDuplicateVerificationOutputType = {
-  readonly nicknameExists: boolean;
+  readonly nicknameExists: string;
 };

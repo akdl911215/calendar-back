@@ -7,7 +7,7 @@ export class UsersAppIdDuplicateVerificationInputDto extends PickType(
 ) {}
 
 export type UsersAppIdDuplicateVerificationOutputDto = {
-  readonly appIdExists: boolean;
+  readonly appIdExists: string;
 };
 
 export class UsersPhoneDuplicateVerificationInputDto extends PickType(
@@ -16,7 +16,7 @@ export class UsersPhoneDuplicateVerificationInputDto extends PickType(
 ) {}
 
 export type UsersPhoneDuplicateVerificationOutputDto = {
-  readonly phoneExists: boolean;
+  readonly phoneExists: string;
 };
 
 export class UsersEmailDuplicateVerificationInputDto extends PickType(
@@ -25,7 +25,7 @@ export class UsersEmailDuplicateVerificationInputDto extends PickType(
 ) {}
 
 export type UsersEmailDuplicateVerificationOutputDto = {
-  readonly emailExists: boolean;
+  readonly emailExists: string;
 };
 
 export class UsersNicknameDuplicateVerificationInputDto extends PickType(
@@ -34,5 +34,5 @@ export class UsersNicknameDuplicateVerificationInputDto extends PickType(
 ) {}
 
 export type UsersNicknameDuplicateVerificationOutputDto = {
-  readonly nicknameExists: boolean;
+  readonly nicknameExists: string;
 };

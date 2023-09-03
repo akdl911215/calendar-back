@@ -513,8 +513,12 @@ export class UsersRepository
     const { appId } = entity;
     const userFindByAppId: CalendarUsers =
       await this.prisma.calendarUsers.findUnique({ where: { app_id: appId } });
+    console.log('userFindByAppId  : ', userFindByAppId);
 
-    return { appIdExists: !!userFindByAppId };
+    let str = 'exists';
+    if (!userFindByAppId) str = 'nonExists';
+
+    return { appIdExists: str };
   }
 
   public async emailDuplicateVerification(
@@ -523,7 +527,10 @@ export class UsersRepository
     const userFindByEmail: CalendarUsers =
       await this.prisma.calendarUsers.findUnique({ where: entity });
 
-    return { emailExists: !!userFindByEmail };
+    let str = 'exists';
+    if (!userFindByEmail) str = 'nonExists';
+
+    return { emailExists: str };
   }
 
   public async nicknameDuplicateVerification(
@@ -532,7 +539,9 @@ export class UsersRepository
     const userFindByNickname: CalendarUsers =
       await this.prisma.calendarUsers.findUnique({ where: entity });
 
-    return { nicknameExists: !!userFindByNickname };
+    let str = 'exists';
+    if (!userFindByNickname) str = 'nonExists';
+    return { nicknameExists: str };
   }
 
   public async phoneDuplicateVerification(
@@ -541,6 +550,8 @@ export class UsersRepository
     const userFindByPhone: CalendarUsers =
       await this.prisma.calendarUsers.findUnique({ where: entity });
 
-    return { phoneExists: !!userFindByPhone };
+    let str = 'exists';
+    if (!userFindByPhone) str = 'nonExists';
+    return { phoneExists: str };
   }
 }
