@@ -513,7 +513,6 @@ export class UsersRepository
     const { appId } = entity;
     const userFindByAppId: CalendarUsers =
       await this.prisma.calendarUsers.findUnique({ where: { app_id: appId } });
-    console.log('userFindByAppId  : ', userFindByAppId);
 
     let str = 'exists';
     if (!userFindByAppId) str = 'nonExists';

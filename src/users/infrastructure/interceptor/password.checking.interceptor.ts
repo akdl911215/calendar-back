@@ -26,6 +26,6 @@ export class PasswordCheckingInterceptor implements NestInterceptor {
       }
     }
 
-    return next.handle().pipe(tap((data) => delete data.response.password));
+    return next.handle().pipe(tap((data) => delete data.password));
   }
 }

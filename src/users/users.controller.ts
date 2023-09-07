@@ -58,6 +58,7 @@ import {
 } from '../_common/https/errors/400';
 import {
   ALREADY_APP_ID,
+  ALREADY_EMAIL,
   ALREADY_NICKNAME,
   ALREADY_PHONE,
 } from '../_common/https/errors/409';
@@ -66,9 +67,17 @@ import { UNAUTHORIZED } from '../_common/https/errors/401';
 import { UsersRefreshTokenReIssuanceOutputDto } from './dtos/user.refresh.token.re.issuance.dto';
 import { UsersRefreshTokenReIssuanceDtoInterface } from './interfaces/users.refresh.token.re.issuance.dto.interface';
 import {
+  UsersReIssuancePasswordInputDataDto,
+  UsersReIssuancePasswordOutputDto,
+  UsersUpdateEmailInputDataDto,
+  UsersUpdateEmailInputDto,
+  UsersUpdateEmailOutputDto,
   UsersUpdateNicknameInputDateDto,
   UsersUpdateNicknameInputDto,
   UsersUpdateNicknameOutputDto,
+  UsersUpdatePhoneInputDataDto,
+  UsersUpdatePhoneInputDto,
+  UsersUpdatePhoneOutputDto,
 } from './dtos/users.update.dto';
 import { UsersDuplicateVerificationDtoInterface } from './interfaces/users.duplicate.verification.dto.interface';
 import {
@@ -87,7 +96,6 @@ export class UsersController {
     @Inject('DUPLICATE_VERIFICATION_SERVICE')
     private readonly duplicateVerificationService: UsersDuplicateVerificationDtoInterface,
   ) {}
-
   @Get('/list')
   @ApiConsumes('application/x-www-form/urlencoded')
   @ApiOperation({
@@ -100,7 +108,6 @@ export class UsersController {
     description: `${TAKE_REQUIRED}, ${PAGE_REQUIRED}`,
   })
   @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
-  @UseInterceptors(PasswordCheckingInterceptor)
   private async list(
     @Query() dto: UsersListInputDto,
   ): Promise<UsersListOutputDto> {
@@ -125,7 +132,6 @@ export class UsersController {
   private async create(
     @Body() dto: UsersCreateInputDto,
   ): Promise<UsersCreateOutputDto> {
-    console.log('dto : ', dto);
     return await this.service.create(dto);
   }
 
@@ -182,23 +188,20 @@ export class UsersController {
   @UseGuards(AccessTokenGuard)
   @ApiBearerAuth('access_token')
   @UseInterceptors(PasswordCheckingInterceptor)
-  @Patch('/update')
+  @Patch('/update/nickname')
   @ApiConsumes('application/x-www-form-urlencoded')
   @ApiOperation({
-    summary: 'USER PROFILE MODIFY API',
-    description: '유저 프로필 정보 수정',
+    summary: 'USER NICKNAME MODIFY API',
+    description: '유저 닉네임 정보 수정',
   })
   @ApiResponse({ status: 200, description: `${TWO_HUNDRED_OK}` })
   @ApiResponse({
     status: 400,
-    description: `${UNIQUE_ID_REQUIRED}, ${APP_ID_REQUIRED}, ${TOKEN_NOT_EXIST}`,
+    description: `${UNIQUE_ID_REQUIRED},  ${TOKEN_NOT_EXIST}, ${NICKNAME_REQUIRED}`,
   })
   @ApiResponse({ status: 401, description: `${UNAUTHORIZED}` })
   @ApiResponse({ status: 404, description: `${NOTFOUND_USER}` })
-  @ApiResponse({
-    status: 409,
-    description: `${ALREADY_NICKNAME}, ${ALREADY_PHONE}`,
-  })
+  @ApiResponse({ status: 409, description: `${ALREADY_NICKNAME}` })
   @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
   @ApiBody({ type: UsersUpdateNicknameInputDto })
   private async updateNickname(
@@ -209,6 +212,93 @@ export class UsersController {
     return await this.service.updateNickname({
       id: user.id,
       nickname: dto.nickname,
+    });
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @ApiBearerAuth('access_token')
+  @UseInterceptors(PasswordCheckingInterceptor)
+  @Patch('/update/phone')
+  @ApiConsumes('application/x-www-form-urlencoded')
+  @ApiOperation({
+    summary: 'USER PHONE MODIFY API',
+    description: '유저 핸드폰 정보 수정',
+  })
+  @ApiResponse({ status: 200, description: `${TWO_HUNDRED_OK}` })
+  @ApiResponse({
+    status: 400,
+    description: `${UNIQUE_ID_REQUIRED}, ${PHONE_REQUIRED}, ${TOKEN_NOT_EXIST}`,
+  })
+  @ApiResponse({ status: 401, description: `${UNAUTHORIZED}` })
+  @ApiResponse({ status: 404, description: `${NOTFOUND_USER}` })
+  @ApiResponse({ status: 409, description: `${ALREADY_PHONE}` })
+  @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
+  @ApiBody({ type: UsersUpdatePhoneInputDto })
+  private async updatePhone(
+    @Body() dto: UsersUpdatePhoneInputDataDto,
+    @User() user: UsersBaseDto,
+  ): Promise<UsersUpdatePhoneOutputDto> {
+    return await this.service.updatePhone({
+      id: user.id,
+      phone: dto.phone,
+    });
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @ApiBearerAuth('access_token')
+  @UseInterceptors(PasswordCheckingInterceptor)
+  @Patch('/reIssuance/password')
+  @ApiConsumes('application/x-www-form-urlencoded')
+  @ApiOperation({
+    summary: 'USER PASSWORD RE ISSUANCE API',
+    description: '유저 비밀번호 재발급 절차',
+  })
+  @ApiResponse({ status: 200, description: `${TWO_HUNDRED_OK}` })
+  @ApiResponse({
+    status: 400,
+    description: `${UNIQUE_ID_REQUIRED}, ${PHONE_REQUIRED}, ${TOKEN_NOT_EXIST}`,
+  })
+  @ApiResponse({ status: 401, description: `${UNAUTHORIZED}` })
+  @ApiResponse({ status: 404, description: `${NOTFOUND_USER}` })
+  @ApiResponse({ status: 409, description: `${ALREADY_PHONE}` })
+  @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
+  @ApiBody({ type: UsersUpdatePhoneInputDto })
+  private async reIssuancePassword(
+    @Body() dto: UsersReIssuancePasswordInputDataDto,
+    @User() user: UsersBaseDto,
+  ): Promise<UsersReIssuancePasswordOutputDto> {
+    return await this.service.reIssuancePassword({
+      id: user.id,
+      password: dto.password,
+    });
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @ApiBearerAuth('access_token')
+  @UseInterceptors(PasswordCheckingInterceptor)
+  @Patch('/update/email')
+  @ApiConsumes('application/x-www-form-urlencoded')
+  @ApiOperation({
+    summary: 'USER E-MAIL MODIFY API',
+    description: '유저 E-MAIL 정보 수정',
+  })
+  @ApiResponse({ status: 200, description: `${TWO_HUNDRED_OK}` })
+  @ApiResponse({
+    status: 400,
+    description: `${UNIQUE_ID_REQUIRED}, ${EMAIL_REQUIRED}, ${TOKEN_NOT_EXIST}`,
+  })
+  @ApiResponse({ status: 401, description: `${UNAUTHORIZED}` })
+  @ApiResponse({ status: 404, description: `${NOTFOUND_USER}` })
+  @ApiResponse({ status: 409, description: `${ALREADY_EMAIL}` })
+  @ApiResponse({ status: 500, description: `${INTERNAL_SERVER_ERROR}` })
+  @ApiBody({ type: UsersUpdatePhoneInputDto })
+  private async updateEmail(
+    @Body() dto: UsersUpdateEmailInputDataDto,
+    @User() user: UsersBaseDto,
+  ): Promise<UsersUpdateEmailOutputDto> {
+    return await this.service.updateEmail({
+      id: user.id,
+      email: dto.email,
     });
   }
 

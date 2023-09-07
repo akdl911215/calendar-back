@@ -19,6 +19,11 @@ export class UsersUpdatePhoneInputDto extends PickType(UsersBaseDto, [
   'phone',
 ] as const) {}
 
+export class UsersUpdatePhoneInputDataDto extends PickType(
+  UsersUpdatePhoneInputDto,
+  ['phone'] as const,
+) {}
+
 export type UsersUpdatePhoneOutputDto = CalendarUsers;
 
 export class UsersUpdateEmailInputDto extends PickType(UsersBaseDto, [
@@ -26,11 +31,21 @@ export class UsersUpdateEmailInputDto extends PickType(UsersBaseDto, [
   'email',
 ] as const) {}
 
+export class UsersUpdateEmailInputDataDto extends PickType(
+  UsersUpdateEmailInputDto,
+  ['email'] as const,
+) {}
+
 export type UsersUpdateEmailOutputDto = CalendarUsers;
 
 export class UsersReIssuancePasswordInputDto extends PickType(UsersBaseDto, [
   'id',
   'password',
 ] as const) {}
+
+export class UsersReIssuancePasswordInputDataDto extends PickType(
+  UsersReIssuancePasswordInputDto,
+  ['password'] as const,
+) {}
 
 export type UsersReIssuancePasswordOutputDto = CalendarUsers;

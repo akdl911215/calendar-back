@@ -1,7 +1,9 @@
 import { IsArray, IsNumber, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export class BaseOffsetPaginationInputDto {
+  @Type(() => Number)
   @IsNumber()
   @ApiProperty({
     type: Number,
@@ -11,6 +13,7 @@ export class BaseOffsetPaginationInputDto {
   public readonly page!: number;
 
   // 리스트 행 개수
+  @Type(() => Number)
   @IsNumber()
   @ApiProperty({
     type: Number,
