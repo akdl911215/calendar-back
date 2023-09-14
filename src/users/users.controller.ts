@@ -86,6 +86,7 @@ import {
   UsersNicknameDuplicateVerificationOutputDto,
   UsersPhoneDuplicateVerificationOutputDto,
 } from './dtos/users.duplicate.verification.dto';
+import { UsersDto } from '../_common/dtos/users.dto';
 
 @Controller('users')
 export class UsersController {
@@ -207,7 +208,7 @@ export class UsersController {
   private async updateNickname(
     @Body()
     dto: UsersUpdateNicknameInputDateDto,
-    @User() user: UsersBaseDto,
+    @User() user: UsersDto,
   ): Promise<UsersUpdateNicknameOutputDto> {
     return await this.service.updateNickname({
       id: user.id,

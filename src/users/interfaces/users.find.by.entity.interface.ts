@@ -4,6 +4,12 @@ import {
   UsersFindByEmailInputType,
   UsersFindByEmailOutputType,
   UsersFindByIdInputType,
+  UsersFindByIdOrEmailInputType,
+  UsersFindByIdOrEmailOutputType,
+  UsersFindByIdOrNicknameInputType,
+  UsersFindByIdOrNicknameOutputType,
+  UsersFindByIdOrPhoneInputType,
+  UsersFindByIdOrPhoneOutputType,
   UsersFindByIdOutputType,
   UsersFindByNicknameInputType,
   UsersFindByNicknameOutputType,
@@ -31,4 +37,16 @@ export interface UsersFindByEntityInterface {
   readonly usersFindByEmail: (
     entity: UsersFindByEmailInputType,
   ) => Promise<UsersFindByEmailOutputType>;
+
+  readonly usersFindByIdOrNickname: (
+    entity: UsersFindByIdOrNicknameInputType,
+  ) => Promise<UsersFindByIdOrNicknameOutputType>;
+
+  readonly usersFindByIdOrPhone: (
+    entity: UsersFindByIdOrPhoneInputType,
+  ) => Promise<UsersFindByIdOrPhoneOutputType>;
+
+  readonly usersFindByIdOrEmail: (
+    entity: UsersFindByIdOrEmailInputType,
+  ) => Promise<UsersFindByIdOrEmailOutputType>;
 }

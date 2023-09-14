@@ -58,6 +58,12 @@ import {
   UsersFindByEmailInputType,
   UsersFindByEmailOutputType,
   UsersFindByIdInputType,
+  UsersFindByIdOrEmailInputType,
+  UsersFindByIdOrEmailOutputType,
+  UsersFindByIdOrNicknameInputType,
+  UsersFindByIdOrNicknameOutputType,
+  UsersFindByIdOrPhoneInputType,
+  UsersFindByIdOrPhoneOutputType,
   UsersFindByIdOutputType,
   UsersFindByNicknameInputType,
   UsersFindByNicknameOutputType,
@@ -210,12 +216,6 @@ export class UsersRepository
   ): Promise<UsersUpdateNicknameEntityOutputType> {
     const { id, nickname } = entity;
 
-    const userFindByIdAndAppId: CalendarUsers =
-      await this.prisma.calendarUsers.findFirst({
-        where: { AND: [{ id }, { nickname }] },
-      });
-    if (!userFindByIdAndAppId) throw new NotFoundException(NOTFOUND_USER);
-
     try {
       const updateNickname: CalendarUsers = await this.prisma.$transaction(
         async () =>
@@ -270,12 +270,6 @@ export class UsersRepository
   ): Promise<UsersUpdatePhoneEntityOutputType> {
     const { id, phone } = entity;
 
-    const userFindByIdAndAppId: CalendarUsers =
-      await this.prisma.calendarUsers.findFirst({
-        where: { AND: [{ id }, { phone }] },
-      });
-    if (!userFindByIdAndAppId) throw new NotFoundException(NOTFOUND_USER);
-
     try {
       const updatePhone: CalendarUsers = await this.prisma.$transaction(
         async () =>
@@ -298,12 +292,6 @@ export class UsersRepository
     entity: UsersUpdateEmailEntityInputType,
   ): Promise<UsersUpdateEmailEntityOutputType> {
     const { id, email } = entity;
-
-    const userFindByIdAndAppId: CalendarUsers =
-      await this.prisma.calendarUsers.findFirst({
-        where: { AND: [{ id }, { email }] },
-      });
-    if (!userFindByIdAndAppId) throw new NotFoundException(NOTFOUND_USER);
 
     try {
       const updateEmail: CalendarUsers = await this.prisma.$transaction(
@@ -552,5 +540,44 @@ export class UsersRepository
     let str = 'exists';
     if (!userFindByPhone) str = 'nonExists';
     return { phoneExists: str };
+  }
+
+  public async usersFindByIdOrNickname(
+    entity: UsersFindByIdOrNicknameInputType,
+  ): Promise<UsersFindByIdOrNicknameOutputType> {
+    const { nickname, id } = entity;
+
+    const userFindByIdOrNickname: CalendarUsers =
+      await this.prisma.calendarUsers.findFirst({
+        where: { OR: [{ id }, { nickname }] },
+      });
+
+    return userFindByIdOrNickname;
+  }
+
+  public async usersFindByIdOrPhone(
+    entity: UsersFindByIdOrPhoneInputType,
+  ): Promise<UsersFindByIdOrPhoneOutputType> {
+    const { phone, id } = entity;
+
+    const userFindByIdOrPhone: CalendarUsers =
+      await this.prisma.calendarUsers.findFirst({
+        where: { OR: [{ id }, { phone }] },
+      });
+
+    return userFindByIdOrPhone;
+  }
+
+  public async usersFindByIdOrEmail(
+    entity: UsersFindByIdOrEmailInputType,
+  ): Promise<UsersFindByIdOrEmailOutputType> {
+    const { email, id } = entity;
+
+    const userFindByIdOrEmail: CalendarUsers =
+      await this.prisma.calendarUsers.findFirst({
+        where: { OR: [{ id }, { email }] },
+      });
+
+    return userFindByIdOrEmail;
   }
 }

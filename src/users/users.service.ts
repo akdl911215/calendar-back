@@ -3,6 +3,7 @@ import {
   ConflictException,
   Inject,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { UsersDtoInterface } from './interfaces/users.dto.interface';
 import {
@@ -73,6 +74,7 @@ import {
   UsersPhoneDuplicateVerificationInputDto,
   UsersPhoneDuplicateVerificationOutputDto,
 } from './dtos/users.duplicate.verification.dto';
+import { NOTFOUND_USER } from '../_common/https/errors/404';
 
 interface UsersMergeInterface
   extends UsersDtoInterface,
@@ -131,10 +133,15 @@ export class UsersService implements UsersMergeInterface {
     if (!id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
     if (!nickname) throw new BadRequestException(NICKNAME_REQUIRED);
 
-    const userFindById = await this.findByRepository.userFindById({
-      id,
-    });
-    if (userFindById?.nickname === nickname)
+    const userFindByIdOrNickname =
+      await this.findByRepository.usersFindByIdOrNickname(dto);
+    if (!userFindByIdOrNickname) throw new NotFoundException(NOTFOUND_USER);
+
+    if (
+      !!userFindByIdOrNickname &&
+      userFindByIdOrNickname.id !== id &&
+      userFindByIdOrNickname.nickname === nickname
+    )
       throw new ConflictException(ALREADY_NICKNAME);
 
     const user = new UsersModel();
@@ -150,10 +157,16 @@ export class UsersService implements UsersMergeInterface {
     if (!id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
     if (!phone) throw new BadRequestException(PHONE_REQUIRED);
 
-    const userFindById = await this.findByRepository.userFindById({
+    const userFindByIdOrPhone = await this.findByRepository.userFindById({
       id,
     });
-    if (userFindById?.phone === phone)
+    if (!userFindByIdOrPhone) throw new NotFoundException(NOTFOUND_USER);
+
+    if (
+      !!userFindByIdOrPhone &&
+      userFindByIdOrPhone.id !== id &&
+      userFindByIdOrPhone.phone === phone
+    )
       throw new ConflictException(ALREADY_PHONE);
 
     const user = new UsersModel();
@@ -169,10 +182,16 @@ export class UsersService implements UsersMergeInterface {
     if (!id) throw new BadRequestException(UNIQUE_ID_REQUIRED);
     if (!email) throw new BadRequestException(EMAIL_REQUIRED);
 
-    const userFindById = await this.findByRepository.userFindById({
+    const userFindByIdOrEmail = await this.findByRepository.userFindById({
       id,
     });
-    if (userFindById?.email === email)
+    if (!userFindByIdOrEmail) throw new NotFoundException(NOTFOUND_USER);
+
+    if (
+      !!userFindByIdOrEmail &&
+      userFindByIdOrEmail.id !== id &&
+      userFindByIdOrEmail.email === email
+    )
       throw new ConflictException(ALREADY_EMAIL);
 
     const user = new UsersModel();
